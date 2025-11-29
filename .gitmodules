@@ -1,0 +1,3 @@
+[submodule "AstralEngine/vendors/spdlog"]
+	path = AstralEngine/vendors/spdlog
+	url = https://github.com/gabime/spdlog

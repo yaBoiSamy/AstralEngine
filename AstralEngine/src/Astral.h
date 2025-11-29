@@ -5,3 +5,5 @@
 #include "Astral/Application.h"	
 
 #include "Astral/EntryPoint.h"
+
+#include "Astral/Log.h"

@@ -4,8 +4,11 @@
     <Filter Include="Astral">
       <UniqueIdentifier>{6CE5E0A7-5887-0B7E-4142-1FD22D8392CE}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{8EEA3EAC-7A8C-6982-6347-7DD64F88F0D2}</UniqueIdentifier>
+    <Filter Include="Astral\Events">
+      <UniqueIdentifier>{D0BF8866-3C80-049D-05BB-4D1A713A4979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Astral\Logs">
+      <UniqueIdentifier>{503BA3C0-BCF0-1BB6-45E5-158DB19912BA}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,22 +22,24 @@
     <ClInclude Include="src\Astral\EntryPoint.h">
       <Filter>Astral</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astral\Event.h">
-      <Filter>Astral</Filter>
+    <ClInclude Include="src\Astral\Events\Event.h">
+      <Filter>Astral\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astral\Log.h">
-      <Filter>Astral</Filter>
+    <ClInclude Include="src\Astral\Logs\Log.h">
+      <Filter>Astral\Logs</Filter>
     </ClInclude>
-    <ClInclude Include="src\Common\PatternMatching.h">
-      <Filter>Common</Filter>
-    </ClInclude>
+    <ClInclude Include="src\Common.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application.cpp">
       <Filter>Astral</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astral\Log.cpp">
-      <Filter>Astral</Filter>
+    <ClCompile Include="src\Astral\Events\EventActions.cpp">
+      <Filter>Astral\Events</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astral\Logs\Log.cpp">
+      <Filter>Astral\Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common.cpp" />
   </ItemGroup>
 </Project>

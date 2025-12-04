@@ -1,6 +1,6 @@
 #pragma once
 #include "Application.h"
-#include "Log.h"
+#include "Logs/Log.h"
 
 #ifdef AST_PLATFORM_WINDOWS
 

@@ -1,3 +1,6 @@
+[submodule "AstralEngine/vendors/glfw"]
+	path = AstralEngine/vendors/glfw
+	url = git@github.com:yaBoiSamy/glfw.git
 [submodule "AstralEngine/vendors/spdlog"]
 	path = AstralEngine/vendors/spdlog
-	url = https://github.com/gabime/spdlog
+	url = git@github.com:gabime/spdlog.git

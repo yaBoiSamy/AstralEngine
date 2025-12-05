@@ -1,3 +1,5 @@
+#include <Common.h>
+
 #include "Application.h"
 
 namespace Astral {

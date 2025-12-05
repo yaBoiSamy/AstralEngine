@@ -7,7 +7,7 @@
 extern Astral::Application* Astral::CreateApplication();
 
 int main(int argc, char** argv) {
-	Astral::Log::Init();
+	Astral::Hello();
 	Astral::Application* app = Astral::CreateApplication();
 	app->Run();
 	delete app;

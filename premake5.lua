@@ -3,11 +3,6 @@ workspace "AstralEngine"
     architecture "x64"
     configurations { "Debug", "Release", "Dist" }
 
-    filter "system:windows"
-        externalanglebrackets "On"   -- #include <...> are considered external
-        externalwarnings "Off"
-    filter {}
-
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 project "Sandbox"
@@ -54,6 +49,10 @@ project "Sandbox"
         defines { "AST_DIST" }
         optimize "On"
 
+
+include "AstralEngine/vendors/glfw"
+
+
 project "AstralEngine"
     location "AstralEngine"
     kind "SharedLib"
@@ -65,13 +64,21 @@ project "AstralEngine"
 
     files { 
         "%{prj.name}/src/**.h", 
-        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/src/**.cpp"
     }
 
     includedirs {
         "%{prj.name}/vendors/spdlog/include",
+        "%{prj.name}/vendors/glfw/include",
         "%{prj.name}/src"
     }
+
+    links{
+        "GLFW",
+        "opengl32.lib"
+    }
+
+
 
     pchheader "Common.h"
     pchsource "%{prj.name}/src/Common.cpp"
@@ -80,6 +87,8 @@ project "AstralEngine"
         cppdialect "C++20"
         staticruntime "On"
         systemversion "latest"
+        externalanglebrackets "On"
+        externalwarnings "Off"
 
         defines {
             "AST_PLATFORM_WINDOWS",

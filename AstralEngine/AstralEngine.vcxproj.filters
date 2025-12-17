@@ -29,17 +29,19 @@
       <Filter>Astral\Logs</Filter>
     </ClInclude>
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\Astral\Windows\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application.cpp">
       <Filter>Astral</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astral\Events\EventActions.cpp">
+    <ClCompile Include="src\Astral\Events\Event.cpp">
       <Filter>Astral\Events</Filter>
     </ClCompile>
     <ClCompile Include="src\Astral\Logs\Log.cpp">
       <Filter>Astral\Logs</Filter>
     </ClCompile>
     <ClCompile Include="src\Common.cpp" />
+    <ClCompile Include="src\Astral\Windows\Window.cpp" />
   </ItemGroup>
 </Project>

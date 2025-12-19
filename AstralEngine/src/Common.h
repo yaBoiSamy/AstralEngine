@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Astral/Logs/Log.h"
+#include "Astral/Logging/Log.h"
 
 #ifdef AST_PLATFORM_WINDOWS
     //#include <Windows.h>

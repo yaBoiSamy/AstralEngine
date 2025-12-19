@@ -159,19 +159,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Astral.h" />
-    <ClInclude Include="src\Astral\Application.h" />
+    <ClInclude Include="src\Astral\Application\Application.h" />
     <ClInclude Include="src\Astral\Core.h" />
     <ClInclude Include="src\Astral\EntryPoint.h" />
     <ClInclude Include="src\Astral\Events\Event.h" />
     <ClInclude Include="src\Astral\Events\EventDispatcher.h" />
-    <ClInclude Include="src\Astral\Logs\Log.h" />
+    <ClInclude Include="src\Astral\Logging\Log.h" />
     <ClInclude Include="src\Astral\Windows\Window.h" />
     <ClInclude Include="src\Common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Astral\Application.cpp" />
+    <ClCompile Include="src\Astral\Application\Application.cpp" />
     <ClCompile Include="src\Astral\Events\Event.cpp" />
-    <ClCompile Include="src\Astral\Logs\Log.cpp" />
+    <ClCompile Include="src\Astral\Logging\Log.cpp" />
     <ClCompile Include="src\Astral\Windows\Window.cpp" />
     <ClCompile Include="src\Common.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

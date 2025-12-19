@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Astral/Core.h"
 
 namespace Astral {
 

@@ -10,6 +10,9 @@
     <Filter Include="Astral\Logs">
       <UniqueIdentifier>{503BA3C0-BCF0-1BB6-45E5-158DB19912BA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Astral\Windows">
+      <UniqueIdentifier>{A63B8383-9209-7789-7B9D-E7AF670A53EE}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Astral.h" />
@@ -25,11 +28,16 @@
     <ClInclude Include="src\Astral\Events\Event.h">
       <Filter>Astral\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astral\Events\EventDispatcher.h">
+      <Filter>Astral\Events</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astral\Logs\Log.h">
       <Filter>Astral\Logs</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astral\Windows\Window.h">
+      <Filter>Astral\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Astral\Windows\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application.cpp">
@@ -41,7 +49,9 @@
     <ClCompile Include="src\Astral\Logs\Log.cpp">
       <Filter>Astral\Logs</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astral\Windows\Window.cpp">
+      <Filter>Astral\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="src\Common.cpp" />
-    <ClCompile Include="src\Astral\Windows\Window.cpp" />
   </ItemGroup>
 </Project>

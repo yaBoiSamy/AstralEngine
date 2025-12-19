@@ -1,82 +1,105 @@
 #pragma once
 
 #include <Common.h>
+#include <bitset>
 
 namespace Astral {
 
-    struct WindowClose {};
+    struct Event {
+        void DispatchAsEvent() const;
+    };
 
-    struct WindowResize {
+    struct WindowEvent : Event {
+        void DispatchAsWindowEvent() const;
+    };
+
+    struct AppEvent : Event {
+        void DispatchAsAppEvent() const;
+    };
+
+    struct InputEvent : Event {
+        void DispatchAsInputEvent() const;
+    };
+
+    struct WindowCloseEvent : WindowEvent {
+        void DispatchAsWindowCloseEvent() const;
+    };
+
+    struct WindowResizeEvent : WindowEvent {
         const uint32_t width, height;
-        WindowResize(uint32_t width, uint32_t height) : width(width), height(height) {}
+        WindowResizeEvent(uint32_t width, uint32_t height) : width(width), height(height) {}
+
+        void DispatchAsWindowResizeEvent() const;
     };
 
-    struct WindowFocus {};
+    struct WindowFocusEvent : WindowEvent {
+        void DispatchAsWindowFocusEvent() const;
+    };
 
-    struct WindowLostFocus {};
+    struct WindowLostFocusEvent : WindowEvent {
+        void DispatchAsWindowLostFocusEvent() const;
+    };
 
-    struct WindowMoved {
+    struct WindowMovedEvent : WindowEvent {
         const uint32_t x, y;
-        WindowMoved(uint32_t x, uint32_t y) : x(x), y(y) {}
+        WindowMovedEvent(uint32_t x, uint32_t y) : x(x), y(y) {}
+
+        void DispatchAsWindowMovedEvent() const;
     };
 
-    struct AppTick {};
+    struct AppTickEvent : AppEvent {
+        void DispatchAsAppTickEvent() const;
+    };
 
-    struct AppUpdate {};
+    struct AppUpdateEvent : AppEvent {
+        void DispatchAsAppUpdateEvent() const;
+    };
 
-    struct AppRender {};
+    struct AppRenderEvent : AppEvent {
+        void DispatchAsAppRenderEvent() const;
+    };
 
-    struct KeyPressed {
+    struct KeyPressedEvent : InputEvent {
         const uint32_t keycode, repeatCount;
-        KeyPressed(uint32_t keycode, uint32_t repeatCount) : keycode(keycode), repeatCount(repeatCount) {}
+        KeyPressedEvent(uint32_t keycode, uint32_t repeatCount) : keycode(keycode), repeatCount(repeatCount) {}
+
+        void DispatchAsKeyPressedEvent() const;
     };
 
-    struct KeyReleased {
+    struct KeyReleasedEvent : InputEvent {
         const uint32_t keycode;
-        KeyReleased(uint32_t keycode) : keycode(keycode) {}
+        KeyReleasedEvent(uint32_t keycode) : keycode(keycode) {}
+
+        void DispatchAsKeyReleasedEvent() const;
     };
 
-    struct MouseButtonPressed {
+    struct MouseButtonPressedEvent : InputEvent {
         const uint32_t button, x, y;
-        MouseButtonPressed(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+        MouseButtonPressedEvent(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+
+        void DispatchAsMouseButtonPressedEvent() const;
     };
 
-    struct MouseButtonReleased {
+    struct MouseButtonReleasedEvent : InputEvent {
         const uint32_t button, x, y;
-        MouseButtonReleased(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+        MouseButtonReleasedEvent(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+
+        void DispatchAsMouseButtonReleasedEvent() const;
     };
 
-    struct MouseMoved {
+    struct MouseMovedEvent : InputEvent {
         const float x, y;
-        MouseMoved(float x, float y) : x(x), y(y) {}
+        MouseMovedEvent(float x, float y) : x(x), y(y) {}
+        
+        void DispatchAsMouseMovedEvent() const;
     };
 
-    struct MouseScrolled {
+    struct MouseScrolledEvent : InputEvent {
         const float xOffset, yOffset;
-        MouseScrolled(float xOffset, float yOffset) : xOffset(xOffset), yOffset(yOffset) {}
+        MouseScrolledEvent(float xOffset, float yOffset) : xOffset(xOffset), yOffset(yOffset) {}
+
+        void DispatchAsMouseScrolledEvent() const;
     };
 
-
-    using Event = std::variant<
-        WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
-        AppTick, AppUpdate, AppRender,
-        KeyPressed, KeyReleased,
-        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-    >;
-
-    using WindowEvent = std::variant<
-        WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved
-    >;
-
-    using AppEvent = std::variant<
-        AppTick, AppUpdate, AppRender
-    >;
-
-    using InputEvent = std::variant<
-        KeyPressed, KeyReleased,
-        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-    >;
-
-
-    std::string ToString(Event& event);
+    //std::string ToString(Event& event);
 }

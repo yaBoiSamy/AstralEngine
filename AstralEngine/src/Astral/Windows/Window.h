@@ -2,24 +2,42 @@
 
 #include <Common.h>
 #include <Astral/Events/Event.h>
-
 #include "Astral/Core.h"
 
 namespace Astral {
-	using EventCallbackFn = std::function<void(Event&)>;
 
-	struct Window {
-		const std::string title;
-		const uint32_t width, height;
+	using EventCallbackFn = std::function<void(Event const&)>;
 
-		Window(std::string title = "Astral", uint32_t width = 1080, uint32_t height = 1920) :
-			title(title),
-			width(width),
-			height(height) {}
+	class Window {
+	public:
+
+		struct State {
+			std::string title;
+			uint32_t width, height;
+			bool vSync;
+		};
+
+		Window(std::string title, uint32_t width, uint32_t height, bool vSync);
+		explicit Window(State state);
+
+		~Window();
+
+		State GetState() const;
+		void SetVSync(bool vSync);
+
+		void Update();
+
+		// Forbid moving to avoid corrupting the glfw pointers
+		Window(Window&&) = delete;
+		Window& operator=(Window&&) = delete;
+
+	private:
+
+		struct GLFWDeleter {
+			void operator()(GLFWwindow* w) const noexcept;
+		};
+
+		State state;
+		std::unique_ptr<GLFWwindow, GLFWDeleter> handle;
 	};
-
-
-	Window Update(Window win);
-
-	Window SetCallback(EventCallbackFn callback);
 }

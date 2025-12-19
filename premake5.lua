@@ -30,7 +30,7 @@ project "Sandbox"
 
     filter "system:windows" 
         cppdialect "C++20"
-        staticruntime "On"
+        staticruntime "Off"
         systemversion "latest"
 
         defines {
@@ -78,14 +78,12 @@ project "AstralEngine"
         "opengl32.lib"
     }
 
-
-
     pchheader "Common.h"
     pchsource "%{prj.name}/src/Common.cpp"
 
     filter "system:windows" 
         cppdialect "C++20"
-        staticruntime "On"
+        staticruntime "Off"
         systemversion "latest"
         externalanglebrackets "On"
         externalwarnings "Off"
@@ -102,11 +100,14 @@ project "AstralEngine"
     filter { "configurations:Debug" }
         defines { "AST_DEBUG" }
         symbols "On"
+        runtime "Debug"
 
     filter { "configurations:Release" }
         defines { "AST_RELEASE" }
         optimize "On"
+        runtime "Release"
 
     filter { "configurations:Dist" }
         defines { "AST_DIST" }
         optimize "On"
+        runtime "Release"

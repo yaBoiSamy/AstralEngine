@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Astral/Core.h"
+#include "Astral/Window/Window.h"
 
 namespace Astral {
 
@@ -10,6 +11,10 @@ namespace Astral {
 		virtual ~Application();
 
 		void Run();
+		
+	private:
+		std::unique_ptr<Window> window;
+		bool isRunning;
 	};
 
 	// To be defined by user

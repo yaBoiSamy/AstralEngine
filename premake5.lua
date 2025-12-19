@@ -21,6 +21,7 @@ project "Sandbox"
 
     includedirs {
         "AstralEngine/vendors/spdlog/include",
+        "AstralEngine/vendors/glfw/include",
         "AstralEngine/src"
     }
 

@@ -165,14 +165,14 @@
     <ClInclude Include="src\Astral\Events\Event.h" />
     <ClInclude Include="src\Astral\Events\EventDispatcher.h" />
     <ClInclude Include="src\Astral\Logging\Log.h" />
-    <ClInclude Include="src\Astral\Windows\Window.h" />
+    <ClInclude Include="src\Astral\Window\Window.h" />
     <ClInclude Include="src\Common.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application\Application.cpp" />
     <ClCompile Include="src\Astral\Events\Event.cpp" />
     <ClCompile Include="src\Astral\Logging\Log.cpp" />
-    <ClCompile Include="src\Astral\Windows\Window.cpp" />
+    <ClCompile Include="src\Astral\Window\Window.cpp" />
     <ClCompile Include="src\Common.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

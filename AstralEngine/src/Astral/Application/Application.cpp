@@ -4,13 +4,14 @@
 
 namespace Astral {
 
-	Application::Application() {}
+	Application::Application() : window(std::make_unique<Window>()), isRunning(false) {}
 
 	Application::~Application() {}
 
 	void Application::Run() {
-		while (true) {
-
+		isRunning = true;
+		while (isRunning) {
+			window->Update();
 		}
 	}
 }

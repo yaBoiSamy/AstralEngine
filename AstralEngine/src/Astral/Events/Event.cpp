@@ -5,154 +5,164 @@
 
 namespace Astral {
 
-    void Event::DispatchAsEvent() const{
-        EventDispatcher<Event>::Dispatch(*this);
+    void Event::Dispatch() const{
+        EventDispatcher<Event>::DispatchWithoutHierarchy(*this);
     }
 
-    void WindowEvent::DispatchAsWindowEvent() const{
-        EventDispatcher<WindowEvent>::Dispatch(*this);
-        DispatchAsEvent();
+    Event::operator std::string() const {
+        return "Event {}";
     }
 
-    void AppEvent::DispatchAsAppEvent() const{
-        EventDispatcher<AppEvent>::Dispatch(*this);
-        DispatchAsEvent();
+    void WindowEvent::Dispatch() const{
+        EventDispatcher<WindowEvent>::DispatchWithoutHierarchy(*this);
+        Event::Dispatch();
     }
 
-    void InputEvent::DispatchAsInputEvent() const{
-        EventDispatcher<InputEvent>::Dispatch(*this);
-        DispatchAsEvent();
+    WindowEvent::operator std::string() const {
+        return "WindowEvent {}";
     }
 
-    void WindowCloseEvent::DispatchAsWindowCloseEvent() const{
-        EventDispatcher<WindowCloseEvent>::Dispatch(*this);
-        DispatchAsWindowEvent();
+    void AppEvent::Dispatch() const{
+        EventDispatcher<AppEvent>::DispatchWithoutHierarchy(*this);
+        Event::Dispatch();
     }
 
-    void WindowResizeEvent::DispatchAsWindowResizeEvent() const{
-        EventDispatcher<WindowResizeEvent>::Dispatch(*this);
-        DispatchAsWindowEvent();
+    AppEvent::operator std::string() const {
+        return "AppEvent {}";
     }
 
-    void WindowFocusEvent::DispatchAsWindowFocusEvent() const{
-        EventDispatcher<WindowFocusEvent>::Dispatch(*this);
-        DispatchAsWindowEvent();
+    void InputEvent::Dispatch() const{
+        EventDispatcher<InputEvent>::DispatchWithoutHierarchy(*this);
+        Event::Dispatch();
     }
 
-    void WindowLostFocusEvent::DispatchAsWindowLostFocusEvent() const{
-        EventDispatcher<WindowLostFocusEvent>::Dispatch(*this);
-        DispatchAsWindowEvent();
+    InputEvent::operator std::string() const {
+        return "InputEvent {}";
     }
 
-    void WindowMovedEvent::DispatchAsWindowMovedEvent() const{
-        EventDispatcher<WindowMovedEvent>::Dispatch(*this);
-        DispatchAsWindowEvent();
+    void WindowCloseEvent::Dispatch() const{
+        EventDispatcher<WindowCloseEvent>::DispatchWithoutHierarchy(*this);
+        WindowEvent::Dispatch();
     }
 
-    void AppTickEvent::DispatchAsAppTickEvent() const{
-        EventDispatcher<AppTickEvent>::Dispatch(*this);
-        DispatchAsAppEvent();
+    WindowCloseEvent::operator std::string() const {
+        return "WindowCloseEvent {}";
     }
 
-    void AppUpdateEvent::DispatchAsAppUpdateEvent() const{
-        EventDispatcher<AppUpdateEvent>::Dispatch(*this);
-        DispatchAsAppEvent();
+    void WindowResizeEvent::Dispatch() const{
+        EventDispatcher<WindowResizeEvent>::DispatchWithoutHierarchy(*this);
+        WindowEvent::Dispatch();
     }
 
-    void AppRenderEvent::DispatchAsAppRenderEvent() const {
-        EventDispatcher<AppRenderEvent>::Dispatch(*this);
-        DispatchAsAppEvent();
+    WindowResizeEvent::operator std::string() const {
+        return std::format("WindowResizeEvent {{ width = {0}, height = {1} }}", width, height);
     }
 
-    void KeyPressedEvent::DispatchAsKeyPressedEvent() const{
-        EventDispatcher<KeyPressedEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    void WindowFocusEvent::Dispatch() const{
+        EventDispatcher<WindowFocusEvent>::DispatchWithoutHierarchy(*this);
+        WindowEvent::Dispatch();
     }
 
-    void KeyReleasedEvent::DispatchAsKeyReleasedEvent() const{
-        EventDispatcher<KeyReleasedEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    WindowFocusEvent::operator std::string() const {
+        return "WindowFocusEvent";
     }
 
-    void MouseButtonPressedEvent::DispatchAsMouseButtonPressedEvent() const{
-        EventDispatcher<MouseButtonPressedEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    void WindowLostFocusEvent::Dispatch() const{
+        EventDispatcher<WindowLostFocusEvent>::DispatchWithoutHierarchy(*this);
+        WindowEvent::Dispatch();
     }
 
-    void MouseButtonReleasedEvent::DispatchAsMouseButtonReleasedEvent() const{
-        EventDispatcher<MouseButtonReleasedEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    WindowLostFocusEvent::operator std::string() const {
+        return "WindowLostFocusEvent";
     }
 
-    void MouseMovedEvent::DispatchAsMouseMovedEvent() const{
-        EventDispatcher<MouseMovedEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    void WindowMovedEvent::Dispatch() const{
+        EventDispatcher<WindowMovedEvent>::DispatchWithoutHierarchy(*this);
+        WindowEvent::Dispatch();
     }
 
-    void MouseScrolledEvent::DispatchAsMouseScrolledEvent() const{
-        EventDispatcher<MouseScrolledEvent>::Dispatch(*this);
-        DispatchAsInputEvent();
+    WindowMovedEvent::operator std::string() const {
+        return std::format("WindowMovedEvent {{ x = {0}, y = {1} }}", x, y);
     }
 
+    void AppTickEvent::Dispatch() const{
+        EventDispatcher<AppTickEvent>::DispatchWithoutHierarchy(*this);
+        AppEvent::Dispatch();
+    }
 
-    //std::string ToString(const Event& event) {
-    //    return std::visit(overloaded{
-    //        [](const WindowClose&) {
-    //            return std::string("WindowClose");
-    //        },
+    AppTickEvent::operator std::string() const {
+        return "AppTickEvent";
+    }
 
-    //        [](const WindowResize& e) {
-    //            return std::format("WindowResize({}, {})", e.width, e.height);
-    //        },
+    void AppUpdateEvent::Dispatch() const{
+        EventDispatcher<AppUpdateEvent>::DispatchWithoutHierarchy(*this);
+        AppEvent::Dispatch();
+    }
 
-    //        [](const WindowFocus&) {
-    //            return std::string("WindowFocus");
-    //        },
+    AppUpdateEvent::operator std::string() const {
+        return "AppUpdateEvent";
+    }
 
-    //        [](const WindowLostFocus&) {
-    //            return std::string("WindowLostFocus");
-    //        },
+    void AppRenderEvent::Dispatch() const {
+        EventDispatcher<AppRenderEvent>::DispatchWithoutHierarchy(*this);
+        AppEvent::Dispatch();
+    }
 
-    //        [](const WindowMoved& e) {
-    //            return std::format("WindowMoved({}, {})", e.x, e.y);
-    //        },
+    AppRenderEvent::operator std::string() const {
+        return "AppRenderEvent";
+    }
 
-    //        [](const AppTick&) {
-    //            return std::string("AppTick");
-    //        },
+    void KeyPressedEvent::Dispatch() const{
+        EventDispatcher<KeyPressedEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
 
-    //        [](const AppUpdate&) {
-    //            return std::string("AppUpdate");
-    //        },
+    KeyPressedEvent::operator std::string() const {
+        return std::format("KeyPressedEvent {{ keycode = {0}, repeatCount = {1} }}", keycode, repeatCount);
+    }
 
-    //        [](const AppRender&) {
-    //            return std::string("AppRender");
-    //        },
+    void KeyReleasedEvent::Dispatch() const{
+        EventDispatcher<KeyReleasedEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
 
-    //        [](const KeyPressed& e) {
-    //            return std::format("KeyPressed(key={}, repeat={})", e.keycode, e.repeatCount);
-    //        },
+    KeyReleasedEvent::operator std::string() const {
+        return std::format("KeyReleasedEvent {{ keycode = {0} }}", keycode);
+    }
 
-    //        [](const KeyReleased& e) {
-    //            return std::format("KeyReleased(key={})", e.keycode);
-    //        },
+    void MouseButtonPressedEvent::Dispatch() const{
+        EventDispatcher<MouseButtonPressedEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
 
-    //        [](const MouseButtonPressed& e) {
-    //            return std::format("MouseButtonPressed(button={}, x={}, y={})", e.button, e.x, e.y);
-    //        },
+    MouseButtonPressedEvent::operator std::string() const {
+        return std::format("MouseButtonPressedEvent {{ button = {0}, x = {1}, y = {2} }}", button, x, y);
+    }
 
-    //        [](const MouseButtonReleased& e) {
-    //            return std::format("MouseButtonReleased(button={}, x={}, y={})", e.button, e.x, e.y);
-    //        },
+    void MouseButtonReleasedEvent::Dispatch() const{
+        EventDispatcher<MouseButtonReleasedEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
 
-    //        [](const MouseMoved& e) {
-    //            return std::format("MouseMoved(x={}, y={})", e.x, e.y);
-    //        },
+    MouseButtonReleasedEvent::operator std::string() const {
+        return std::format("MouseButtonReleasedEvent {{ button = {0}, x = {1}, y = {2} }}", button, x, y);
+    }
 
-    //        [](const MouseScrolled& e) {
-    //            return std::format("MouseScrolled(xOffset={}, yOffset={})", e.xOffset, e.yOffset);
-    //        }
-    //        }, event);
-    //}
+    void MouseMovedEvent::Dispatch() const{
+        EventDispatcher<MouseMovedEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
 
+    MouseMovedEvent::operator std::string() const {
+        return std::format("MouseMovedEvent {{ x = {0}, y = {1} }}", x, y);
+    }
+
+    void MouseScrolledEvent::Dispatch() const{
+        EventDispatcher<MouseScrolledEvent>::DispatchWithoutHierarchy(*this);
+        InputEvent::Dispatch();
+    }
+
+    MouseScrolledEvent::operator std::string() const {
+        return std::format("MouseScrolledEvent {{ x = {0}, y = {1} }}", xOffset, yOffset);
+    }
 }

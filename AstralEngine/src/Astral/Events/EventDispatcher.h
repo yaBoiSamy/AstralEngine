@@ -19,6 +19,10 @@ namespace Astral {
 		}
 
 		static void Dispatch(EventT const& event) {
+			event.Dispatch();
+		}
+
+		static void DispatchWithoutHierarchy(EventT const& event) {
 			for (EventCallback subscriber : subscribers) {
 				subscriber(event);
 			}

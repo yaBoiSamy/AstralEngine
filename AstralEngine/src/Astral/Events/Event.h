@@ -5,99 +5,118 @@
 namespace Astral {
 
     struct Event {
-        void DispatchAsEvent() const;
+        void Dispatch() const;
+        virtual operator std::string() const;
     };
 
     struct WindowEvent : Event {
-        void DispatchAsWindowEvent() const;
+        void Dispatch() const;
+        virtual operator std::string() const;
     };
 
     struct AppEvent : Event {
-        void DispatchAsAppEvent() const;
+        void Dispatch() const;
+        virtual operator std::string() const;
     };
 
     struct InputEvent : Event {
-        void DispatchAsInputEvent() const;
+        void Dispatch() const;
+        virtual operator std::string() const;
     };
 
     struct WindowCloseEvent : WindowEvent {
-        void DispatchAsWindowCloseEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct WindowResizeEvent : WindowEvent {
         const uint32_t width, height;
         WindowResizeEvent(uint32_t width, uint32_t height) : width(width), height(height) {}
 
-        void DispatchAsWindowResizeEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct WindowFocusEvent : WindowEvent {
-        void DispatchAsWindowFocusEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct WindowLostFocusEvent : WindowEvent {
-        void DispatchAsWindowLostFocusEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct WindowMovedEvent : WindowEvent {
         const uint32_t x, y;
         WindowMovedEvent(uint32_t x, uint32_t y) : x(x), y(y) {}
 
-        void DispatchAsWindowMovedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct AppTickEvent : AppEvent {
-        void DispatchAsAppTickEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct AppUpdateEvent : AppEvent {
-        void DispatchAsAppUpdateEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct AppRenderEvent : AppEvent {
-        void DispatchAsAppRenderEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct KeyPressedEvent : InputEvent {
         const uint32_t keycode, repeatCount;
         KeyPressedEvent(uint32_t keycode, uint32_t repeatCount) : keycode(keycode), repeatCount(repeatCount) {}
 
-        void DispatchAsKeyPressedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct KeyReleasedEvent : InputEvent {
         const uint32_t keycode;
         KeyReleasedEvent(uint32_t keycode) : keycode(keycode) {}
 
-        void DispatchAsKeyReleasedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct MouseButtonPressedEvent : InputEvent {
-        const uint32_t button, x, y;
-        MouseButtonPressedEvent(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+        const double button, x, y;
+        MouseButtonPressedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
 
-        void DispatchAsMouseButtonPressedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct MouseButtonReleasedEvent : InputEvent {
-        const uint32_t button, x, y;
-        MouseButtonReleasedEvent(uint32_t button, uint32_t x, uint32_t y) : button(button), x(x), y(y) {}
+        const uint32_t button;
+        const double x, y;
+        MouseButtonReleasedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
 
-        void DispatchAsMouseButtonReleasedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct MouseMovedEvent : InputEvent {
-        const float x, y;
-        MouseMovedEvent(float x, float y) : x(x), y(y) {}
+        const double x, y;
+        MouseMovedEvent(double x, double y) : x(x), y(y) {}
         
-        void DispatchAsMouseMovedEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     struct MouseScrolledEvent : InputEvent {
-        const float xOffset, yOffset;
-        MouseScrolledEvent(float xOffset, float yOffset) : xOffset(xOffset), yOffset(yOffset) {}
+        const double xOffset, yOffset;
+        MouseScrolledEvent(double xOffset, double yOffset) : xOffset(xOffset), yOffset(yOffset) {}
 
-        void DispatchAsMouseScrolledEvent() const;
+        void Dispatch() const;
+        operator std::string() const override;
     };
 
     //std::string ToString(Event& event);

@@ -4,7 +4,6 @@
 #include "Astral/Window/Window.h"
 
 namespace Astral {
-
 	class ASTRAL_API Application {
 	public:
 		Application();

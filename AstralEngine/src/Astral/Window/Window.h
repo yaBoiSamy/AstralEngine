@@ -1,10 +1,11 @@
 #pragma once
 
 #include <Common.h>
-#include "GLFW/glfw3.h"
 
 #include "Astral/Events/Event.h"
 #include "Astral/Core.h"
+
+struct GLFWwindow;
 
 namespace Astral {
 
@@ -37,8 +38,9 @@ namespace Astral {
 		struct GLFWDeleter {
 			void operator()(GLFWwindow* w) const noexcept;
 		};
-
 		State state;
 		ptr<GLFWwindow, GLFWDeleter> handle;
+
+		void SetGLFWCallbacks();
 	};
 }

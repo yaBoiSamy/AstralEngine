@@ -1,9 +1,12 @@
 #include <Common.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "Window.h"
 #include "Astral/Events/EventDispatcher.h"
 
 namespace Astral {
+
 	static bool s_glfwInitialized = false;
 
 	Window::Window(std::string title, uint32_t width, uint32_t height) :
@@ -21,10 +24,41 @@ namespace Astral {
 		handle.reset(glfwCreateWindow(this->state.width, this->state.height, this->state.title.c_str(), nullptr, nullptr));
 		AST_CORE_ASSERT(handle, "Failed to create GLFW window");
 
-		glfwMakeContextCurrent(handle.get());
+        glfwMakeContextCurrent(handle.get());
+
+        int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        AST_CORE_ASSERT(success, "Failed to populate graphics programming functions");
+
 		glfwSetWindowUserPointer(handle.get(), this);
 		SetVSync(this->state.vSync);
 
+        SetGLFWCallbacks();
+	}
+
+	void Window::GLFWDeleter::operator()(GLFWwindow* w) const noexcept {
+		glfwSetWindowUserPointer(w, nullptr);
+		if (w) glfwDestroyWindow(w);
+	}
+
+	Window::~Window() {}
+
+
+	void Window::Update() {
+		glfwPollEvents();
+		glfwSwapBuffers(handle.get());
+	}
+
+	Window::State Window::GetState() const {
+		return state;
+	}
+
+	void Window::SetVSync(bool vSync) {
+		glfwMakeContextCurrent(handle.get());
+		glfwSwapInterval(vSync ? 1 : 0);
+		state.vSync = vSync;
+	}
+
+    void Window::SetGLFWCallbacks() {
         glfwSetErrorCallback([](int error, const char* description) {
             AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
             });
@@ -97,29 +131,5 @@ namespace Astral {
             EventDispatcher<MouseScrolledEvent>::Dispatch(
                 MouseScrolledEvent(xOffset, yOffset));
             });
-
-	}
-
-	void Window::GLFWDeleter::operator()(GLFWwindow* w) const noexcept {
-		glfwSetWindowUserPointer(w, nullptr);
-		if (w) glfwDestroyWindow(w);
-	}
-
-	Window::~Window() {}
-
-
-	void Window::Update() {
-		glfwPollEvents();
-		glfwSwapBuffers(handle.get());
-	}
-
-	Window::State Window::GetState() const {
-		return state;
-	}
-
-	void Window::SetVSync(bool vSync) {
-		glfwMakeContextCurrent(handle.get());
-		glfwSwapInterval(vSync ? 1 : 0);
-		state.vSync = vSync;
-	}
+    }
 }

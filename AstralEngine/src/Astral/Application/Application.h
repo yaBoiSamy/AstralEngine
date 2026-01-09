@@ -12,7 +12,7 @@ namespace Astral {
 		void Run();
 		
 	private:
-		std::unique_ptr<Window> window;
+		ptr<Window> window;
 		bool isRunning;
 	};
 

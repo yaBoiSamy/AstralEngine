@@ -10,6 +10,9 @@
     <Filter Include="Astral\Events">
       <UniqueIdentifier>{D0BF8866-3C80-049D-05BB-4D1A713A4979}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Astral\Layers">
+      <UniqueIdentifier>{ABAA6B75-176B-E7AB-E0A5-30294C252C88}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Astral\Logging">
       <UniqueIdentifier>{02724442-EE3F-3848-D7D3-A86EC34014AD}</UniqueIdentifier>
     </Filter>
@@ -34,6 +37,12 @@
     <ClInclude Include="src\Astral\Events\EventDispatcher.h">
       <Filter>Astral\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Astral\Layers\ALayer.h">
+      <Filter>Astral\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astral\Layers\LayerStack.h">
+      <Filter>Astral\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Astral\Logging\Log.h">
       <Filter>Astral\Logging</Filter>
     </ClInclude>
@@ -48,6 +57,9 @@
     </ClCompile>
     <ClCompile Include="src\Astral\Events\Event.cpp">
       <Filter>Astral\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Astral\Layers\LayerStack.cpp">
+      <Filter>Astral\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Astral\Logging\Log.cpp">
       <Filter>Astral\Logging</Filter>

@@ -7,13 +7,20 @@
 #include <algorithm>
 #include <functional>
 #include <format>
+#include <ranges>
 
 #include <string>
+#include <array>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 
 #include "Astral/Logging/Log.h"
+
+
+template<typename T, typename Deleter = std::default_delete<T>>
+using ptr = std::unique_ptr<T, Deleter>;
+
 
 #ifdef AST_PLATFORM_WINDOWS
     //#include <Windows.h>
@@ -39,3 +46,4 @@ struct overloaded : Ts... {
 
 template<class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
+

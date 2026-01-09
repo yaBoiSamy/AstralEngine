@@ -22,6 +22,7 @@ project "Sandbox"
     includedirs {
         "AstralEngine/vendors/spdlog/include",
         "AstralEngine/vendors/glfw/include",
+        "AstralEngine/vendors/glad/include",
         "AstralEngine/src"
     }
 
@@ -53,6 +54,8 @@ project "Sandbox"
 
 include "AstralEngine/vendors/glfw"
 
+include "AstralEngine/vendors/glad"
+
 
 project "AstralEngine"
     location "AstralEngine"
@@ -71,11 +74,13 @@ project "AstralEngine"
     includedirs {
         "%{prj.name}/vendors/spdlog/include",
         "%{prj.name}/vendors/glfw/include",
+        "%{prj.name}/vendors/glad/include",
         "%{prj.name}/src"
     }
 
     links{
         "GLFW",
+        "GLAD",
         "opengl32.lib"
     }
 

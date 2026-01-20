@@ -100,7 +100,7 @@ project "AstralEngine"
         }
 
         postbuildcommands { 
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
         }
     
     filter { "configurations:Debug" }

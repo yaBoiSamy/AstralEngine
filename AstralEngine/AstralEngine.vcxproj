@@ -96,7 +96,7 @@
       <ImportLibrary>..\bin\Debug-windows-x86_64\AstralEngine\AstralEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86_64\AstralEngine\AstralEngine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>copy /B /Y ..\bin\Debug-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Debug-windows-x86_64\Sandbox</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,7 +125,7 @@
       <ImportLibrary>..\bin\Release-windows-x86_64\AstralEngine\AstralEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86_64\AstralEngine\AstralEngine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>copy /B /Y ..\bin\Release-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Release-windows-x86_64\Sandbox</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -154,7 +154,7 @@
       <ImportLibrary>..\bin\Dist-windows-x86_64\AstralEngine\AstralEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86_64\AstralEngine\AstralEngine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)</Command>
+      <Command>copy /B /Y ..\bin\Dist-windows-x86_64\AstralEngine\AstralEngine.dll ..\bin\Dist-windows-x86_64\Sandbox</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

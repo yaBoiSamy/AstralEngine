@@ -18,18 +18,17 @@
 
 namespace Astral{
 
-	class Log
+	class ASTRAL_API Log
 	{
 	public:
 		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
-		inline static std::shared_ptr<spdlog::logger> GetClientLogger() { return ClientLogger; }
+		static std::shared_ptr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
+		static std::shared_ptr<spdlog::logger> GetClientLogger() { return ClientLogger; }
 
 	private:
-		inline static std::shared_ptr<spdlog::logger> CoreLogger = nullptr;
-		inline static std::shared_ptr<spdlog::logger> ClientLogger = nullptr;
+		static std::shared_ptr<spdlog::logger> CoreLogger;
+		static std::shared_ptr<spdlog::logger> ClientLogger;
 	};
 
-	ASTRAL_API void InitLogger();
 }

@@ -23,6 +23,8 @@ project "Sandbox"
         "AstralEngine/vendors/spdlog/include",
         "AstralEngine/vendors/glfw/include",
         "AstralEngine/vendors/glad/include",
+        "%{prj.name}/vendors/imgui",
+        "%{prj.name}/vendors/imgui/backends",
         "AstralEngine/src"
     }
 
@@ -56,6 +58,8 @@ include "AstralEngine/vendors/glfw"
 
 include "AstralEngine/vendors/glad"
 
+include "AstralEngine/vendors/imgui"
+
 
 project "AstralEngine"
     location "AstralEngine"
@@ -68,20 +72,23 @@ project "AstralEngine"
 
     files { 
         "%{prj.name}/src/**.h", 
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
     }
 
     includedirs {
         "%{prj.name}/vendors/spdlog/include",
         "%{prj.name}/vendors/glfw/include",
         "%{prj.name}/vendors/glad/include",
+        "%{prj.name}/vendors/imgui",
+        "%{prj.name}/vendors/imgui/backends",
         "%{prj.name}/src"
     }
 
     links{
         "GLFW",
         "GLAD",
-        "opengl32.lib"
+        "opengl32.lib",
+        "imgui"
     }
 
     pchheader "Common.h"

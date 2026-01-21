@@ -2,10 +2,11 @@
 
 #include "Application.h"
 #include "Astral/Events/EventDispatcher.h"
+#include "Astral/BootStrapper/BootStrapper.h"
 
 namespace Astral {
 
-	Application::Application() : window(std::make_unique<Window>()), isRunning(false) {
+	Application::Application(const StartupConfig& config) : isRunning(false), window(WindowStartup(config)) {
 		EventDispatcher<WindowCloseEvent>::Subscribe([this](WindowCloseEvent const& event) {
 			isRunning = false;
 			});
@@ -37,10 +38,9 @@ namespace Astral {
 		isRunning = true;
 		Start();
 		while (isRunning) {
-			window->Update();
+			window.Update();
 			Update();
 		}
-		window->~Window();
 	}
 
 }

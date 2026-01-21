@@ -6,4 +6,6 @@
 
 #include "Astral/EntryPoint.h"
 
+#include "Astral/BootStrapper/BootStrapper.h"
+
 #include "Astral/Logging/Log.h"

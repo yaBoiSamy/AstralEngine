@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.h>
+#include "Common.h"
 
 #include "Astral/Events/Event.h"
 #include "Astral/Core.h"
@@ -11,36 +11,58 @@ namespace Astral {
 
 	using EventCallbackFn = std::function<void(Event const&)>;
 
-	class Window {
+	class ASTRAL_API Window {
 	public:
+		struct State;
+
+		struct StateSnapshot {
+			StateSnapshot(std::string const& title, uint32_t width, uint32_t height, bool vSync)
+				: title(title), width(width), height(height), vSync(vSync) {
+			}
+
+			StateSnapshot(State const& state)
+				: title(state.title), width(state.width), height(state.height), vSync(state.vSync) {
+			}
+
+			const std::string title;
+			const uint32_t width, height;
+			const bool vSync;
+		};
 
 		struct State {
+			State(StateSnapshot const& snapshot)
+				: title(snapshot.title), width(snapshot.width), height(snapshot.height), vSync(snapshot.vSync) {
+			}
+
 			std::string title;
 			uint32_t width, height;
 			bool vSync;
 		};
 
-		Window(std::string title = "AstralEngine", uint32_t width = 1920, uint32_t height = 1080);
-		explicit Window(State state);
+		explicit Window(GLFWwindow* handle, StateSnapshot state);
 
 		~Window();
 
-		State GetState() const;
+		StateSnapshot GetState() const;
+
 		void SetVSync(bool vSync);
 
 		void Update();
 
-		// Forbid moving to avoid corrupting the glfw pointers
-		Window(Window&&) = delete;
-		Window& operator=(Window&&) = delete;
+		Window(Window&&) noexcept = default; 
+		Window& operator=(Window&&) noexcept = default; 
+
+		// Copying forbidden to avoid glfw user pointer issues
+		Window(const Window&) = delete; 
+		Window& operator=(const Window&) = delete;
 
 	private:
+
 		struct GLFWDeleter {
 			void operator()(GLFWwindow* w) const noexcept;
 		};
-		State state;
-		ptr<GLFWwindow, GLFWDeleter> handle;
 
-		void SetGLFWCallbacks();
+		ptr<State> state;
+		ptr<GLFWwindow, GLFWDeleter> handle;
 	};
 }

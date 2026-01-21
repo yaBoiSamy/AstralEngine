@@ -1,9 +1,8 @@
 #include <Astral.h>
 
-
 class Sandbox : public Astral::Application {
 public:
-	Sandbox() {}
+	Sandbox(const Astral::StartupConfig& config) : Astral::Application(config) {}
 	~Sandbox() {}
 
 	void Start() override {
@@ -18,6 +17,6 @@ public:
 	}
 };
 
-Astral::Application* Astral::CreateApplication() {
-	return new Sandbox();
+Astral::Application* Astral::CreateApplication(Astral::StartupConfig& config) {
+	return new Sandbox(config);
 }

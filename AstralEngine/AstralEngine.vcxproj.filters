@@ -13,17 +13,14 @@
     <Filter Include="Astral\Events">
       <UniqueIdentifier>{D0BF8866-3C80-049D-05BB-4D1A713A4979}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Astral\ImGui">
-      <UniqueIdentifier>{96BBD2D4-821E-6279-2BA4-9A2F17E62DFC}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Astral\Layers">
       <UniqueIdentifier>{ABAA6B75-176B-E7AB-E0A5-30294C252C88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Astral\Layers\DebugLayer">
+      <UniqueIdentifier>{3E5574C4-2A7A-C344-53C5-A8D43F49C262}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Astral\Logging">
       <UniqueIdentifier>{02724442-EE3F-3848-D7D3-A86EC34014AD}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Astral\OpenGL">
-      <UniqueIdentifier>{20BD6F7D-8C7D-EBB3-55B8-3431C1373090}</UniqueIdentifier>
     </Filter>
     <Filter Include="Astral\Window">
       <UniqueIdentifier>{D3209F8F-3FE1-1AC6-081C-6443749B5FA2}</UniqueIdentifier>
@@ -46,11 +43,14 @@
     <ClInclude Include="src\Astral\Events\Event.h">
       <Filter>Astral\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astral\Layers\DebugLayer\DebugLayer.h">
-      <Filter>Astral\ImGui</Filter>
+    <ClInclude Include="src\Astral\Events\EventListener.h">
+      <Filter>Astral\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Astral\Layers\ALayer.h">
       <Filter>Astral\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Astral\Layers\DebugLayer\DebugLayer.h">
+      <Filter>Astral\Layers\DebugLayer</Filter>
     </ClInclude>
     <ClInclude Include="src\Astral\Layers\LayerStack.h">
       <Filter>Astral\Layers</Filter>
@@ -62,7 +62,6 @@
       <Filter>Astral\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Astral\Events\EventListener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application\Application.cpp">
@@ -74,8 +73,11 @@
     <ClCompile Include="src\Astral\Events\Event.cpp">
       <Filter>Astral\Events</Filter>
     </ClCompile>
+    <ClCompile Include="src\Astral\Events\EventListener.cpp">
+      <Filter>Astral\Events</Filter>
+    </ClCompile>
     <ClCompile Include="src\Astral\Layers\DebugLayer\DebugLayer.cpp">
-      <Filter>Astral\ImGui</Filter>
+      <Filter>Astral\Layers\DebugLayer</Filter>
     </ClCompile>
     <ClCompile Include="src\Astral\Layers\LayerStack.cpp">
       <Filter>Astral\Layers</Filter>
@@ -87,6 +89,5 @@
       <Filter>Astral\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\Common.cpp" />
-    <ClCompile Include="src\Astral\Events\EventListener.cpp" />
   </ItemGroup>
 </Project>

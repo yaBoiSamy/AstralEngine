@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AstralEngine", "AstralEngine\AstralEngine.vcxproj", "{8209BF0A-6E6C-4EAF-17F2-866503341A32}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependancies", "Dependancies", "{CF412439-BB25-E58E-2486-DFE11089CF10}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLAD", "AstralEngine\vendors\glad\GLAD.vcxproj", "{5D4A857C-4981-860D-F26D-6C10DE83020F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFW", "AstralEngine\vendors\glfw\GLFW.vcxproj", "{154B857C-0182-860D-AA6E-6C109684020F}"
@@ -51,5 +53,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D4A857C-4981-860D-F26D-6C10DE83020F} = {CF412439-BB25-E58E-2486-DFE11089CF10}
+		{154B857C-0182-860D-AA6E-6C109684020F} = {CF412439-BB25-E58E-2486-DFE11089CF10}
+		{0098A80F-6CAC-D0C0-352E-7420A101CDF1} = {CF412439-BB25-E58E-2486-DFE11089CF10}
 	EndGlobalSection
 EndGlobal

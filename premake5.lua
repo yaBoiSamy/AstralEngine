@@ -54,18 +54,22 @@ project "Sandbox"
         optimize "On"
 
 
-include "AstralEngine/vendors/glfw"
-
-include "AstralEngine/vendors/glad"
-
-include "AstralEngine/vendors/imgui"
+group "Dependancies"
+    include "AstralEngine/vendors/glfw"
+    include "AstralEngine/vendors/glad"
+    include "AstralEngine/vendors/imgui"
+group ""
 
 
 project "AstralEngine"
     location "AstralEngine"
     kind "SharedLib"
     language "C++"
-    buildoptions { "/utf-8" }
+    buildoptions { 
+        "/utf-8",
+        "/external:I" .. "%{prj.name}/vendors",
+        "/external:W0"
+    }
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")

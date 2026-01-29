@@ -2,7 +2,6 @@
 #include "Application/Application.h"
 #include "Logging/Log.h"
 #include "BootStrapper/BootStrapper.h"
-#include "Window/Window.h"
 
 #ifdef AST_PLATFORM_WINDOWS
 

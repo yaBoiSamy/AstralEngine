@@ -1,15 +1,20 @@
 #pragma once
 #include <Common.h>
+#include "Astral/Events/EventListener.h"
 
-class ALayer
+namespace Astral
 {
-public:
-	ALayer(const std::string name = "Layer") : debugName(name) {}
+	class ALayer : public EventListener
+	{
+	public:
+		ALayer(const std::string name = "Layer") : debugName(name) {}
 
-	virtual void OnAttach() = 0;
-	virtual void OnDetach() = 0;
-	virtual void OnUpdate() = 0;
+		virtual void OnAttach() = 0;
+		virtual void OnDetach() = 0;
+		virtual void OnUpdate() = 0;
 
-	const std::string debugName;
-};
+		const std::string debugName;
+	};
+}
+
 

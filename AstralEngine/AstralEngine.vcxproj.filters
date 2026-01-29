@@ -46,10 +46,7 @@
     <ClInclude Include="src\Astral\Events\Event.h">
       <Filter>Astral\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astral\Events\EventDispatcher.h">
-      <Filter>Astral\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Astral\ImGui\DebugLayer.h">
+    <ClInclude Include="src\Astral\Layers\DebugLayer\DebugLayer.h">
       <Filter>Astral\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Astral\Layers\ALayer.h">
@@ -61,13 +58,11 @@
     <ClInclude Include="src\Astral\Logging\Log.h">
       <Filter>Astral\Logging</Filter>
     </ClInclude>
-    <ClInclude Include="src\Astral\OpenGL\ImGuiOpenGL.h">
-      <Filter>Astral\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Astral\Window\Window.h">
       <Filter>Astral\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\Astral\Events\EventListener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application\Application.cpp">
@@ -79,7 +74,7 @@
     <ClCompile Include="src\Astral\Events\Event.cpp">
       <Filter>Astral\Events</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astral\ImGui\DebugLayer.cpp">
+    <ClCompile Include="src\Astral\Layers\DebugLayer\DebugLayer.cpp">
       <Filter>Astral\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Astral\Layers\LayerStack.cpp">
@@ -88,12 +83,10 @@
     <ClCompile Include="src\Astral\Logging\Log.cpp">
       <Filter>Astral\Logging</Filter>
     </ClCompile>
-    <ClCompile Include="src\Astral\OpenGL\ImGuiOpenGL.cpp">
-      <Filter>Astral\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="src\Astral\Window\Window.cpp">
       <Filter>Astral\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\Common.cpp" />
+    <ClCompile Include="src\Astral\Events\EventListener.cpp" />
   </ItemGroup>
 </Project>

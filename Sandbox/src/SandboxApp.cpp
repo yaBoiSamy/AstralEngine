@@ -12,8 +12,9 @@ public:
 	void Update() override {
 	}
 
-	void OnKeyPressed(uint32_t keycode, uint32_t repeatCount) override {
-		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", keycode, repeatCount);
+	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {
+		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeatCount);
+		return false;
 	}
 };
 

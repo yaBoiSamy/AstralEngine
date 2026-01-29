@@ -9,10 +9,9 @@
 
 #include "Astral/Window/Window.h"
 #include "Astral/Events/Event.h"
-#include "Astral/Events/EventDispatcher.h"
 
 namespace Astral {
-    const char* ToGLSLVersion(int major, int minor)
+    static const char* ToGLSLVersion(int major, int minor)
     {
         if (major == 3 && minor == 0) return "#version 130";
         if (major == 3 && minor == 1) return "#version 140";
@@ -28,80 +27,6 @@ namespace Astral {
 
         AST_CORE_ASSERT(false, "Unsupported OpenGL version");
         return "";
-    }
-
-
-    // Make Callbacks wrapped by Dispatcher, then make window class subscribe to events
-    void SetGLFWCallbacks(GLFWwindow* windowHandle) {
-        glfwSetErrorCallback([](int error, const char* description) {
-            AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
-            });
-
-        glfwSetWindowCloseCallback(windowHandle, [](GLFWwindow* window) {
-            EventDispatcher<WindowCloseEvent>::Dispatch(
-                WindowCloseEvent());
-            });
-
-        glfwSetWindowSizeCallback(windowHandle, [](GLFWwindow* window, int width, int height) {
-            auto& windowState = *(Window::State*)glfwGetWindowUserPointer(window);
-            EventDispatcher<WindowResizeEvent>::Dispatch(
-                WindowResizeEvent(width, height));
-            });
-
-        glfwSetWindowFocusCallback(windowHandle, [](GLFWwindow* window, int focus) {
-            if (focus)
-                EventDispatcher<WindowFocusEvent>::Dispatch(
-                    WindowFocusEvent());
-            else
-                EventDispatcher<WindowLostFocusEvent>::Dispatch(
-                    WindowLostFocusEvent());
-            });
-
-        glfwSetWindowPosCallback(windowHandle, [](GLFWwindow* window, int x, int y) {
-            EventDispatcher<WindowMovedEvent>::Dispatch(
-                WindowMovedEvent(x, y));
-            });
-
-        glfwSetKeyCallback(windowHandle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            switch (action) {
-            case GLFW_PRESS:
-                EventDispatcher<KeyPressedEvent>::Dispatch(
-                    KeyPressedEvent(key, 0));
-                break;
-
-            case GLFW_REPEAT:
-                EventDispatcher<KeyPressedEvent>::Dispatch(
-                    KeyPressedEvent(key, 1));
-                break;
-
-            case GLFW_RELEASE:
-                EventDispatcher<KeyReleasedEvent>::Dispatch(
-                    KeyReleasedEvent(key));
-                break;
-            }
-            });
-
-        glfwSetMouseButtonCallback(windowHandle, [](GLFWwindow* window, int button, int action, int mods) {
-            double x, y;
-            glfwGetCursorPos(window, &x, &y);
-
-            if (action == GLFW_PRESS)
-                EventDispatcher<MouseButtonPressedEvent>::Dispatch(
-                    MouseButtonPressedEvent(button, x, y));
-            else if (action == GLFW_RELEASE)
-                EventDispatcher<MouseButtonReleasedEvent>::Dispatch(
-                    MouseButtonReleasedEvent(button, x, y));
-            });
-
-        glfwSetCursorPosCallback(windowHandle, [](GLFWwindow* window, double x, double y) {
-            EventDispatcher<MouseMovedEvent>::Dispatch(
-                MouseMovedEvent(x, y));
-            });
-
-        glfwSetScrollCallback(windowHandle, [](GLFWwindow* window, double xOffset, double yOffset) {
-            EventDispatcher<MouseScrolledEvent>::Dispatch(
-                MouseScrolledEvent(xOffset, yOffset));
-            });
     }
 
     Window WindowStartup(const StartupConfig& config) {
@@ -120,7 +45,9 @@ namespace Astral {
         GLFWwindow* window = glfwCreateWindow((int)(config.resolutionWidth * main_scale), (int)(config.resolutionHeight * main_scale), config.windowName.c_str(), nullptr, nullptr);
         AST_CORE_ASSERT(window, "Failed to create GLFW window");
         glfwMakeContextCurrent(window);
-        SetGLFWCallbacks(window);
+        glfwSetErrorCallback([](int error, const char* description) {
+            AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
+            });
 
 		// Load OpenGL functions using glad
         success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -141,9 +68,15 @@ namespace Astral {
         style.FontScaleDpi = main_scale;
 
         // Setup Platform/Renderer backends
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.glMajor, config.glMinor));
 
-        return Window(window, Window::StateSnapshot(config.windowName, config.resolutionWidth, config.resolutionHeight, config.vSync));
+        return Window(
+            window, 
+            Window::StateSnapshot(
+                config.windowName, 
+                config.resolutionWidth, 
+                config.resolutionHeight, 
+                config.vSync), 
+            std::bind(ImGui_ImplGlfw_InitForOpenGL, window, true));
     }
 }

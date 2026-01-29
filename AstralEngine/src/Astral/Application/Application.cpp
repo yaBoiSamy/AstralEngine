@@ -1,35 +1,29 @@
 #include <Common.h>
 
 #include "Application.h"
-#include "Astral/Events/EventDispatcher.h"
 #include "Astral/BootStrapper/BootStrapper.h"
+#include "Astral/Layers/DebugLayer/DebugLayer.h"
 
 namespace Astral {
 
 	Application::Application(const StartupConfig& config) : isRunning(false), window(WindowStartup(config)) {
-		EventDispatcher<WindowCloseEvent>::Subscribe([this](WindowCloseEvent const& event) {
-			isRunning = false;
+		window.SetCallback([this](const Event& event) {
+			event.Dispatch(*this);
+			layers.PropagateEvent(event);
 			});
 
-		EventDispatcher<KeyPressedEvent>::Subscribe([this](KeyPressedEvent const& event) {
-			OnKeyPressed(event.keycode, event.repeatCount);
-			});
+		layers.PushOverlay(
+			std::make_unique<DebugLayer>(
+				[this]() { return window.GetDeltaTime(); },
+				[this]() { return window.GetState(); }
+			)
+		);
+	}
 
-		EventDispatcher<KeyReleasedEvent>::Subscribe([this](KeyReleasedEvent const& event) {
-			OnKeyReleased(event.keycode);
-			});
-
-		EventDispatcher<MouseButtonPressedEvent>::Subscribe([this](MouseButtonPressedEvent const& event) {
-			OnMouseButtonPressed(event.button, event.x, event.y);
-			});
-
-		EventDispatcher<MouseButtonReleasedEvent>::Subscribe([this](MouseButtonReleasedEvent const& event) {
-			OnMouseButtonReleased(event.button, event.x, event.y);
-			});
-
-		EventDispatcher<MouseMovedEvent>::Subscribe([this](MouseMovedEvent const& event) {
-			OnMouseMoved(event.x, event.y);
-			});
+	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {
+		AST_CORE_INFO("Window close event received, closing application.");
+		isRunning = false;
+		return true;
 	}
 
 	Application::~Application() {}
@@ -39,6 +33,7 @@ namespace Astral {
 		Start();
 		while (isRunning) {
 			window.Update();
+			layers.Update();
 			Update();
 		}
 	}

@@ -9,3 +9,6 @@
 #include "Astral/BootStrapper/BootStrapper.h"
 
 #include "Astral/Logging/Log.h"
+
+#include "Astral/Events/EventListener.h"
+#include "Astral/Events/Event.h"

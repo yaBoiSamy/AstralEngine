@@ -3,9 +3,11 @@
 #include "Astral/Core.h"
 #include "Astral/Window/Window.h"
 #include "Astral/BootStrapper/BootStrapper.h"
+#include "Astral/Layers/LayerStack.h"
+#include "Astral/Events/EventListener.h"
 
 namespace Astral {
-	class ASTRAL_API Application {
+	class ASTRAL_API Application : public EventListener {
 	public:
 		Application(const StartupConfig& config);
 		virtual ~Application();
@@ -15,17 +17,12 @@ namespace Astral {
 		void Close() { AST_CORE_INFO("App closed"); isRunning = false; };
 		void Run();
 
-		virtual void OnKeyPressed(uint32_t keycode, uint32_t repeatCount) {};
-		virtual void OnKeyReleased(uint32_t keycode) {};
-		
-		virtual void OnMouseButtonPressed(uint32_t button, double x, double y) {};
-		virtual void OnMouseButtonReleased(uint32_t button, double x, double y) {};
-
-		virtual void OnMouseMoved(double x, double y) {};
-
 	private:
+		virtual bool OnWindowCloseEvent(const WindowCloseEvent& event) final;
+
 		bool isRunning;
 		Window window;
+		LayerStack layers;
 	};
 
 	// To be defined by user

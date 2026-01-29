@@ -39,13 +39,17 @@ namespace Astral {
 			bool vSync;
 		};
 
-		explicit Window(GLFWwindow* handle, StateSnapshot state);
+		explicit Window(GLFWwindow* handle, StateSnapshot state, std::function<void()> imguiSetup);
 
 		~Window();
 
 		StateSnapshot GetState() const;
 
+		void SetCallback(std::function<void(const Event&)> calback);
+
 		void SetVSync(bool vSync);
+
+		double GetDeltaTime() const;
 
 		void Update();
 
@@ -57,12 +61,12 @@ namespace Astral {
 		Window& operator=(const Window&) = delete;
 
 	private:
-
 		struct GLFWDeleter {
 			void operator()(GLFWwindow* w) const noexcept;
 		};
 
 		ptr<State> state;
 		ptr<GLFWwindow, GLFWDeleter> handle;
+		std::function<void(const Event&)> callback;
 	};
 }

@@ -1,30 +1,7 @@
 #pragma once
 #include "Astral/Core.h"
+#include "Astral/Events/Event.h"
 
-namespace Astral {
-	struct Event;
-	struct WindowEvent;
-	struct AppEvent;
-	struct InputEvent;
-
-	struct WindowCloseEvent;
-	struct WindowResizeEvent;
-	struct WindowFocusEvent;
-	struct WindowLostFocusEvent;
-	struct WindowMovedEvent;
-
-	struct AppTickEvent;
-	struct AppUpdateEvent;
-	struct AppRenderEvent;
-
-	struct KeyPressedEvent;
-	struct KeyReleasedEvent;
-
-	struct MouseButtonPressedEvent;
-	struct MouseButtonReleasedEvent;
-	struct MouseMovedEvent;
-	struct MouseScrolledEvent;
-}
 
 namespace Astral {
 	class ASTRAL_API EventListener {
@@ -49,36 +26,45 @@ namespace Astral {
 		inline virtual bool OnMouseScrolledEvent(const MouseScrolledEvent& event) { return false; }
 
 	private:
-		template<typename>
-		friend struct EventDispatchKey;
+		friend struct Event;
+		friend struct WindowEvent;
+		friend struct AppEvent;
+		friend struct InputEvent;
+		friend struct WindowCloseEvent;
+		friend struct WindowResizeEvent;
+		friend struct WindowFocusEvent;
+		friend struct WindowLostFocusEvent;
+		friend struct WindowMovedEvent;
+		friend struct AppTickEvent;
+		friend struct MouseScrolledEvent;
+		friend struct AppUpdateEvent;
+		friend struct AppRenderEvent;
+		friend struct KeyPressedEvent;
+		friend struct KeyReleasedEvent;
+		friend struct MouseButtonPressedEvent;
+		friend struct MouseButtonReleasedEvent;
+		friend struct MouseMovedEvent;
 
-		bool Accept(const Event& event);
-		bool Accept(const WindowEvent& event);
-		bool Accept(const AppEvent& event);
-		bool Accept(const InputEvent& event);
-		bool Accept(const WindowCloseEvent& event);
-		bool Accept(const WindowResizeEvent& event);
-		bool Accept(const WindowFocusEvent& event);
-		bool Accept(const WindowLostFocusEvent& event);
-		bool Accept(const WindowMovedEvent& event);
-		bool Accept(const AppTickEvent& event);
-		bool Accept(const AppUpdateEvent& event);
-		bool Accept(const AppRenderEvent& event);
-		bool Accept(const KeyPressedEvent& event);
-		bool Accept(const KeyReleasedEvent& event);
-		bool Accept(const MouseButtonPressedEvent& event);
-		bool Accept(const MouseButtonReleasedEvent& event);
-		bool Accept(const MouseMovedEvent& event);
-		bool Accept(const MouseScrolledEvent& event);
+		bool Accept(const Event& event) { return OnEvent(event); }
+		bool Accept(const WindowEvent& event) { Accept(static_cast<const Event&>(event)); return OnWindowEvent(event); }
+		bool Accept(const AppEvent& event) { Accept(static_cast<const Event&>(event)); return OnAppEvent(event); }
+		bool Accept(const InputEvent& event) { Accept(static_cast<const Event&>(event)); return OnInputEvent(event); }
+		bool Accept(const WindowCloseEvent& event) { Accept(static_cast<const WindowEvent&>(event)); return OnWindowCloseEvent(event); }
+		bool Accept(const WindowResizeEvent& event) { Accept(static_cast<const WindowEvent&>(event)); return OnWindowResizeEvent(event); }
+		bool Accept(const WindowFocusEvent& event) { Accept(static_cast<const WindowEvent&>(event)); return OnWindowFocusEvent(event); }
+		bool Accept(const WindowLostFocusEvent& event) { Accept(static_cast<const WindowEvent&>(event)); return OnWindowLostFocusEvent(event); }
+		bool Accept(const WindowMovedEvent& event) { Accept(static_cast<const WindowEvent&>(event)); return OnWindowMovedEvent(event); }
+		bool Accept(const AppTickEvent& event) { Accept(static_cast<const AppEvent&>(event)); return OnAppTickEvent(event); }
+		bool Accept(const AppUpdateEvent& event) { Accept(static_cast<const AppEvent&>(event)); return OnAppUpdateEvent(event); }
+		bool Accept(const AppRenderEvent& event) { Accept(static_cast<const AppEvent&>(event)); return OnAppRenderEvent(event); }
+		bool Accept(const KeyPressedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnKeyPressedEvent(event); }
+		bool Accept(const KeyReleasedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnKeyReleasedEvent(event); }
+		bool Accept(const MouseButtonPressedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseButtonPressedEvent(event); }
+		bool Accept(const MouseButtonReleasedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseButtonReleasedEvent(event); }
+		bool Accept(const MouseMovedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseMovedEvent(event); }
+		bool Accept(const MouseScrolledEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseScrolledEvent(event); }
 	};
 
 	template<typename T>
 	concept EventType = std::is_base_of_v<Event, T>;
-
-	template<typename E>
-	struct EventDispatchKey {
-		static bool Dispatch(const E& e, EventListener& l) requires EventType<E> {
-			return l.Accept(e);
-		}
-	};
 }

@@ -9,6 +9,7 @@ namespace Astral {
 	Application::Application(const StartupConfig& config) : isRunning(false), window(WindowStartup(config)) {
 		window.SetCallback([this](const Event& event) {
 			event.Dispatch(*this);
+			event.Dispatch(input);
 			layers.PropagateEvent(event);
 			});
 

@@ -1,23 +1,9 @@
 #pragma once
 #include <Common.h>
 #include "Astral/Core.h" 
-#include "Astral/Events/EventListener.h"
 
 namespace Astral {
-    template<typename E>
-    struct EventDispatchKey;
     class EventListener;
-
-	// Concrete events gain dispatch access through CRTP
-	template<typename DerivedEvent>
-    struct Dispatchable {
-    protected:
-        bool DispatchImpl(EventListener& l) const {
-            return EventDispatchKey<DerivedEvent>::Dispatch(
-                static_cast<const DerivedEvent&>(*this), l
-            ); 
-        }
-    };
 
     struct ASTRAL_API Event {
         virtual operator std::string() const;
@@ -39,72 +25,73 @@ namespace Astral {
         virtual bool Dispatch(EventListener& l) const = 0;
     };
 
-    struct ASTRAL_API WindowCloseEvent : WindowEvent, Dispatchable<WindowCloseEvent> {
+    struct ASTRAL_API WindowCloseEvent : WindowEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API WindowResizeEvent : WindowEvent, Dispatchable<WindowResizeEvent> {
+    struct ASTRAL_API WindowResizeEvent : WindowEvent {
         const uint32_t width, height;
         WindowResizeEvent(uint32_t width, uint32_t height) : width(width), height(height) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API WindowFocusEvent : WindowEvent, Dispatchable<WindowFocusEvent> {
+    struct ASTRAL_API WindowFocusEvent : WindowEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API WindowLostFocusEvent : WindowEvent, Dispatchable<WindowLostFocusEvent> {
+    struct ASTRAL_API WindowLostFocusEvent : WindowEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API WindowMovedEvent : WindowEvent, Dispatchable<WindowMovedEvent> {
+    struct ASTRAL_API WindowMovedEvent : WindowEvent {
         const uint32_t x, y;
         WindowMovedEvent(uint32_t x, uint32_t y) : x(x), y(y) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API AppTickEvent : AppEvent, Dispatchable<AppTickEvent> {
+    struct ASTRAL_API AppTickEvent : AppEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API AppUpdateEvent : AppEvent, Dispatchable<AppUpdateEvent> {
+    struct ASTRAL_API AppUpdateEvent : AppEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API AppRenderEvent : AppEvent, Dispatchable<AppRenderEvent> {
+    struct ASTRAL_API AppRenderEvent : AppEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API KeyPressedEvent : InputEvent, Dispatchable<KeyPressedEvent> {
+    struct ASTRAL_API KeyPressedEvent : InputEvent {
         const uint32_t keycode, repeatCount;
         KeyPressedEvent(uint32_t keycode, uint32_t repeatCount) : keycode(keycode), repeatCount(repeatCount) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API KeyReleasedEvent : InputEvent, Dispatchable<KeyReleasedEvent> {
+    struct ASTRAL_API KeyReleasedEvent : InputEvent {
         const uint32_t keycode;
         KeyReleasedEvent(uint32_t keycode) : keycode(keycode) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API MouseButtonPressedEvent : InputEvent, Dispatchable<MouseButtonPressedEvent> {
-        const double button, x, y;
+    struct ASTRAL_API MouseButtonPressedEvent : InputEvent {
+		const uint32_t button;
+        const double x, y;
         MouseButtonPressedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API MouseButtonReleasedEvent : InputEvent, Dispatchable<MouseButtonReleasedEvent> {
+    struct ASTRAL_API MouseButtonReleasedEvent : InputEvent {
         const uint32_t button;
         const double x, y;
         MouseButtonReleasedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
@@ -112,14 +99,14 @@ namespace Astral {
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API MouseMovedEvent : InputEvent, Dispatchable<MouseMovedEvent> {
+    struct ASTRAL_API MouseMovedEvent : InputEvent {
         const double x, y;
         MouseMovedEvent(double x, double y) : x(x), y(y) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
 
-    struct ASTRAL_API MouseScrolledEvent : InputEvent, Dispatchable<MouseScrolledEvent> {
+    struct ASTRAL_API MouseScrolledEvent : InputEvent {
         const double xOffset, yOffset;
         MouseScrolledEvent(double xOffset, double yOffset) : xOffset(xOffset), yOffset(yOffset) {}
         operator std::string() const override;

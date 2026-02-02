@@ -4,20 +4,20 @@
 #include "EventListener.h"
 
 namespace Astral {
-    bool WindowCloseEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool WindowResizeEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool WindowFocusEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool WindowLostFocusEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool WindowMovedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool AppTickEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool AppUpdateEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool AppRenderEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool KeyPressedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool KeyReleasedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool MouseButtonPressedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool MouseButtonReleasedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool MouseMovedEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
-    bool MouseScrolledEvent::Dispatch(EventListener& l) const { return DispatchImpl(l); }
+    bool WindowCloseEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool WindowResizeEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool WindowFocusEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool WindowLostFocusEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool WindowMovedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool AppTickEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool AppUpdateEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool AppRenderEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool KeyPressedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool KeyReleasedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool MouseButtonPressedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool MouseButtonReleasedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool MouseMovedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool MouseScrolledEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
 
 
     Event::operator std::string() const {

@@ -5,6 +5,7 @@
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/LayerStack.h"
 #include "Astral/Events/EventListener.h"
+#include "Astral/Events/Input.h"
 
 namespace Astral {
 	class ASTRAL_API Application : public EventListener {
@@ -22,6 +23,7 @@ namespace Astral {
 
 		bool isRunning;
 		Window window;
+		Input input;
 		LayerStack layers;
 	};
 

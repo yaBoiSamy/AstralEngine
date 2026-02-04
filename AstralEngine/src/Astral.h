@@ -11,4 +11,6 @@
 #include "Astral/Logging/Log.h"
 
 #include "Astral/Events/EventListener.h"
+#include "Astral/Events/InputListener.h"
 #include "Astral/Events/Event.h"
+#include "Astral/Events/KeyCodes.h"

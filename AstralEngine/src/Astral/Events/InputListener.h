@@ -5,10 +5,10 @@
 namespace Astral {
 	class InputListener : public EventListener	{
 	public:
-		static bool IsKeyPressed(int keycode);
-		static bool IsMouseButtonPressed(int button);
-		static std::pair<double, double> GetMousePosition();
-		static void SwapBuffers();
+		bool IsKeyPressed(int keycode);
+		bool IsMouseButtonPressed(int button);
+		std::pair<double, double> GetMousePosition();
+		void SwapBuffers();
 
 
 	private:		
@@ -26,12 +26,12 @@ namespace Astral {
 		bool OnMouseButtonReleasedEvent(const MouseButtonReleasedEvent& event) override;
 		bool OnMouseMovedEvent(const MouseMovedEvent& event) override;
 
-		static ptr<InputSnapshot> currentInput;
+		ptr<InputSnapshot> currentInput;
 
-		static std::unordered_set<int> pressedKeysBuffer;
-		static std::unordered_set<int> pressedMouseButtonsBuffer;
-		static double mouseXBuffer;
-		static double mouseYBuffer;
+		std::unordered_set<int> pressedKeysBuffer;
+		std::unordered_set<int> pressedMouseButtonsBuffer;
+		double mouseXBuffer;
+		double mouseYBuffer;
 
 	};
 }

@@ -36,7 +36,6 @@ namespace Astral {
 		while (isRunning) {
 			window.Update();
 			layers.Update();
-			AST_CORE_TRACE(input.IsMouseButtonPressed(0));
 			Update();
 		}
 	}

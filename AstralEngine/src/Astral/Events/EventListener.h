@@ -64,7 +64,4 @@ namespace Astral {
 		bool Accept(const MouseMovedEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseMovedEvent(event); }
 		bool Accept(const MouseScrolledEvent& event) { Accept(static_cast<const InputEvent&>(event)); return OnMouseScrolledEvent(event); }
 	};
-
-	template<typename T>
-	concept EventType = std::is_base_of_v<Event, T>;
 }

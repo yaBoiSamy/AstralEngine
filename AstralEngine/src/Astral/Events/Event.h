@@ -112,4 +112,8 @@ namespace Astral {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
+
+
+    template<typename T>
+    concept EventType = std::is_base_of_v<Event, T>;
 }

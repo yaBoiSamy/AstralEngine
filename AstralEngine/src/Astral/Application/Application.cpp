@@ -9,17 +9,12 @@ namespace Astral {
 	Application::Application(const StartupConfig& config) : isRunning(false), window(WindowStartup(config)) {
 		window.SetCallback([this](const Event& event) {
 			event.Dispatch(*this);
-			event.Dispatch(input);
-			input.SwapBuffers();
 			layers.PropagateEvent(event);
 			});
 
-		layers.PushOverlay(
-			std::make_unique<DebugLayer>(
-				[this]() { return window.GetDeltaTime(); },
-				[this]() { return window.GetState(); }
-			)
-		);
+		layers.PushOverlay(std::make_unique<DebugLayer>([this] {
+			layers.RenderImGuiWidgets();
+			}));
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {
@@ -35,9 +30,8 @@ namespace Astral {
 		Start();
 		while (isRunning) {
 			window.Update();
-			layers.Update();
+			layers.Update(window.GetFrameContext());
 			Update();
 		}
 	}
-
 }

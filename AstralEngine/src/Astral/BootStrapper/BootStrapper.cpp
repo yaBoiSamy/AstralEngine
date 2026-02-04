@@ -41,8 +41,7 @@ namespace Astral {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create window with graphics context
-        float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
-        GLFWwindow* window = glfwCreateWindow((int)(config.resolutionWidth * main_scale), (int)(config.resolutionHeight * main_scale), config.windowName.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow((int)config.resolutionWidth, (int)config.resolutionHeight, config.windowName.c_str(), nullptr, nullptr);
         AST_CORE_ASSERT(window, "Failed to create GLFW window");
         glfwMakeContextCurrent(window);
         glfwSetErrorCallback([](int error, const char* description) {
@@ -65,6 +64,7 @@ namespace Astral {
         ImGui::StyleColorsDark();
 
 		// Scaling  TODO: Dynamic scaling
+        float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
         ImGuiStyle& style = ImGui::GetStyle();
         style.ScaleAllSizes(main_scale);
         style.FontScaleDpi = main_scale;
@@ -72,12 +72,17 @@ namespace Astral {
         // Setup Platform/Renderer backends
         ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.glMajor, config.glMinor));
 
+        int x, y;
+        glfwGetWindowPos(window, &x, &y);
         return Window(
             window, 
-            Window::StateSnapshot(
-                config.windowName, 
+            FrameContext::WindowSnapshot(
+                config.windowName,
+				(uint32_t)x,
+				(uint32_t)y,
                 config.resolutionWidth, 
                 config.resolutionHeight, 
+                true,
                 config.vSync), 
             std::bind(ImGui_ImplGlfw_InitForOpenGL, window, true));
     }

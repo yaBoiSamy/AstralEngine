@@ -1,7 +1,7 @@
 #include <Common.h>
 
 #include "Event.h"
-#include "EventListener.h"
+#include "Astral/Events/EventListener.h"
 
 namespace Astral {
     bool WindowCloseEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }

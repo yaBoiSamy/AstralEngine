@@ -1,25 +1,22 @@
 #pragma once
 #include "Astral/Layers/ALayer.h"
 #include "Astral/Window/Window.h"
+#include "Astral/Window/FrameContext.h"
 
 namespace Astral
 {
 	class DebugLayer : public ALayer
 	{
 	public:
-		DebugLayer(
-			std::function<double()> getDeltaTime,
-			std::function<Window::StateSnapshot()> getWindowState
-		);
-		~DebugLayer();
+		DebugLayer(std::function<void()> renderImGuiWidgets);
 
-		void OnAttach() override;
-		void OnDetach() override;
-		void OnUpdate() override;
+		void OnUpdate(const FrameContext& context) override;
+		void OnImGuiRender() override;
 
 	private:
-		const std::function<double()> GetDeltaTime;
-		const std::function<Window::StateSnapshot()> GetWindowState;
+		void Begin(const FrameContext& context);
+		void End(const FrameContext& context);
+
+		const std::function<void()> renderImGuiWidgets;
 	};
 }
-

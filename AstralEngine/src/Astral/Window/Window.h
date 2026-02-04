@@ -4,6 +4,7 @@
 
 #include "Astral/Events/Event.h"
 #include "Astral/Core.h"
+#include "Astral/Window/FrameContext.h"
 
 struct GLFWwindow;
 
@@ -13,43 +14,34 @@ namespace Astral {
 
 	class ASTRAL_API Window {
 	public:
-		struct State;
-
-		struct StateSnapshot {
-			StateSnapshot(std::string const& title, uint32_t width, uint32_t height, bool vSync)
-				: title(title), width(width), height(height), vSync(vSync) {
-			}
-
-			StateSnapshot(State const& state)
-				: title(state.title), width(state.width), height(state.height), vSync(state.vSync) {
-			}
-
-			const std::string title;
-			const uint32_t width, height;
-			const bool vSync;
-		};
-
 		struct State {
-			State(StateSnapshot const& snapshot)
-				: title(snapshot.title), width(snapshot.width), height(snapshot.height), vSync(snapshot.vSync) {
-			}
+			State(FrameContext::WindowSnapshot const& snapshot)	: 
+				title(snapshot.title), 
+				x(snapshot.x),
+				y(snapshot.y),
+				width(snapshot.width), 
+				height(snapshot.height), 
+				focused(snapshot.focused),
+				vSync(snapshot.vSync) {}
 
 			std::string title;
+			uint32_t x, y;
 			uint32_t width, height;
+			bool focused;
 			bool vSync;
 		};
 
-		explicit Window(GLFWwindow* handle, StateSnapshot state, std::function<void()> imguiSetup);
+		explicit Window(GLFWwindow* handle, FrameContext::WindowSnapshot state, std::function<void()> imguiSetup);
 
-		~Window();
+		FrameContext GetFrameContext() const;
+		FrameContext::WindowSnapshot GetWindowState() const;
+		FrameContext::InputSnapshot GetInputState() const;
 
-		StateSnapshot GetState() const;
-
-		void SetCallback(std::function<void(const Event&)> calback);
-
+		void SetCallback(std::function<void(const Event&)> callback);
 		void SetVSync(bool vSync);
 
-		double GetDeltaTime() const;
+		double GetDeltaTime() const;    
+		std::pair<uint32_t, uint32_t> GetFramebufferSize() const;
 
 		void Update();
 

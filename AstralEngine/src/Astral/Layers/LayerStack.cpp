@@ -37,9 +37,15 @@ namespace Astral
 		layers.erase(poppedOverlay);
 	}
 
-	void LayerStack::Update() {
+	void LayerStack::Update(const FrameContext& context) {
 		for (auto& layer : layers) {
-			layer->OnUpdate();
+			layer->OnUpdate(context);
+		}
+	}
+
+	void LayerStack::RenderImGuiWidgets() {
+		for (auto& layer : layers) {
+			layer->OnImGuiRender();
 		}
 	}
 }

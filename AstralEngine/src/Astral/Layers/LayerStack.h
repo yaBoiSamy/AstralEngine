@@ -1,7 +1,7 @@
 #pragma once
 #include <Common.h>
-
-#include "ALayer.h"
+#include "Astral/Layers/ALayer.h"
+#include "Astral/Window/FrameContext.h"
 
 
 namespace Astral
@@ -22,7 +22,8 @@ namespace Astral
 		void PushOverlay(ptr<ALayer> overlay);
 		void PopOverlay(LayerVect::const_iterator overlay);
 
-		void Update();
+		void Update(const FrameContext& context);
+		void RenderImGuiWidgets();
 
 		LayerVect::const_iterator cbegin() const { return layers.cbegin(); }
 		LayerVect::const_iterator cend()   const { return layers.cend(); }

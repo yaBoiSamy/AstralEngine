@@ -8,7 +8,7 @@ namespace Astral {
 
 	static bool s_glfwInitialized = false;
 
-	Window::Window(GLFWwindow* handle, StateSnapshot stateSnapshot, std::function<void()> imguiSetup) : handle(handle), state(nullptr) {
+	Window::Window(GLFWwindow* handle, FrameContext::WindowSnapshot stateSnapshot, std::function<void()> imguiSetup) : handle(handle), state(nullptr) {
 		state = std::make_unique<State>(stateSnapshot);
 		AST_CORE_TRACE("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
 		glfwSetWindowUserPointer(handle, this);
@@ -28,6 +28,7 @@ namespace Astral {
 
         glfwSetWindowFocusCallback(handle, [](GLFWwindow* handle, int focus) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
+			window.state->focused = (focus != 0);
             if (focus)
                 window.callback(WindowFocusEvent());
             else
@@ -77,17 +78,69 @@ namespace Astral {
         imguiSetup();
 	}
 
+    FrameContext Window::GetFrameContext() const {
+        return FrameContext{
+            GetInputState(),
+            GetWindowState(),
+            GetDeltaTime()
+        };
+    }
+
+    FrameContext::WindowSnapshot Window::GetWindowState() const {
+        auto [fbx, fby] = GetFramebufferSize();
+        return FrameContext::WindowSnapshot{
+            state->title,
+            state->x,
+            state->y,
+            state->width,
+            state->height,
+            fbx,
+            fby,
+            state->focused,
+            state->vSync
+        };
+    }
+
+    FrameContext::InputSnapshot Window::GetInputState() const {
+        std::unordered_set<int> keys;
+        std::unordered_set<int> mouseButtons;
+
+        // Poll keyboard
+        for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key)
+            if (glfwGetKey(handle.get(), key) == GLFW_PRESS)
+                keys.insert(key);
+
+        // Poll mouse buttons
+        for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button)
+            if (glfwGetMouseButton(handle.get(), button) == GLFW_PRESS)
+                mouseButtons.insert(button);
+
+        // Poll mouse position
+        double mouseX, mouseY;
+        glfwGetCursorPos(handle.get(), &mouseX, &mouseY);
+
+        return FrameContext::InputSnapshot{
+            std::move(keys),
+            std::move(mouseButtons),
+            mouseX,
+            mouseY
+        };
+    }
+
 	void Window::GLFWDeleter::operator()(GLFWwindow* w) const noexcept {
 		glfwSetWindowUserPointer(w, nullptr);
 		if (w) glfwDestroyWindow(w);
 	}
 
-	Window::~Window() {}
-
 	void Window::SetCallback(std::function<void(const Event&)> callback) {
 		this->callback = callback;
 	}
 
+    std::pair<uint32_t, uint32_t> Window::GetFramebufferSize() const {
+        int width, height;
+        glfwGetFramebufferSize(handle.get(), &width, &height);
+        return { (uint32_t)width, (uint32_t)height };
+	}
 
 	double Window::GetDeltaTime() const {
 		return glfwGetTime();
@@ -96,10 +149,13 @@ namespace Astral {
 	void Window::Update() {
 		glfwPollEvents();
 		glfwSwapBuffers(handle.get());
-	}
 
-	Window::StateSnapshot Window::GetState() const {
-		return StateSnapshot(*state);
+		auto [fbw, fbh] = GetFramebufferSize();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, fbw, fbh);
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void Window::SetVSync(bool vSync) {

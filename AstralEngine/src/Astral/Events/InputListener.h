@@ -3,7 +3,7 @@
 #include "Astral/Events/EventListener.h"
 
 namespace Astral {
-	class Input : public EventListener	{
+	class InputListener : public EventListener	{
 	public:
 		static bool IsKeyPressed(int keycode);
 		static bool IsMouseButtonPressed(int button);

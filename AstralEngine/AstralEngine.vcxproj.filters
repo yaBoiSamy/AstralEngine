@@ -62,7 +62,7 @@
       <Filter>Astral\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Astral\Events\Input.h" />
+    <ClInclude Include="src\Astral\Events\InputListener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Astral\Application\Application.cpp">
@@ -87,6 +87,6 @@
       <Filter>Astral\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\Common.cpp" />
-    <ClCompile Include="src\Astral\Events\Input.cpp" />
+    <ClCompile Include="src\Astral\Events\InputListener.cpp" />
   </ItemGroup>
 </Project>

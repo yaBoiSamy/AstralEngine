@@ -158,7 +158,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Astral\Events\Input.h" />
+    <ClInclude Include="src\Astral\Events\InputListener.h" />
     <ClInclude Include="src\Astral.h" />
     <ClInclude Include="src\Astral\Application\Application.h" />
     <ClInclude Include="src\Astral\BootStrapper\BootStrapper.h" />
@@ -174,7 +174,7 @@
     <ClInclude Include="src\Common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Astral\Events\Input.cpp" />
+    <ClCompile Include="src\Astral\Events\InputListener.cpp" />
     <ClCompile Include="src\Astral\Application\Application.cpp" />
     <ClCompile Include="src\Astral\BootStrapper\BootStrapper.cpp" />
     <ClCompile Include="src\Astral\Events\Event.cpp" />

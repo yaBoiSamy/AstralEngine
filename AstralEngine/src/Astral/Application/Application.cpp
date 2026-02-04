@@ -10,6 +10,7 @@ namespace Astral {
 		window.SetCallback([this](const Event& event) {
 			event.Dispatch(*this);
 			event.Dispatch(input);
+			input.SwapBuffers();
 			layers.PropagateEvent(event);
 			});
 
@@ -35,6 +36,7 @@ namespace Astral {
 		while (isRunning) {
 			window.Update();
 			layers.Update();
+			AST_CORE_TRACE(input.IsMouseButtonPressed(0));
 			Update();
 		}
 	}

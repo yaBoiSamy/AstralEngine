@@ -25,6 +25,7 @@ project "Sandbox"
         "AstralEngine/vendors/glad/include",
         "%{prj.name}/vendors/imgui",
         "%{prj.name}/vendors/imgui/backends",
+        "%{prj.name}/vendors/glm",
         "AstralEngine/src"
     }
 
@@ -85,6 +86,8 @@ project "AstralEngine"
         "%{prj.name}/vendors/glad/include",
         "%{prj.name}/vendors/imgui",
         "%{prj.name}/vendors/imgui/backends",
+        "%{prj.name}/vendors/glm",
+
         "%{prj.name}/src"
     }
 

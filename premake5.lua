@@ -72,7 +72,13 @@ project "AstralEngine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++20"
-    buildoptions { "/utf-8" }
+    buildoptions { 
+        "/utf-8",
+        "/wd6294",
+        "/wd26495",
+        "/wd26498",
+        "/wd62800",
+    }
     externalanglebrackets "On"
     externalwarnings "Off"
 
@@ -81,7 +87,7 @@ project "AstralEngine"
 
     files { 
         "AstralEngine/src/**.h", 
-        "AstralEngine/src/**.cpp",
+        "AstralEngine/src/**.cpp"
     }
 
     externalincludedirs {

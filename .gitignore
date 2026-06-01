@@ -6,6 +6,8 @@
 bin/
 bin-int/
 
+*/imgui.ini
+
 # ========================================== Template Starts here ==========================================
 
 # User-specific files

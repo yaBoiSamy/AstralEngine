@@ -8,26 +8,30 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
-    staticruntime "On"
     language "C++"
-    cppdialect "C++20"
+    cppdialect "C++20"    
     buildoptions { "/utf-8" }
+    externalanglebrackets "On"
+    externalwarnings "Off"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
     files { 
-        "%{prj.name}/src/**.h", 
-        "%{prj.name}/src/**.cpp",
+        "Sandbox/src/**.h", 
+        "Sandbox/src/**.cpp",
     }
 
-    includedirs {
+    externalincludedirs {
         "AstralEngine/vendors/spdlog/include",
         "AstralEngine/vendors/glfw/include",
         "AstralEngine/vendors/glad/include",
-        "%{prj.name}/vendors/imgui",
-        "%{prj.name}/vendors/imgui/backends",
-        "%{prj.name}/vendors/glm",
+        "AstralEngine/vendors/imgui",
+        "AstralEngine/vendors/imgui/backends",
+        "AstralEngine/vendors/glm",
+    }
+
+    includedirs {
         "AstralEngine/src"
     }
 
@@ -68,31 +72,29 @@ project "AstralEngine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++20"
-    buildoptions { 
-        "/utf-8",
-        "/external:I" .. "%{prj.name}/vendors",
-        "/external:W0"
-    }
+    buildoptions { "/utf-8" }
+    externalanglebrackets "On"
+    externalwarnings "Off"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
     files { 
-        "%{prj.name}/src/**.h", 
-        "%{prj.name}/src/**.cpp",
+        "AstralEngine/src/**.h", 
+        "AstralEngine/src/**.cpp",
     }
 
     externalincludedirs {
-        "%{prj.name}/vendors/spdlog/include",
-        "%{prj.name}/vendors/glfw/include",
-        "%{prj.name}/vendors/glad/include",
-        "%{prj.name}/vendors/imgui",
-        "%{prj.name}/vendors/imgui/backends",
-        "%{prj.name}/vendors/glm",
+        "AstralEngine/vendors/spdlog/include",
+        "AstralEngine/vendors/glfw/include",
+        "AstralEngine/vendors/glad/include",
+        "AstralEngine/vendors/imgui",
+        "AstralEngine/vendors/imgui/backends",
+        "AstralEngine/vendors/glm",
     }
 
     includedirs {
-        "%{prj.name}/src"
+        "AstralEngine/src"
     }
 
     links{
@@ -101,15 +103,13 @@ project "AstralEngine"
         "opengl32.lib",
         "imgui"
     }
-
+    
     pchheader "Common.h"
-    pchsource "%{prj.name}/src/Common.cpp"
+    pchsource "AstralEngine/src/Common.cpp"
 
     filter "system:windows" 
         systemversion "latest"
         staticruntime "On"
-        externalanglebrackets "On"
-        externalwarnings "Off"
 
         defines {
             "AST_PLATFORM_WINDOWS",

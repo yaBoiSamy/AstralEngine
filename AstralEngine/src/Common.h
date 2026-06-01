@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Astral/Logging/Log.h"
+#include <Astral/Logging/Log.h>
 
 
 template<typename T, typename Deleter = std::default_delete<T>>

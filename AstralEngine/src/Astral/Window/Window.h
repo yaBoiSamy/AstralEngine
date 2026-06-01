@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common.h"
+#include <Common.h>
 
 #include "Astral/Events/Event.h"
 #include "Astral/Window/FrameContext.h"
@@ -42,7 +42,8 @@ namespace Astral {
 		double GetDeltaTime() const;    
 		std::pair<uint32_t, uint32_t> GetFramebufferSize() const;
 
-		void Update();
+		void PumpEvents();
+		void SwapBuffers();
 
 		Window(Window&&) noexcept = default; 
 		Window& operator=(Window&&) noexcept = default; 

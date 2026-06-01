@@ -29,9 +29,11 @@ namespace Astral {
 		isRunning = true;
 		Start();
 		while (isRunning) {
-			window.Update();
-			layers.Update(window.GetFrameContext());
 			Update();
+			window.PumpEvents();
+			renderer.SetupFrame(window.GetFramebufferSize());
+			layers.Update(window.GetFrameContext());
+			renderer.PresentFrame(window);
 		}
 	}
 }

@@ -1,5 +1,4 @@
 #include <Common.h>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Window.h"
@@ -146,17 +145,13 @@ namespace Astral {
 		return glfwGetTime();
 	}
 
-	void Window::Update() {
+    void Window::PumpEvents() {
 		glfwPollEvents();
-		glfwSwapBuffers(handle.get());
+    }
 
-		auto [fbw, fbh] = GetFramebufferSize();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, fbw, fbh);
-
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
+    void Window::SwapBuffers() {
+        glfwSwapBuffers(handle.get());
+    }
 
 	void Window::SetVSync(bool vSync) {
 		glfwSwapInterval(vSync ? 1 : 0);

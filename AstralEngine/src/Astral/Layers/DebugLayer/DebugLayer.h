@@ -14,8 +14,8 @@ namespace Astral
 		void OnImGuiRender() override;
 
 	private:
-		void Begin(const FrameContext& context);
-		void End(const FrameContext& context);
+		void SetupDebugLayer(const FrameContext& context);
+		void RenderDebugLayer(const FrameContext& context);
 
 		const std::function<void()> renderImGuiWidgets;
 	};

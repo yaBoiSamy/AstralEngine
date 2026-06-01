@@ -1,4 +1,4 @@
-#include "Common.h"
+#include <Common.h>
 #include "DebugLayer.h"
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -15,12 +15,12 @@ namespace Astral
 
 
 	void DebugLayer::OnUpdate(const FrameContext& context) {
-		Begin(context);
+		SetupDebugLayer(context);
 		renderImGuiWidgets();
-		End(context);
+		RenderDebugLayer(context);
 	}
 
-	void DebugLayer::Begin(const FrameContext& context) {
+	void DebugLayer::SetupDebugLayer(const FrameContext& context) {
 		FrameContext::WindowSnapshot ws = context.windowSnapshot;
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -44,9 +44,7 @@ namespace Astral
 		ImGui::ShowDemoWindow(&show);
 	}
 
-	void DebugLayer::End(const FrameContext& context) {
-
-
+	void DebugLayer::RenderDebugLayer(const FrameContext& context) {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Astral/Window/Window.h"
+#include "Astral/Renderer/Renderer.h"
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/LayerStack.h"
 #include "Astral/Events/EventListener.h"
@@ -12,8 +13,10 @@ namespace Astral {
 		virtual ~Application();
 
 		virtual void Start() {};
-		virtual void Update() {};
-		void Close() { AST_CORE_INFO("App closed"); isRunning = false; };
+		virtual void Update() {};   // User-space simulation updates
+		void Close() { 
+			AST_CORE_INFO("App closed"); isRunning = false; 
+		};
 		void Run();
 
 	private:
@@ -21,6 +24,7 @@ namespace Astral {
 
 		bool isRunning;
 		Window window;
+		Renderer renderer;
 		LayerStack layers;
 	};
 

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Astral/Core.h"
 #include "Astral/Window/Window.h"
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/LayerStack.h"
 #include "Astral/Events/EventListener.h"
 
 namespace Astral {
-	class ASTRAL_API Application : public EventListener {
+	class Application : public EventListener {
 	public:
 		Application(const StartupConfig& config);
 		virtual ~Application();

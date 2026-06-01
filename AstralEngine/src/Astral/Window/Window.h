@@ -3,7 +3,6 @@
 #include "Common.h"
 
 #include "Astral/Events/Event.h"
-#include "Astral/Core.h"
 #include "Astral/Window/FrameContext.h"
 
 struct GLFWwindow;
@@ -12,7 +11,7 @@ namespace Astral {
 
 	using EventCallbackFn = std::function<void(Event const&)>;
 
-	class ASTRAL_API Window {
+	class Window {
 	public:
 		struct State {
 			State(FrameContext::WindowSnapshot const& snapshot)	: 

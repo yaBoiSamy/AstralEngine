@@ -3,7 +3,7 @@
 
 namespace Astral {
 
-	ASTRAL_API struct StartupConfig {
+	struct StartupConfig {
 		// Window Parameters
 		std::string windowName = "AstralEngine";
 		uint32_t resolutionWidth = 1920;
@@ -15,5 +15,5 @@ namespace Astral {
 		int glMinor = 3;
 	};
 
-	ASTRAL_API Window WindowStartup(const StartupConfig& startupConfig);
+	Window WindowStartup(const StartupConfig& startupConfig);
 }

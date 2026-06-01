@@ -1,10 +1,9 @@
 #pragma once
-#include "Astral/Core.h"
 #include "Astral/Events/Event.h"
 
 
 namespace Astral {
-	class ASTRAL_API EventListener {
+	class EventListener {
 	public:
 		inline virtual bool OnEvent(const Event& event) { return false; }
 		inline virtual bool OnWindowEvent(const WindowEvent& event) { return false; }

@@ -8,7 +8,9 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
+    staticruntime "On"
     language "C++"
+    cppdialect "C++20"
     buildoptions { "/utf-8" }
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -34,9 +36,8 @@ project "Sandbox"
     }
 
     filter "system:windows" 
-        cppdialect "C++20"
-        staticruntime "Off"
         systemversion "latest"
+        staticruntime "On"
 
         defines {
             "AST_PLATFORM_WINDOWS"
@@ -64,8 +65,9 @@ group ""
 
 project "AstralEngine"
     location "AstralEngine"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
+    cppdialect "C++20"
     buildoptions { 
         "/utf-8",
         "/external:I" .. "%{prj.name}/vendors",
@@ -80,14 +82,16 @@ project "AstralEngine"
         "%{prj.name}/src/**.cpp",
     }
 
-    includedirs {
+    externalincludedirs {
         "%{prj.name}/vendors/spdlog/include",
         "%{prj.name}/vendors/glfw/include",
         "%{prj.name}/vendors/glad/include",
         "%{prj.name}/vendors/imgui",
         "%{prj.name}/vendors/imgui/backends",
         "%{prj.name}/vendors/glm",
+    }
 
+    includedirs {
         "%{prj.name}/src"
     }
 
@@ -102,19 +106,14 @@ project "AstralEngine"
     pchsource "%{prj.name}/src/Common.cpp"
 
     filter "system:windows" 
-        cppdialect "C++20"
-        staticruntime "Off"
         systemversion "latest"
+        staticruntime "On"
         externalanglebrackets "On"
         externalwarnings "Off"
 
         defines {
             "AST_PLATFORM_WINDOWS",
             "AST_BUILD_DLL"
-        }
-
-        postbuildcommands { 
-            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
         }
     
     filter { "configurations:Debug" }

@@ -16,6 +16,6 @@ namespace Astral {
 		AST_CORE_TRACE("logger initialized");
 	}
 
-	ASTRAL_API std::shared_ptr<spdlog::logger> Log::ClientLogger = nullptr;
-	ASTRAL_API std::shared_ptr<spdlog::logger> Log::CoreLogger = nullptr;
+	std::shared_ptr<spdlog::logger> Log::ClientLogger = nullptr;
+	std::shared_ptr<spdlog::logger> Log::CoreLogger = nullptr;
 }

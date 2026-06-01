@@ -1,3 +1,13 @@
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+bin/
+bin-int/
+
+# ========================================== Template Starts here ==========================================
+
 # User-specific files
 *.rsuser
 *.suo

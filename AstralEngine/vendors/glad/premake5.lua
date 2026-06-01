@@ -16,7 +16,7 @@ project "GLAD"
 
     filter "system:windows"
         systemversion "latest"
-        staticruntime "Off"
+        staticruntime "On"
 
         links { "opengl32" }
 

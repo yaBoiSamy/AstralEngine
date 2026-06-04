@@ -20,20 +20,24 @@ namespace Astral
 	void LayerStack::PushLayer(ptr<ALayer> pushedLayer) {
 		layers.insert(BoundaryIt(), std::move(pushedLayer));
 		boundaryIndex++;
+		(*cLayerBack())->OnAttach();
 	}
 
 	void LayerStack::PopLayer(LayerVect::const_iterator poppedLayer) {
 		AST_CORE_ASSERT(cLayerBegin() <= poppedLayer && poppedLayer < cLayerEnd(), "Iterator out of layer range");
+		(*poppedLayer)->OnDetach();
 		layers.erase(poppedLayer);
 		boundaryIndex--;
 	}
 
 	void LayerStack::PushOverlay(ptr<ALayer> pushedOverlay) {
 		layers.insert(layers.end(), std::move(pushedOverlay));
+		(*cOverlayBack())->OnAttach();
 	}
 
 	void LayerStack::PopOverlay(LayerVect::const_iterator poppedOverlay) {
 		AST_CORE_ASSERT(cOverlayBegin() <= poppedOverlay && poppedOverlay < cOverlayEnd(), "Iterator out of overlay range");
+		(*poppedOverlay)->OnDetach();
 		layers.erase(poppedOverlay);
 	}
 

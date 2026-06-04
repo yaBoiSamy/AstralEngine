@@ -29,9 +29,11 @@ namespace Astral
 		LayerVect::const_iterator cend()   const { return layers.cend(); }
 
 		LayerVect::const_iterator cLayerBegin() const { return cbegin(); }
+		LayerVect::const_iterator cLayerBack() const { return --BoundaryIt(); }
 		LayerVect::const_iterator cLayerEnd() const { return BoundaryIt(); }
 
 		LayerVect::const_iterator cOverlayBegin() const { return BoundaryIt(); }
+		LayerVect::const_iterator cOverlayBack() const { return --cend(); }
 		LayerVect::const_iterator cOverlayEnd() const { return cend(); }
 
 		template<EventType EventT>

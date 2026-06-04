@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/DebugLayer/DebugLayer.h"
+#include "Astral/Layers/TestRenderLayer/TestRenderLayer.h"
 
 namespace Astral {
 
@@ -13,8 +14,10 @@ namespace Astral {
 			});
 
 		layers.PushOverlay(std::make_unique<DebugLayer>([this] {
-			layers.RenderImGuiWidgets();
+			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
 			}));
+
+		layers.PushLayer(std::make_unique<TestRenderLayer>());
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {

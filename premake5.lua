@@ -77,7 +77,7 @@ project "AstralEngine"
         "/wd6294",
         "/wd26495",
         "/wd26498",
-        "/wd62800",
+        "/wd26800",
     }
     externalanglebrackets "On"
     externalwarnings "Off"

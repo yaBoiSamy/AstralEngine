@@ -41,7 +41,6 @@ namespace Astral
 
 	void DebugLayer::OnImGuiRender() {
 		bool show = true;
-		ImGui::ShowDemoWindow(&show);
 	}
 
 	void DebugLayer::RenderDebugLayer(const FrameContext& context) {

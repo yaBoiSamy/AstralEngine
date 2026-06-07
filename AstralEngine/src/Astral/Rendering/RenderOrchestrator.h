@@ -3,10 +3,10 @@
 
 namespace Astral
 {
-	class Renderer
+	class RenderOrchestrator
 	{
 	public:
-		virtual ~Renderer() = default;
+		RenderOrchestrator() = default;
 		void SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize);
 		void PresentFrame(Window& window);
 	};

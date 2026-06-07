@@ -1,13 +1,13 @@
 #include "Common.h"
-#include "TestRenderLayer.h"
+#include "GLSLLayer.h"
 #include <glad/glad.h>
 
 
 namespace Astral
 {
-	TestRenderLayer::TestRenderLayer() : ALayer("TestRenderLayer") {}
+	GLSLLayer::GLSLLayer() : ALayer("TestRenderLayer") {}
 
-	void TestRenderLayer::OnAttach() {
+	void GLSLLayer::OnAttach() {
 
 		// Vertex buffer setup
 		float vertices[4 * 2] = {
@@ -53,7 +53,7 @@ namespace Astral
 		glUseProgram(programID);
 	}
 
-	void TestRenderLayer::OnUpdate(const FrameContext& context) {
+	void GLSLLayer::OnUpdate(const FrameContext& context) {
 		glUseProgram(programID);
 		glBindVertexArray(vertexLayout);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

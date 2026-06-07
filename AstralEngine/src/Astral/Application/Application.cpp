@@ -3,7 +3,7 @@
 #include "Application.h"
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/DebugLayer/DebugLayer.h"
-#include "Astral/Layers/TestRenderLayer/TestRenderLayer.h"
+#include "Astral/Layers/GLSLLayer/GLSLLayer.h"
 
 namespace Astral {
 
@@ -17,7 +17,7 @@ namespace Astral {
 			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
 			}));
 
-		layers.PushLayer(std::make_unique<TestRenderLayer>());
+		layers.PushLayer(std::make_unique<GLSLLayer>());
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {
@@ -34,9 +34,9 @@ namespace Astral {
 		while (isRunning) {
 			Update();
 			window.PumpEvents();
-			renderer.SetupFrame(window.GetFramebufferSize());
+			renderOrchestrator.SetupFrame(window.GetFramebufferSize());
 			layers.Update(window.GetFrameContext());
-			renderer.PresentFrame(window);
+			renderOrchestrator.PresentFrame(window);
 		}
 	}
 }

@@ -1,10 +1,10 @@
 #include <Common.h>
-#include "Renderer.h"
+#include "RenderOrchestrator.h"
 #include <glad/glad.h>
 
 namespace Astral
 {
-    void Renderer::SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize) {
+    void RenderOrchestrator::SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize) {
         auto [fbw, fbh] = framebufferSize;
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, fbw, fbh);
@@ -13,7 +13,7 @@ namespace Astral
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::PresentFrame(Window& window) {
+    void RenderOrchestrator::PresentFrame(Window& window) {
         window.SwapBuffers();
     }
 }

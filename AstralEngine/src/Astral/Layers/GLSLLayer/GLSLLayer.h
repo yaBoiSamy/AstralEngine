@@ -6,10 +6,10 @@
 
 namespace Astral
 {
-	class TestRenderLayer : public ALayer
+	class GLSLLayer : public ALayer
 	{
 	public:
-		TestRenderLayer();
+		GLSLLayer();
 		virtual void OnAttach() override;
 		virtual void OnUpdate(const FrameContext& context) override;
 

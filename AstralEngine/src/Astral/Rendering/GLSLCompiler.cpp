@@ -39,7 +39,7 @@ namespace Astral
 		}
 	}
 
-	void APIENTRY OpenGLMessageCallback(
+	static void APIENTRY OpenGLMessageCallback(
 		GLenum source,
 		GLenum type,
 		GLuint id,

@@ -2,7 +2,7 @@
 
 #include <string>
 #include "Astral/Layers/ALayer.h"
-#include "Astral/Rendering/GLSLCompiler.h"
+#include "Astral/Rendering/Shader/Shader.h"
 
 namespace Astral
 {
@@ -10,15 +10,20 @@ namespace Astral
 	{
 	public:
 		GLSLLayer();
-		virtual void OnAttach() override;
 		virtual void OnUpdate(const FrameContext& context) override;
 
+		const std::string VERTEX_DIR = "src/Astral/Rendering/Shaders/vertex.vert.glsl";
+		const std::string FRAGMENT_DIR = "src/Astral/Rendering/Shaders/fragment.frag.glsl";
+
 	private:
-		GLSLCompiler compiler;
+		typedef uint32_t VertexBufferHandle;
+		typedef uint32_t VertexLayoutHandle;
+		typedef uint32_t IndexBufferHandle;
+
+		Shader shader;
 		VertexBufferHandle vertexBufferID;
 		VertexLayoutHandle vertexLayout;
 		IndexBufferHandle indexBufferID;
-		ShaderProgramHandle programID;
 	};
 
 }

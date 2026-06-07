@@ -5,9 +5,8 @@
 
 namespace Astral
 {
-	GLSLLayer::GLSLLayer() : ALayer("TestRenderLayer") {}
-
-	void GLSLLayer::OnAttach() {
+	GLSLLayer::GLSLLayer() : ALayer("TestRenderLayer"), shader(VERTEX_DIR, FRAGMENT_DIR) {
+		shader.Bind();
 
 		// Vertex buffer setup
 		float vertices[4 * 2] = {
@@ -40,21 +39,9 @@ namespace Astral
 		glGenBuffers(1, &indexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
-
-
-		// Shader program setup
-		const std::string vertexDir = "src/Astral/Rendering/Shaders/vertex.vert.glsl";
-		const std::string fragmentDir = "src/Astral/Rendering/Shaders/fragment.frag.glsl";
-
-		programID = compiler.CreateShaderProgram(vertexDir, fragmentDir);
-		if (programID == 0) {
-			return;
-		}
-		glUseProgram(programID);
 	}
 
 	void GLSLLayer::OnUpdate(const FrameContext& context) {
-		glUseProgram(programID);
 		glBindVertexArray(vertexLayout);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}

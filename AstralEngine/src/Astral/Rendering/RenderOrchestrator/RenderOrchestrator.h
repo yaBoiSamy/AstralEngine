@@ -6,7 +6,7 @@ namespace Astral
 	class RenderOrchestrator
 	{
 	public:
-		RenderOrchestrator() = default;
+		RenderOrchestrator();
 		void SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize);
 		void PresentFrame(Window& window);
 	};

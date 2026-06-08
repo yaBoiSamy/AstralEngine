@@ -12,8 +12,6 @@ namespace Astral {
 
 		ClientLogger = spdlog::stdout_color_mt("APP");
 		ClientLogger->set_level(spdlog::level::trace);
-
-		AST_CORE_TRACE("logger initialized");
 	}
 
 	std::shared_ptr<spdlog::logger> Log::ClientLogger = nullptr;

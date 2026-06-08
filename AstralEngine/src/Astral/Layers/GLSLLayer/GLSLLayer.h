@@ -3,6 +3,7 @@
 #include <string>
 #include "Astral/Layers/ALayer.h"
 #include "Astral/Rendering/Shader/Shader.h"
+#include "Astral/Rendering/Buffers/Buffers.h"
 
 namespace Astral
 {
@@ -21,9 +22,10 @@ namespace Astral
 		typedef uint32_t IndexBufferHandle;
 
 		Shader shader;
-		VertexBufferHandle vertexBufferID;
-		VertexLayoutHandle vertexLayout;
-		IndexBufferHandle indexBufferID;
+		static const uint32_t POS_VERTEX_COUNT = 4;
+		static const uint32_t POS_DIMENSIONALITY = 2;
+		VertexBuffer vertexBuffer;
+		IndexBuffer indexBuffer;
 	};
 
 }

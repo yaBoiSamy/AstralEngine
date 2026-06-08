@@ -8,6 +8,7 @@ namespace Astral
 	class Shader {
 	public:
 		Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+		~Shader();
 		void Bind() const;
 	private:
 		typedef uint32_t ShaderStageHandle;

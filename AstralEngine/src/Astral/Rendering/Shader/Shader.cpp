@@ -31,8 +31,10 @@ namespace Astral
 			glGetProgramiv(shaderHandle, GL_INFO_LOG_LENGTH, &length);
 			std::string message = std::string(length, '\0');
 			glGetProgramInfoLog(shaderHandle, length, &length, message.data());
-			AST_CORE_ERROR("Failed to link shader stages: {0}", message);
+			AST_CORE_ASSERT(false, "Failed to link shader stages: {0}", message);
 			glDeleteProgram(shaderHandle);
+			glDeleteShader(vs);
+			glDeleteShader(fs);
 			shaderHandle = 0;
 			return;
 		}
@@ -45,12 +47,21 @@ namespace Astral
 			glGetProgramiv(shaderHandle, GL_INFO_LOG_LENGTH, &length);
 			std::string message = std::string(length, '\0');
 			glGetProgramInfoLog(shaderHandle, length, &length, message.data());
-			AST_CORE_ERROR("Failed to validate shader: {0}", message);
+			AST_CORE_ASSERT(false, "Failed to validate shader: {0}", message);
 			glDeleteProgram(shaderHandle);
+			glDeleteShader(vs);
+			glDeleteShader(fs);
 			shaderHandle = 0;
 			return;
 		}
 		#endif
+
+		glDetachShader(shaderHandle, vs);
+		glDetachShader(shaderHandle, fs);
+	}
+
+	Shader::~Shader() {
+		glDeleteProgram(shaderHandle);
 	}
 
 	Shader::ShaderStageHandle Shader::CompileShaderStage(uint32_t type, const std::string& src) {
@@ -67,7 +78,7 @@ namespace Astral
 				glGetShaderiv(shaderStageHandle, GL_INFO_LOG_LENGTH, &length);
 				std::string message = std::string(length, '\0');
 				glGetShaderInfoLog(shaderStageHandle, length, &length, message.data());
-				AST_CORE_ERROR("Failed to compile shader: {0}", message);
+				AST_CORE_ASSERT(false, "Failed to compile shader: {0}", message);
 				glDeleteShader(shaderStageHandle);
 				return 0;
 			}

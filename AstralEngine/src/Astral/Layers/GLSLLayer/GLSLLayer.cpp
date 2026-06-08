@@ -5,44 +5,32 @@
 
 namespace Astral
 {
-	GLSLLayer::GLSLLayer() : ALayer("TestRenderLayer"), shader(VERTEX_DIR, FRAGMENT_DIR) {
+	GLSLLayer::GLSLLayer() : 
+		ALayer("TestRenderLayer"), 
+		shader(VERTEX_DIR, FRAGMENT_DIR),
+		vertexBuffer(Buffer::Usage::Static, { VertexBuffer::AttributeLayout(0, POS_DIMENSIONALITY, Buffer::NumericType::Float32) }),
+		indexBuffer(Buffer::Usage::Static, Buffer::NumericType::UInt32) {
+
 		shader.Bind();
 
-		// Vertex buffer setup
-		float vertices[4 * 2] = {
+		float vertices[POS_VERTEX_COUNT * POS_DIMENSIONALITY] = {
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
 			-0.5f,  0.5f,
 			 0.5f,  0.5f
 		};
-		glGenBuffers(1, &vertexBufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-		glGenVertexArrays(1, &vertexLayout);
-		glBindVertexArray(vertexLayout);
-		glVertexAttribPointer(
-			0, // Attrib index
-			2, // # of fields in attribute
-			GL_FLOAT,  // Type of each field
-			GL_FALSE, // Fields not normalized (normalization depends on field types)
-			2 * sizeof(float), // Distance between consecutive attributes
-			0 // Offset to first field, 0 for tight packing
-		);
-		glEnableVertexAttribArray(0);
+		vertexBuffer.Write(vertices, 8);
 
-
-		// Index buffer setup 
 		uint32_t indices[6] = {
 			0, 1, 2,
 			1, 2, 3
 		};
-		glGenBuffers(1, &indexBufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
+		indexBuffer.Write(indices, 6);
 	}
 
 	void GLSLLayer::OnUpdate(const FrameContext& context) {
-		glBindVertexArray(vertexLayout);
+		vertexBuffer.Bind();
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }

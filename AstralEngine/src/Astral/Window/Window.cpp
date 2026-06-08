@@ -9,7 +9,7 @@ namespace Astral {
 
 	Window::Window(GLFWwindow* handle, FrameContext::WindowSnapshot stateSnapshot, std::function<void()> imguiSetup) : handle(handle), state(nullptr) {
 		state = std::make_unique<State>(stateSnapshot);
-		AST_CORE_TRACE("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
+		AST_CORE_INFO("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
 		glfwSetWindowUserPointer(handle, this);
 		SetVSync(state->vSync);
 

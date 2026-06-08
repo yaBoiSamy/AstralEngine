@@ -14,7 +14,7 @@ namespace Astral
 		const void* userParam);
 
 	RenderOrchestrator::RenderOrchestrator() {
-        AST_CORE_TRACE("\nOpenGL Info:\n    Vendor: {0}\n    Renderer: {1}\n    Version: {2}", 
+        AST_CORE_INFO("\nOpenGL Info:\n    Vendor: {0}\n    Renderer: {1}\n    Version: {2}", 
             (char*)glGetString(GL_VENDOR), 
             (char*)glGetString(GL_RENDERER),
             (char*)glGetString(GL_VERSION));

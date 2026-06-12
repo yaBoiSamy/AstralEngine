@@ -24,8 +24,16 @@ namespace Astral
 		Shader shader;
 		static const uint32_t POS_VERTEX_COUNT = 4;
 		static const uint32_t POS_DIMENSIONALITY = 2;
-		VertexBuffer vertexBuffer;
-		IndexBuffer indexBuffer;
+
+		struct fort { 
+			bool ab;
+			int c;
+			char sus[2];
+			float x; 
+			float y; 
+		};
+		VertexBuffer<fort> vertexBuffer;
+		IndexBuffer<uint32_t> indexBuffer;
 	};
 
 }

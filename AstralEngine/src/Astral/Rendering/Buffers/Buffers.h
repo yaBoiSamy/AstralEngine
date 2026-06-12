@@ -3,90 +3,201 @@
 
 namespace Astral {
 
+	// For C++ type -> OpenGL type conversion
+	template<typename T>
+	struct GLNumericType;
+
+	#define IMPLEMENT_GL_TYPE_CONVERSION(cpp_type, gl_type_enum)	\
+	template<>														\
+	struct GLNumericType<cpp_type> {								\
+		static constexpr GLenum value = gl_type_enum;				\
+	};
+
+	IMPLEMENT_GL_TYPE_CONVERSION(int8_t, GL_BYTE)
+	IMPLEMENT_GL_TYPE_CONVERSION(uint8_t, GL_UNSIGNED_BYTE)
+	IMPLEMENT_GL_TYPE_CONVERSION(int16_t, GL_SHORT)
+	IMPLEMENT_GL_TYPE_CONVERSION(uint16_t, GL_UNSIGNED_SHORT)
+	IMPLEMENT_GL_TYPE_CONVERSION(int32_t, GL_INT)
+	IMPLEMENT_GL_TYPE_CONVERSION(uint32_t, GL_UNSIGNED_INT)
+	IMPLEMENT_GL_TYPE_CONVERSION(float, GL_FLOAT)
+	IMPLEMENT_GL_TYPE_CONVERSION(double, GL_DOUBLE)
+
+	#undef IMPLEMENT_GL_TYPE_CONVERSION
+
+
+	enum class UsageHint {
+		Static = GL_STATIC_DRAW,
+		Dynamic = GL_DYNAMIC_DRAW,
+		Stream = GL_STREAM_DRAW
+	};
+
+	template <typename BufferElementT>
 	class Buffer {
 	public:
-		enum class NumericType {
-			Int8 = GL_BYTE,
-			UInt8 = GL_UNSIGNED_BYTE,
-			Int16 = GL_SHORT,
-			UInt16 = GL_UNSIGNED_SHORT,
-			Int32 = GL_INT,
-			UInt32 = GL_UNSIGNED_INT,
-			Float16 = GL_HALF_FLOAT,
-			Float32 = GL_FLOAT,
-			Double64 = GL_DOUBLE
-		};
 
-		enum class Type
-		{
-			Vertex = GL_ARRAY_BUFFER,
-			Index = GL_ELEMENT_ARRAY_BUFFER
-		};
-
-		enum class Usage {
-			Static = GL_STATIC_DRAW,
-			Dynamic = GL_DYNAMIC_DRAW,
-			Stream = GL_STREAM_DRAW
-		};
-
-		Buffer(Buffer::Type type, Usage usage);
-		Buffer(Buffer&&) = default;
-		Buffer& operator=(Buffer&& other) = default;
+		Buffer(UsageHint usage);
 		virtual ~Buffer();
 
+		// moving is supported
+		Buffer(Buffer&&) = default;
+		Buffer& operator=(Buffer&& other) = default;
+
+		// copying is not permitted
 		Buffer(const Buffer&) = delete;
 		Buffer& operator=(const Buffer&) = delete;
 
+
 		virtual void Bind() const;
-		void Write(const void* data, uint32_t elementCount);
-	protected:
-		static uint32_t SizeOfNumType(NumericType numtype);
-		virtual uint32_t SizeOfNElements(uint32_t nElements) const = 0;
+		void Write(std::span<BufferElementT> data);
+
 	private:
-		typedef GLuint BufferHandle;
-		BufferHandle handle;
-		const Buffer::Type type;
-		const Usage usage;
+
+		virtual GLenum GLTarget() const = 0;
+		GLuint handle;
+		const UsageHint usage;
 	};
 
-
-	class IndexBuffer : public Buffer {
+		
+	template <typename IndexT>
+	class IndexBuffer : public Buffer<IndexT> {
 	public:
-		IndexBuffer(Usage usage, NumericType indexType);
+		IndexBuffer(UsageHint usage) : Buffer<IndexT>(usage) {}
+
+		// moving is supported
 		IndexBuffer(IndexBuffer&&) = default;
 		IndexBuffer& operator=(IndexBuffer&& other) = default;
+
 	private:
-		virtual uint32_t SizeOfNElements(uint32_t nElements) const override;
-		NumericType indexType;
+		virtual GLenum GLTarget() const override;
 	};
 
 
-	class VertexBuffer : public Buffer {
+	struct AttributeLayout {
+		template <typename FieldT>
+		static AttributeLayout Create(uint32_t index, uint32_t fieldCount, uint32_t offset, bool normalized = false);
+		const uint32_t index;
+		const GLenum fieldType;
+		const uint32_t fieldCount;
+		const uint32_t stride;
+		const uint32_t offset;
+		const bool normalized;
+	};
+
+
+	template <typename VertexT>
+	class VertexBuffer : public Buffer<VertexT> {
 	public:
-		struct AttributeLayout {
-			AttributeLayout(uint32_t index, uint32_t fieldCount, NumericType fieldType, bool normalized = false);
-			uint32_t Stride() const;
-			const uint32_t index;
-			const NumericType fieldType;
-			const uint32_t fieldCount;
-			const bool normalized;
-		};
 
 		using VertexLayout = std::vector<AttributeLayout>;
 
-		VertexBuffer(Usage usage, const VertexLayout& layout);
-		VertexBuffer(VertexBuffer&&) = default;
-		VertexBuffer& operator=(VertexBuffer&&) = default;
+		VertexBuffer(UsageHint usage, const VertexLayout& layout);
 		virtual ~VertexBuffer() override;
 
+		// moving is supported
+		VertexBuffer(VertexBuffer&&) = default;
+		VertexBuffer& operator=(VertexBuffer&&) = default;
+
 		virtual void Bind() const override;
+
 	private:
+		virtual GLenum GLTarget() const override;
 		uint32_t VertexStride() const;
-		virtual uint32_t SizeOfNElements(uint32_t nElements) const override;
-
-		typedef GLuint LayoutHandle;
-
-		LayoutHandle layoutHandle;
-		const VertexLayout layouts;
+		GLuint layoutHandle;
+		const VertexLayout layout;
 	};
+
+
+	// =================================================================================================================
+	// ================================================ IMPLEMENTATIONS ================================================
+	// =================================================================================================================
+
+
+	// ================================================ Abstract buffer ================================================
+
+	template <typename BufferElementT>
+	Buffer<BufferElementT>::Buffer(UsageHint usage) : usage(usage) {
+		glGenBuffers(1, &handle);
+	}
+
+	template <typename BufferElementT>
+	Buffer<BufferElementT>::~Buffer() {
+		glDeleteBuffers(1, &handle);
+	}
+
+	template <typename BufferElementT>
+	void Buffer<BufferElementT>::Bind() const {
+		glBindBuffer(this->GLTarget(), handle);
+	}
+	
+	template <typename BufferElementT>
+	void Buffer<BufferElementT>::Write(std::span<BufferElementT> data) {
+		Bind();
+		glBufferData(
+			this->GLTarget(),
+			data.size() * sizeof(BufferElementT),
+			data.data(),
+			static_cast<GLenum>(usage)
+		);
+	}
+
+	// ================================================= Index buffer ==================================================
+
+	template<typename IndexT>
+	GLenum IndexBuffer<IndexT>::GLTarget() const {
+		return GL_ELEMENT_ARRAY_BUFFER;
+	}
+
+
+	// ================================================= Vertex buffer =================================================
+
+	template<typename FieldT>
+	AttributeLayout AttributeLayout::Create(uint32_t index, uint32_t fieldCount, uint32_t offset, bool normalized) {
+		return { index, GLNumericType<FieldT>::value, fieldCount, sizeof(FieldT) * fieldCount, offset, normalized };
+	}	
+
+
+	template <typename VertexT>
+	VertexBuffer<VertexT>::VertexBuffer(UsageHint usage, const VertexLayout& layout) : Buffer<VertexT>(usage), layout(layout) {
+		glGenVertexArrays(1, &layoutHandle);
+		Bind();
+
+		const uint32_t vertexStride = VertexStride();
+		for (const AttributeLayout& attributeLayout : layout) {
+			glVertexAttribPointer(
+				attributeLayout.index,
+				attributeLayout.fieldCount,
+				attributeLayout.fieldType,
+				attributeLayout.normalized ? GL_TRUE : GL_FALSE,
+				vertexStride,
+				reinterpret_cast<void*>(static_cast<uintptr_t>(attributeLayout.offset))
+			);
+			glEnableVertexAttribArray(attributeLayout.index);
+		}
+	}
+
+	template <typename VertexT>
+	VertexBuffer<VertexT>::~VertexBuffer() {
+		glDeleteVertexArrays(1, &layoutHandle);
+	}
+
+	template <typename VertexT>
+	void VertexBuffer<VertexT>::Bind() const {
+		Buffer<VertexT>::Bind();
+		glBindVertexArray(layoutHandle);
+	}
+
+
+	template <typename VertexT>
+	uint32_t VertexBuffer<VertexT>::VertexStride() const {
+		uint32_t totalsize = 0;
+		for (const AttributeLayout& attributeLayout : layout) {
+			totalsize = std::max(totalsize, attributeLayout.offset + attributeLayout.stride);
+		}
+		return totalsize;
+	}
+
+	template <typename VertexT>
+	GLenum VertexBuffer<VertexT>::GLTarget() const {
+		return GL_ARRAY_BUFFER;
+	}
 }

@@ -1,29 +1,10 @@
 #pragma once
 #include <glad/glad.h>
+#include <span>
+#include "Astral/Rendering/VertexArray/Attributes.h"
+
 
 namespace Astral {
-
-	// For C++ type -> OpenGL type conversion
-	template<typename T>
-	struct GLNumericType;
-
-	#define IMPLEMENT_GL_TYPE_CONVERSION(cpp_type, gl_type_enum)	\
-	template<>														\
-	struct GLNumericType<cpp_type> {								\
-		static constexpr GLenum value = gl_type_enum;				\
-	};
-
-	IMPLEMENT_GL_TYPE_CONVERSION(int8_t, GL_BYTE)
-	IMPLEMENT_GL_TYPE_CONVERSION(uint8_t, GL_UNSIGNED_BYTE)
-	IMPLEMENT_GL_TYPE_CONVERSION(int16_t, GL_SHORT)
-	IMPLEMENT_GL_TYPE_CONVERSION(uint16_t, GL_UNSIGNED_SHORT)
-	IMPLEMENT_GL_TYPE_CONVERSION(int32_t, GL_INT)
-	IMPLEMENT_GL_TYPE_CONVERSION(uint32_t, GL_UNSIGNED_INT)
-	IMPLEMENT_GL_TYPE_CONVERSION(float, GL_FLOAT)
-	IMPLEMENT_GL_TYPE_CONVERSION(double, GL_DOUBLE)
-
-	#undef IMPLEMENT_GL_TYPE_CONVERSION
-
 
 	enum class UsageHint {
 		Static = GL_STATIC_DRAW,
@@ -72,25 +53,11 @@ namespace Astral {
 	};
 
 
-	struct AttributeLayout {
-		template <typename FieldT>
-		static AttributeLayout Create(uint32_t index, uint32_t fieldCount, uint32_t offset, bool normalized = false);
-		const uint32_t index;
-		const GLenum fieldType;
-		const uint32_t fieldCount;
-		const uint32_t stride;
-		const uint32_t offset;
-		const bool normalized;
-	};
-
-
 	template <typename VertexT>
 	class VertexBuffer : public Buffer<VertexT> {
 	public:
 
-		using VertexLayout = std::vector<AttributeLayout>;
-
-		VertexBuffer(UsageHint usage, const VertexLayout& layout);
+		VertexBuffer(UsageHint usage, const std::initializer_list<AttributeLayout>& layout);
 		virtual ~VertexBuffer() override;
 
 		// moving is supported
@@ -103,7 +70,7 @@ namespace Astral {
 		virtual GLenum GLTarget() const override;
 		uint32_t VertexStride() const;
 		GLuint layoutHandle;
-		const VertexLayout layout;
+		const std::vector<AttributeLayout> layout;
 	};
 
 
@@ -150,14 +117,9 @@ namespace Astral {
 
 	// ================================================= Vertex buffer =================================================
 
-	template<typename FieldT>
-	AttributeLayout AttributeLayout::Create(uint32_t index, uint32_t fieldCount, uint32_t offset, bool normalized) {
-		return { index, GLNumericType<FieldT>::value, fieldCount, sizeof(FieldT) * fieldCount, offset, normalized };
-	}	
-
 
 	template <typename VertexT>
-	VertexBuffer<VertexT>::VertexBuffer(UsageHint usage, const VertexLayout& layout) : Buffer<VertexT>(usage), layout(layout) {
+	VertexBuffer<VertexT>::VertexBuffer(UsageHint usage, const std::initializer_list<AttributeLayout>& layout) : Buffer<VertexT>(usage), layout(layout) {
 		glGenVertexArrays(1, &layoutHandle);
 		Bind();
 

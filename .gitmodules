@@ -9,4 +9,4 @@
 	url = https://github.com/yaBoiSamy/imgui
 [submodule "AstralEngine/vendors/glm"]
 	path = AstralEngine/vendors/glm
-	url = git@github.com:g-truc/glm.git
+	url = https://github.com/g-truc/glm.git

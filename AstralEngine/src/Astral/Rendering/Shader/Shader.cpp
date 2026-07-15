@@ -3,11 +3,16 @@
 #include <glad/glad.h>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 
 namespace Astral
 {
 	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) : shaderHandle(glCreateProgram()) {
+		std::string vert_shader = StringifyShaderStage(vertexShaderPath);
+		std::string frag_shader = StringifyShaderStage(fragmentShaderPath);
+		AST_CORE_ASSERT(vert_shader != "", "Vertex shader path invalid: {0}", std::filesystem::current_path().append(vertexShaderPath).string());
+		AST_CORE_ASSERT(frag_shader != "", "Fragment shader path invalid: {0}", std::filesystem::current_path().append(fragmentShaderPath).string());
 
 		ShaderStageHandle vs = CompileShaderStage(GL_VERTEX_SHADER, StringifyShaderStage(vertexShaderPath));
 		ShaderStageHandle fs = CompileShaderStage(GL_FRAGMENT_SHADER, StringifyShaderStage(fragmentShaderPath));

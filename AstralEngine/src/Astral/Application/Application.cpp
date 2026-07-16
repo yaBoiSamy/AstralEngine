@@ -30,11 +30,10 @@ namespace Astral {
 
 	void Application::Run() {
 		isRunning = true;
-		Start();
 		while (isRunning) {
-			Update();
 			window.PumpEvents();
 			renderOrchestrator.SetupFrame(window.GetFramebufferSize());
+			Update();
 			layers.Update(window.GetFrameContext());
 			renderOrchestrator.PresentFrame(window);
 		}

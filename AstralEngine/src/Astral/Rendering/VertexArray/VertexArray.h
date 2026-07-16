@@ -5,10 +5,16 @@
 
 namespace Astral {
 
-	template <typename VertexT, typename IndexT = uint32_t>
-	class VertexArray {
+	class IVertexArray {
 	public:
-		VertexArray(UsageHint vertex_buffer_usage, std::initializer_list<AttributeLayout> layout, UsageHint index_buffer_usage);
+		virtual void Bind() const = 0;
+		virtual uint32_t Length() const = 0;
+	};
+
+	template <typename VertexT, typename IndexT = uint32_t>
+	class VertexArray : public IVertexArray {
+	public:
+		VertexArray(uint32_t vert_count, uint32_t index_count, UsageHint vertex_buffer_usage, std::initializer_list<AttributeLayout> layout, UsageHint index_buffer_usage);
 
 		// moving is supported
 		VertexArray(VertexArray&&) = default;
@@ -18,11 +24,11 @@ namespace Astral {
 		VertexArray(const VertexArray&) = delete;
 		VertexArray& operator=(const VertexArray&) = delete;
 
-		void WriteVertices(std::span<VertexT> data);
-		void WriteIndices(std::span<IndexT> data);
+		void WriteVertices(uint32_t start, std::span<VertexT> data);
+		void WriteIndices(uint32_t start, std::span<IndexT> data);
 
-		void Bind() const;
-
+		virtual void Bind() const override;
+		virtual uint32_t Length() const override;
 	private:
 		VertexBuffer<VertexT> vbo;
 		IndexBuffer<IndexT> ebo;
@@ -36,23 +42,28 @@ namespace Astral {
 
 	
 	template<typename VertexT, typename IndexT>
-	inline VertexArray<VertexT, IndexT>::VertexArray(UsageHint vertex_buffer_usage, std::initializer_list<AttributeLayout> layout, UsageHint index_buffer_usage) : 
-		vbo(vertex_buffer_usage, layout), ebo(index_buffer_usage) {}
+	inline VertexArray<VertexT, IndexT>::VertexArray(uint32_t vert_count, uint32_t index_count, UsageHint vertex_buffer_usage, std::initializer_list<AttributeLayout> layout, UsageHint index_buffer_usage) : 
+		vbo(vert_count, vertex_buffer_usage, layout), ebo(index_count, index_buffer_usage) {}
 
 	template<typename VertexT, typename IndexT>
-	inline void VertexArray<VertexT, IndexT>::WriteVertices(std::span<VertexT> data) {
-		vbo.Write(data);
+	inline void VertexArray<VertexT, IndexT>::WriteVertices(uint32_t start, std::span<VertexT> data) {
+		vbo.Write(start, data);
 	}
 
 	template<typename VertexT, typename IndexT>
-	inline void VertexArray<VertexT, IndexT>::WriteIndices(std::span<IndexT> data) {
-		ebo.Write(data);
+	inline void VertexArray<VertexT, IndexT>::WriteIndices(uint32_t start, std::span<IndexT> data) {
+		ebo.Write(start, data);
 	}
 
 	template<typename VertexT, typename IndexT>
 	inline void VertexArray<VertexT, IndexT>::Bind() const {
 		vbo.Bind();
 		ebo.Bind();
+	}
+
+	template<typename VertexT, typename IndexT>
+	inline uint32_t VertexArray<VertexT, IndexT>::Length() const {
+		return ebo.Length();
 	}
 
 }

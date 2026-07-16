@@ -13,51 +13,50 @@ namespace Astral {
 	};
 
 	template <typename BufferElementT>
-	class Buffer {
+	class ABuffer {
 	public:
 
-		Buffer(UsageHint usage);
-		virtual ~Buffer();
+		ABuffer(uint32_t length, UsageHint usage, GLenum target);
+		virtual ~ABuffer();
 
 		// moving is supported
-		Buffer(Buffer&&) = default;
-		Buffer& operator=(Buffer&& other) = default;
+		ABuffer(ABuffer&&);
+		ABuffer& operator=(ABuffer&& other) = default;
 
 		// copying is not permitted
-		Buffer(const Buffer&) = delete;
-		Buffer& operator=(const Buffer&) = delete;
+		ABuffer(const ABuffer&) = delete;
+		ABuffer& operator=(const ABuffer&) = delete;
 
 
 		virtual void Bind() const;
-		void Write(std::span<BufferElementT> data);
+		void Write(uint32_t start, std::span<BufferElementT> data);
+
+		uint32_t Length() const;
 
 	private:
-
-		virtual GLenum GLTarget() const = 0;
 		GLuint handle;
 		const UsageHint usage;
+		const GLenum target;
+		const uint32_t length;
 	};
 
 		
 	template <typename IndexT>
-	class IndexBuffer : public Buffer<IndexT> {
+	class IndexBuffer : public ABuffer<IndexT> {
 	public:
-		IndexBuffer(UsageHint usage) : Buffer<IndexT>(usage) {}
+		IndexBuffer(uint32_t length, UsageHint usage);
 
 		// moving is supported
 		IndexBuffer(IndexBuffer&&) = default;
 		IndexBuffer& operator=(IndexBuffer&& other) = default;
-
-	private:
-		virtual GLenum GLTarget() const override;
 	};
 
 
 	template <typename VertexT>
-	class VertexBuffer : public Buffer<VertexT> {
+	class VertexBuffer : public ABuffer<VertexT> {
 	public:
 
-		VertexBuffer(UsageHint usage, const std::initializer_list<AttributeLayout>& layout);
+		VertexBuffer(uint32_t length, UsageHint usage, const std::initializer_list<AttributeLayout>& layout, uint32_t advancement_rate = 0);
 		virtual ~VertexBuffer() override;
 
 		// moving is supported
@@ -67,10 +66,25 @@ namespace Astral {
 		virtual void Bind() const override;
 
 	private:
-		virtual GLenum GLTarget() const override;
 		uint32_t VertexStride() const;
 		GLuint layoutHandle;
 		const std::vector<AttributeLayout> layout;
+	};
+
+
+	template <typename UniformT>
+	class UniformBuffer : public ABuffer<UniformT> {
+	public:
+		UniformBuffer(UsageHint usage);
+
+		// moving is supported
+		UniformBuffer(UniformBuffer&&) = default;
+		UniformBuffer& operator=(UniformBuffer&& other) = default;
+
+		void Write(UniformT& data);
+
+	private:
+		virtual GLenum GLTarget() const override;
 	};
 
 
@@ -82,44 +96,68 @@ namespace Astral {
 	// ================================================ Abstract buffer ================================================
 
 	template <typename BufferElementT>
-	Buffer<BufferElementT>::Buffer(UsageHint usage) : usage(usage) {
+	ABuffer<BufferElementT>::ABuffer(uint32_t length, UsageHint usage, GLenum target) : length(length), usage(usage), target(target) {
 		glGenBuffers(1, &handle);
-	}
-
-	template <typename BufferElementT>
-	Buffer<BufferElementT>::~Buffer() {
-		glDeleteBuffers(1, &handle);
-	}
-
-	template <typename BufferElementT>
-	void Buffer<BufferElementT>::Bind() const {
-		glBindBuffer(this->GLTarget(), handle);
-	}
-	
-	template <typename BufferElementT>
-	void Buffer<BufferElementT>::Write(std::span<BufferElementT> data) {
 		Bind();
 		glBufferData(
-			this->GLTarget(),
-			data.size() * sizeof(BufferElementT),
-			data.data(),
+			target,
+			length * sizeof(BufferElementT),
+			nullptr,
 			static_cast<GLenum>(usage)
 		);
 	}
 
+	template <typename BufferElementT>
+	ABuffer<BufferElementT>::ABuffer(ABuffer&& other) : handle(other.handle), usage(other.usage), length(other.length) {
+		other.handle = 0;
+	}
+
+	template <typename BufferElementT>
+	ABuffer<BufferElementT>::~ABuffer() {
+		if (handle != 0)
+			glDeleteBuffers(1, &handle);
+	}
+
+	template <typename BufferElementT>
+	void ABuffer<BufferElementT>::Bind() const {
+		glBindBuffer(target, handle);
+	}
+	
+	template <typename BufferElementT>
+	void ABuffer<BufferElementT>::Write(uint32_t start, std::span<BufferElementT> data) {
+		Bind();
+		glBufferSubData(
+			target,
+			start * sizeof(BufferElementT),
+			data.size() * sizeof(BufferElementT),
+			data.data()
+		);
+	}
+
+	template<typename BufferElementT>
+	uint32_t ABuffer<BufferElementT>::Length() const {
+		return length;
+	}
+
 	// ================================================= Index buffer ==================================================
 
-	template<typename IndexT>
-	GLenum IndexBuffer<IndexT>::GLTarget() const {
-		return GL_ELEMENT_ARRAY_BUFFER;
-	}
+	template <typename IndexT>
+	IndexBuffer<IndexT>::IndexBuffer(uint32_t length, UsageHint usage) : ABuffer<IndexT>(length, usage, GL_ELEMENT_ARRAY_BUFFER) {}
 
 
 	// ================================================= Vertex buffer =================================================
 
 
 	template <typename VertexT>
-	VertexBuffer<VertexT>::VertexBuffer(UsageHint usage, const std::initializer_list<AttributeLayout>& layout) : Buffer<VertexT>(usage), layout(layout) {
+	VertexBuffer<VertexT>::VertexBuffer(
+		uint32_t length,
+		UsageHint usage,
+		const std::initializer_list<AttributeLayout>& layout,
+		uint32_t advancement_rate
+	) : ABuffer<VertexT>(length, usage, GL_ARRAY_BUFFER),
+		layout(layout) {
+
+
 		glGenVertexArrays(1, &layoutHandle);
 		Bind();
 
@@ -134,6 +172,7 @@ namespace Astral {
 				reinterpret_cast<void*>(static_cast<uintptr_t>(attributeLayout.offset))
 			);
 			glEnableVertexAttribArray(attributeLayout.index);
+			glVertexAttribDivisor(attributeLayout.index, advancement_rate);
 		}
 	}
 
@@ -144,7 +183,7 @@ namespace Astral {
 
 	template <typename VertexT>
 	void VertexBuffer<VertexT>::Bind() const {
-		Buffer<VertexT>::Bind();
+		ABuffer<VertexT>::Bind();
 		glBindVertexArray(layoutHandle);
 	}
 
@@ -158,8 +197,20 @@ namespace Astral {
 		return totalsize;
 	}
 
-	template <typename VertexT>
-	GLenum VertexBuffer<VertexT>::GLTarget() const {
-		return GL_ARRAY_BUFFER;
+
+// ================================================= Uniform buffer =================================================
+
+	template <typename UniformT>
+	UniformBuffer<UniformT>::UniformBuffer(UsageHint usage) : ABuffer<UniformT>(1, usage, GL_UNIFORM_BUFFER) {}
+
+	template <typename UniformT>
+	void UniformBuffer<UniformT>::Write(UniformT& data) {
+		ABuffer<UniformT>::Write(0, span<UniformT>(&data, 1));
 	}
+	
+	template <typename UniformT>
+	GLenum UniformBuffer<UniformT>::GLTarget() const {
+		return GL_UNIFORM_BUFFER;
+	}
+
 }

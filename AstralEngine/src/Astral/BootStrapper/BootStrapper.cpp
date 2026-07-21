@@ -8,7 +8,6 @@
 #include <imgui_impl_opengl3.h>
 
 #include "Astral/Window/Window.h"
-#include "Astral/Events/Event.h"
 
 namespace Astral {
     static const char* ToGLSLVersion(int major, int minor)

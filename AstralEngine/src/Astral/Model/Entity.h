@@ -1,21 +1,23 @@
 #pragma once
 #include "Common.h"
-#include "Astral/Components/Component.h"
+#include "Component.h"
+#include "Components/Transform/Transform.h"
 #include <stack>
 
 
 namespace Astral {
-	class AEntity {
+
+	class Entity {
 	public:
 		class ChildrenIterator {
 		public:
 			ChildrenIterator(
-				std::unordered_map<std::string, ptr<AEntity>>::iterator children_start,
-				std::unordered_map<std::string, ptr<AEntity>>::iterator children_end);
+				std::unordered_map<std::string, ptr<Entity>>::iterator children_start,
+				std::unordered_map<std::string, ptr<Entity>>::iterator children_end);
 
 			bool Finished() const;
 
-			AEntity& operator*();
+			Entity& operator*();
 
 			ChildrenIterator& operator++();
 			ChildrenIterator operator++(int);
@@ -24,18 +26,18 @@ namespace Astral {
 			bool operator!=(const ChildrenIterator& other) const;
 
 		private:
-			std::unordered_map<std::string, ptr<AEntity>>::iterator child_it;
-			const std::unordered_map<std::string, ptr<AEntity>>::iterator children_end;
+			std::unordered_map<std::string, ptr<Entity>>::iterator child_it;
+			const std::unordered_map<std::string, ptr<Entity>>::iterator children_end;
 		};
 
 
 		class ChildrenRange {
 		public:
-			ChildrenRange(AEntity& owner);
+			ChildrenRange(Entity& owner);
 			ChildrenIterator begin();
 			ChildrenIterator end();
 		private:
-			AEntity& owner;
+			Entity& owner;
 		};
 
 
@@ -46,7 +48,7 @@ namespace Astral {
 
 			bool Finished() const;
 
-			AEntity& operator*();
+			Entity& operator*();
 
 			DescendantIterator& operator++();
 			DescendantIterator operator++(int);
@@ -63,11 +65,11 @@ namespace Astral {
 
 		class DescendantRange {
 		public:
-			DescendantRange(AEntity& owner);
+			DescendantRange(Entity& owner);
 			DescendantIterator begin();
 			DescendantIterator end();
 		private:
-			AEntity& owner;
+			Entity& owner;
 		};
 
 
@@ -99,27 +101,28 @@ namespace Astral {
 		template <std::derived_from<AComponent> ComponentT>
 		class ComponentRange {
 		public:
-			ComponentRange(AEntity& owner);
+			ComponentRange(Entity& owner);
 			ComponentIterator<ComponentT> begin();
 			ComponentIterator<ComponentT> end();
 		private:
-			AEntity& owner;
+			Entity& owner;
 		};
 
 	
 	// Back into AEntity, nested types done
 	public:
-		AEntity(std::string name = "Entity");
+		Entity(std::string name = "Entity");
 
-		AEntity* Parent();
-		AEntity* Child(std::string child_name);
+		Entity* Parent();
+		Entity* Child(std::string child_name);
 
-		void AddChild(ptr<AEntity> child);
+		void AddChild(ptr<Entity> child);
 		void RemoveChild(std::string child_name);
 		void AddComponent(ptr<AComponent> component);
 
 		template <std::derived_from<AComponent> ComponentT>
 		ComponentT* GetComponent();
+		Transform& transform();
 
 
 		ChildrenRange Children();
@@ -128,9 +131,9 @@ namespace Astral {
 		ComponentRange<ComponentT> Components();
 
 	private:
-		AEntity* parent;
+		Entity* parent;
 		std::string name;
-		std::unordered_map<std::string, ptr<AEntity>> children;
+		std::unordered_map<std::string, ptr<Entity>> children;
 		std::vector<ptr<AComponent>> components;
 
 		bool CheckNameCollision(std::string name);
@@ -159,36 +162,36 @@ namespace Astral {
 	// =========================================== ChildrenIterator ===================================================
 	// =================================================================================================================
 
-	AEntity::ChildrenIterator::ChildrenIterator(
-		std::unordered_map<std::string, ptr<AEntity>>::iterator children_start,
-		std::unordered_map<std::string, ptr<AEntity>>::iterator children_end) :
+	inline Entity::ChildrenIterator::ChildrenIterator(
+		std::unordered_map<std::string, ptr<Entity>>::iterator children_start,
+		std::unordered_map<std::string, ptr<Entity>>::iterator children_end) :
 		child_it(children_start),
 		children_end(children_end) {}
 
-	bool AEntity::ChildrenIterator::Finished() const {
+	inline bool Entity::ChildrenIterator::Finished() const {
 		return child_it == children_end;
 	}
 
-	AEntity& AEntity::ChildrenIterator::operator*() {
+	inline Entity& Entity::ChildrenIterator::operator*() {
 		return *child_it->second;
 	}
 
-	AEntity::ChildrenIterator& AEntity::ChildrenIterator::operator++() {
+	inline Entity::ChildrenIterator& Entity::ChildrenIterator::operator++() {
 		++child_it;
 		return *this;
 	}
 
-	AEntity::ChildrenIterator AEntity::ChildrenIterator::operator++(int) {
-		AEntity::ChildrenIterator copy = *this;
+	inline Entity::ChildrenIterator Entity::ChildrenIterator::operator++(int) {
+		Entity::ChildrenIterator copy = *this;
 		++(*this);
 		return copy;
 	}
 
-	bool AEntity::ChildrenIterator::operator==(const ChildrenIterator& other) const {
+	inline bool Entity::ChildrenIterator::operator==(const ChildrenIterator& other) const {
 		return child_it == other.child_it;
 	}
 
-	bool AEntity::ChildrenIterator::operator!=(const ChildrenIterator& other) const {
+	inline bool Entity::ChildrenIterator::operator!=(const ChildrenIterator& other) const {
 		return !(*this == other);
 	}
 
@@ -197,14 +200,14 @@ namespace Astral {
 	// ============================================= ChildrenRange ====================================================
 	// =================================================================================================================
 
-	AEntity::ChildrenRange::ChildrenRange(AEntity& owner) :
+	inline Entity::ChildrenRange::ChildrenRange(Entity& owner) :
 		owner(owner) {}
 
-	AEntity::ChildrenIterator AEntity::ChildrenRange::begin() {
+	inline Entity::ChildrenIterator Entity::ChildrenRange::begin() {
 		return owner.BeginChildren();
 	}
 
-	AEntity::ChildrenIterator AEntity::ChildrenRange::end() {
+	inline Entity::ChildrenIterator Entity::ChildrenRange::end() {
 		return owner.EndChildren();
 	}
 
@@ -213,23 +216,23 @@ namespace Astral {
 	// =========================================== DescendantIterator =================================================
 	// =================================================================================================================
 
-	AEntity::DescendantIterator::DescendantIterator(ChildrenIterator root_children) {
+	inline Entity::DescendantIterator::DescendantIterator(ChildrenIterator root_children) {
 		VisitDescendant(root_children);
 	}
 
-	bool AEntity::DescendantIterator::Finished() const {
+	inline bool Entity::DescendantIterator::Finished() const {
 		return descendant_its.empty();
 	}
 
-	AEntity& AEntity::DescendantIterator::operator*() {
+	inline Entity& Entity::DescendantIterator::operator*() {
 		return *descendant_its.top();
 	}
 
-	AEntity::DescendantIterator& AEntity::DescendantIterator::operator++() {
+	inline Entity::DescendantIterator& Entity::DescendantIterator::operator++() {
 		assert(!descendant_its.empty());
 
 		if (!descendant_its.top().Finished()) {
-			AEntity& visited_descendant = *descendant_its.top();
+			Entity& visited_descendant = *descendant_its.top();
 			++descendant_its.top();
 			VisitDescendant(visited_descendant.BeginChildren());
 			return *this;
@@ -239,24 +242,24 @@ namespace Astral {
 		return ++ * this;
 	}
 
-	AEntity::DescendantIterator AEntity::DescendantIterator::operator++(int) {
-		AEntity::DescendantIterator copy = *this;
+	inline Entity::DescendantIterator Entity::DescendantIterator::operator++(int) {
+		Entity::DescendantIterator copy = *this;
 		++(*this);
 		return copy;
 	}
 
-	bool AEntity::DescendantIterator::operator==(const DescendantIterator& other) const {
+	inline bool Entity::DescendantIterator::operator==(const DescendantIterator& other) const {
 		if (Finished() || other.Finished())
 			return Finished() && other.Finished();
 
 		return descendant_its.top() == other.descendant_its.top();
 	}
 
-	bool AEntity::DescendantIterator::operator!=(const DescendantIterator& other) const {
+	inline bool Entity::DescendantIterator::operator!=(const DescendantIterator& other) const {
 		return !(*this == other);
 	}
 
-	void AEntity::DescendantIterator::VisitDescendant(ChildrenIterator descendant_children_it) {
+	inline void Entity::DescendantIterator::VisitDescendant(ChildrenIterator descendant_children_it) {
 		descendant_its.push(descendant_children_it);
 
 		if (descendant_its.top().Finished())
@@ -268,14 +271,14 @@ namespace Astral {
 	// ============================================= DescendantRange ==================================================
 	// =================================================================================================================
 
-	AEntity::DescendantRange::DescendantRange(AEntity& owner) :
+	inline Entity::DescendantRange::DescendantRange(Entity& owner) :
 		owner(owner) {}
 
-	AEntity::DescendantIterator AEntity::DescendantRange::begin() {
+	inline Entity::DescendantIterator Entity::DescendantRange::begin() {
 		return owner.BeginDescendants();
 	}
 
-	AEntity::DescendantIterator AEntity::DescendantRange::end() {
+	inline Entity::DescendantIterator Entity::DescendantRange::end() {
 		return owner.EndDescendants();
 	}
 
@@ -285,7 +288,7 @@ namespace Astral {
 	// =================================================================================================================
 
 	template <std::derived_from<AComponent> ComponentT>
-	AEntity::ComponentIterator<ComponentT>::ComponentIterator(
+	inline Entity::ComponentIterator<ComponentT>::ComponentIterator(
 		std::vector<ptr<AComponent>>::iterator components_begin,
 		std::vector<ptr<AComponent>>::iterator components_end) :
 		component_it(components_begin),
@@ -294,43 +297,43 @@ namespace Astral {
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	bool AEntity::ComponentIterator<ComponentT>::Finished() const {
+	inline bool Entity::ComponentIterator<ComponentT>::Finished() const {
 		return component_it == components_end;
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	ComponentT& AEntity::ComponentIterator<ComponentT>::operator*() {
+	inline ComponentT& Entity::ComponentIterator<ComponentT>::operator*() {
 		return dynamic_cast<ComponentT&>(**component_it);
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	typename AEntity::template ComponentIterator<ComponentT>&
-		AEntity::ComponentIterator<ComponentT>::operator++() {
+	inline typename Entity::template ComponentIterator<ComponentT>&
+		Entity::ComponentIterator<ComponentT>::operator++() {
 		++component_it;
 		Filter();
 		return *this;
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	typename AEntity::template ComponentIterator<ComponentT>
-		AEntity::ComponentIterator<ComponentT>::operator++(int) {
+	inline typename Entity::template ComponentIterator<ComponentT>
+		Entity::ComponentIterator<ComponentT>::operator++(int) {
 		auto copy = *this;
 		++(*this);
 		return copy;
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	bool AEntity::ComponentIterator<ComponentT>::operator==(const ComponentIterator& other) const {
+	inline bool Entity::ComponentIterator<ComponentT>::operator==(const ComponentIterator& other) const {
 		return component_it == other.component_it;
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	bool AEntity::ComponentIterator<ComponentT>::operator!=(const ComponentIterator& other) const {
+	inline bool Entity::ComponentIterator<ComponentT>::operator!=(const ComponentIterator& other) const {
 		return !(*this == other);
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	void AEntity::ComponentIterator<ComponentT>::Filter() {
+	inline void Entity::ComponentIterator<ComponentT>::Filter() {
 		while (!Finished() && dynamic_cast<ComponentT*>(component_it->get()) == nullptr) {
 			++component_it;
 		}
@@ -342,18 +345,18 @@ namespace Astral {
 	// =================================================================================================================
 
 	template <std::derived_from<AComponent> ComponentT>
-	AEntity::ComponentRange<ComponentT>::ComponentRange(AEntity& owner) :
+	inline Entity::ComponentRange<ComponentT>::ComponentRange(Entity& owner) :
 		owner(owner) {}
 
 	template <std::derived_from<AComponent> ComponentT>
-	typename AEntity::template ComponentIterator<ComponentT>
-		AEntity::ComponentRange<ComponentT>::begin() {
+	inline typename Entity::template ComponentIterator<ComponentT>
+		Entity::ComponentRange<ComponentT>::begin() {
 		return owner.BeginComponents<ComponentT>();
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	typename AEntity::template ComponentIterator<ComponentT>
-		AEntity::ComponentRange<ComponentT>::end() {
+	inline typename Entity::template ComponentIterator<ComponentT>
+		Entity::ComponentRange<ComponentT>::end() {
 		return owner.EndComponents<ComponentT>();
 	}
 
@@ -362,15 +365,17 @@ namespace Astral {
 	// ================================================= AEntity ======================================================
 	// =================================================================================================================
 
-	AEntity::AEntity(std::string name) :
+	inline Entity::Entity(std::string name) :
 		parent(nullptr),
-		name(name) {}
+		name(name) {
+		components.push_back(std::make_unique<Transform>());
+	}
 
-	AEntity* AEntity::Parent() {
+	inline Entity* Entity::Parent() {
 		return parent;
 	}
 
-	AEntity* AEntity::Child(std::string name) {
+	inline Entity* Entity::Child(std::string name) {
 		auto it = children.find(name);
 
 		if (it == children.end())
@@ -379,7 +384,7 @@ namespace Astral {
 		return it->second.get();
 	}
 
-	void AEntity::AddChild(ptr<AEntity> child) {
+	inline void Entity::AddChild(ptr<Entity> child) {
 		if (CheckNameCollision(child->name)) {
 			AST_CORE_ERROR("Cannot make entity with name {0}, since a sibling entity has the same name. Aborting the operation.", child->name);
 			return;
@@ -389,40 +394,45 @@ namespace Astral {
 		children[child->name] = std::move(child);
 	}
 
-	void AEntity::RemoveChild(std::string name) {
+	inline void Entity::RemoveChild(std::string name) {
 		children.erase(name);
 	}
 
-	void AEntity::AddComponent(ptr<AComponent> component) {
+	inline void Entity::AddComponent(ptr<AComponent> component) {
+		component->SetOwner(this);
 		components.push_back(std::move(component));
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	ComponentT* AEntity::GetComponent() {
+	inline ComponentT* Entity::GetComponent() {
 		for (auto& component : Components<ComponentT>())
 			return &component;
 
 		return nullptr;
 	}
 
-	AEntity::ChildrenRange AEntity::Children() {
+	inline Transform& Entity::transform() {
+		return *GetComponent<Transform>();
+	}
+
+	inline Entity::ChildrenRange Entity::Children() {
 		return ChildrenRange(*this);
 	}
 
-	AEntity::DescendantRange AEntity::Descendants() {
+	inline Entity::DescendantRange Entity::Descendants() {
 		return DescendantRange(*this);
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	AEntity::ComponentRange<ComponentT> AEntity::Components() {
+	inline Entity::ComponentRange<ComponentT> Entity::Components() {
 		return ComponentRange<ComponentT>(*this);
 	}
 
-	bool AEntity::CheckNameCollision(std::string name) {
+	inline bool Entity::CheckNameCollision(std::string name) {
 		return children.contains(name);
 	}
 
-	std::string AEntity::GenerateDefaultName() {
+	inline std::string Entity::GenerateDefaultName() {
 		uint32_t attempts = 0;
 		std::string name = "Entity";
 
@@ -433,29 +443,29 @@ namespace Astral {
 		return name;
 	}
 
-	AEntity::ChildrenIterator AEntity::BeginChildren() {
+	inline Entity::ChildrenIterator Entity::BeginChildren() {
 		return ChildrenIterator(children.begin(), children.end());
 	}
 
-	AEntity::ChildrenIterator AEntity::EndChildren() {
+	inline Entity::ChildrenIterator Entity::EndChildren() {
 		return ChildrenIterator(children.end(), children.end());
 	}
 
-	AEntity::DescendantIterator AEntity::BeginDescendants() {
+	inline Entity::DescendantIterator Entity::BeginDescendants() {
 		return DescendantIterator(BeginChildren());
 	}
 
-	AEntity::DescendantIterator AEntity::EndDescendants() {
+	inline Entity::DescendantIterator Entity::EndDescendants() {
 		return DescendantIterator();
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	AEntity::ComponentIterator<ComponentT> AEntity::BeginComponents() {
+	inline Entity::ComponentIterator<ComponentT> Entity::BeginComponents() {
 		return ComponentIterator<ComponentT>(components.begin(), components.end());
 	}
 
 	template <std::derived_from<AComponent> ComponentT>
-	AEntity::ComponentIterator<ComponentT> AEntity::EndComponents() {
+	inline Entity::ComponentIterator<ComponentT> Entity::EndComponents() {
 		return ComponentIterator<ComponentT>(components.end(), components.end());
 	}
 }

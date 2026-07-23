@@ -2,14 +2,19 @@
 
 class Sandbox : public Astral::Application {
 private:
-	struct Vertex {
+	struct Vertexx {
 		Astral::Attr::Vec4 color;
 		Astral::Attr::Vec2 pos;
 	};
 
+	inline static const std::array<Astral::AttributeLayout, 2> LAYOUT = {
+		Astral::Attr::Vec4::Layout(0, offsetof(Vertexx, color)),
+		Astral::Attr::Vec2::Layout(1, offsetof(Vertexx, pos)),
+	};
+
 private:
-	static const uint32_t VERT_COUNT = 3;
-	static const uint32_t INDICES_COUNT = 3;
+	static const size_t VERT_COUNT = 3;
+	static const size_t INDICES_COUNT = 3;
 
 	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
 	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
@@ -18,16 +23,10 @@ public:
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
 		vertex_array(
-			Astral::VertexArray<Vertex>(
-				VERT_COUNT,
-				INDICES_COUNT,
-				Astral::UsageHint::Static,
-				{
-					Astral::Attr::Vec4::Layout(0, offsetof(Vertex, color)),
-					Astral::Attr::Vec2::Layout(1, offsetof(Vertex, pos)),
-				},
-				Astral::UsageHint::Static
-			)
+			VERT_COUNT,
+			INDICES_COUNT,
+			Astral::UsageHint::Static,
+			LAYOUT
 		),
 		shader(VERTEX_DIR, FRAGMENT_DIR)
 	{
@@ -40,7 +39,7 @@ public:
 		AST_USER_INFO("Hello from Sandbox Application!");
 
 		shader.Bind();
-		Vertex vertices[VERT_COUNT] = {
+		Vertexx vertices[VERT_COUNT] = {
 			{ // Bottom left red
 				{ 1.0f, 0.0f, 0.0f, 1.0f },   // color
 				{ -0.5f, -0.5f }              // pos
@@ -54,7 +53,7 @@ public:
 				{  0.0f,  0.5f }
 			}
 		};
-		vertex_array.WriteVertices(0, std::span<Vertex, VERT_COUNT>(vertices));
+		vertex_array.WriteVertices(0, std::span<Vertexx, VERT_COUNT>(vertices));
 
 		uint32_t indices[INDICES_COUNT] = {
 			0, 1, 2
@@ -73,7 +72,7 @@ public:
 	}
 
 	Astral::Shader shader;
-	Astral::VertexArray<Vertex> vertex_array;
+	Astral::VertexArray<Vertexx> vertex_array;
 };
 
 Astral::Application* Astral::CreateApplication(Astral::StartupConfig& config) {

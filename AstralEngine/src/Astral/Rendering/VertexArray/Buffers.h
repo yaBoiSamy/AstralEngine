@@ -16,7 +16,7 @@ namespace Astral {
 	class ABuffer {
 	public:
 
-		ABuffer(uint32_t length, UsageHint usage, GLenum target);
+		ABuffer(size_t length, UsageHint usage, GLenum target);
 		virtual ~ABuffer();
 
 		// moving is supported
@@ -31,20 +31,20 @@ namespace Astral {
 		virtual void Bind() const;
 		void Write(uint32_t start, std::span<BufferElementT> data);
 
-		uint32_t Length() const;
+		size_t Length() const;
 
 	private:
 		GLuint handle;
 		const UsageHint usage;
 		const GLenum target;
-		const uint32_t length;
+		const size_t length;
 	};
 
 		
 	template <typename IndexT>
 	class IndexBuffer : public ABuffer<IndexT> {
 	public:
-		IndexBuffer(uint32_t length, UsageHint usage);
+		IndexBuffer(size_t length, UsageHint usage);
 
 		// moving is supported
 		IndexBuffer(IndexBuffer&&) = default;
@@ -56,7 +56,7 @@ namespace Astral {
 	class VertexBuffer : public ABuffer<VertexT> {
 	public:
 
-		VertexBuffer(uint32_t length, UsageHint usage, const std::initializer_list<AttributeLayout>& layout, uint32_t advancement_rate = 0);
+		VertexBuffer(size_t length, UsageHint usage, std::span<const AttributeLayout>& layout, uint32_t advancement_rate = 0);
 		virtual ~VertexBuffer() override;
 
 		// moving is supported
@@ -96,7 +96,7 @@ namespace Astral {
 	// ================================================ Abstract buffer ================================================
 
 	template <typename BufferElementT>
-	ABuffer<BufferElementT>::ABuffer(uint32_t length, UsageHint usage, GLenum target) : length(length), usage(usage), target(target) {
+	ABuffer<BufferElementT>::ABuffer(size_t length, UsageHint usage, GLenum target) : length(length), usage(usage), target(target) {
 		glGenBuffers(1, &handle);
 		Bind();
 		glBufferData(
@@ -135,14 +135,14 @@ namespace Astral {
 	}
 
 	template<typename BufferElementT>
-	uint32_t ABuffer<BufferElementT>::Length() const {
+	size_t ABuffer<BufferElementT>::Length() const {
 		return length;
 	}
 
 	// ================================================= Index buffer ==================================================
 
 	template <typename IndexT>
-	IndexBuffer<IndexT>::IndexBuffer(uint32_t length, UsageHint usage) : ABuffer<IndexT>(length, usage, GL_ELEMENT_ARRAY_BUFFER) {}
+	IndexBuffer<IndexT>::IndexBuffer(size_t length, UsageHint usage) : ABuffer<IndexT>(length, usage, GL_ELEMENT_ARRAY_BUFFER) {}
 
 
 	// ================================================= Vertex buffer =================================================
@@ -150,12 +150,12 @@ namespace Astral {
 
 	template <typename VertexT>
 	VertexBuffer<VertexT>::VertexBuffer(
-		uint32_t length,
+		size_t length,
 		UsageHint usage,
-		const std::initializer_list<AttributeLayout>& layout,
+		std::span<const AttributeLayout>& layout,
 		uint32_t advancement_rate
 	) : ABuffer<VertexT>(length, usage, GL_ARRAY_BUFFER),
-		layout(layout) {
+		layout(layout.begin(), layout.end()) {
 
 
 		glGenVertexArrays(1, &layoutHandle);

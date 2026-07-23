@@ -9,6 +9,7 @@ namespace Astral {
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual void Clear() = 0;
 		virtual void Draw(const IVertexArray& vertexArray) = 0;
+		virtual void Present() = 0;
 
 	};
 
@@ -18,6 +19,7 @@ namespace Astral {
 		virtual void SetClearColor(const glm::vec4& color) override;
 		virtual void Clear() override;
 		virtual void Draw(const IVertexArray& vertexArray) override;
+		virtual void Present() override;
 	};
 }
 

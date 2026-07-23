@@ -15,5 +15,6 @@
 #include "Astral/Events/KeyCodes.h"
 
 #include "Astral/Rendering/VertexArray/VertexArray.h"
+#include "Astral/Rendering/VertexArray/Attributes.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Rendering/Shader/Shader.h"

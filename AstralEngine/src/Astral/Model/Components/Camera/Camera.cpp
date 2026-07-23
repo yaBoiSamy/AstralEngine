@@ -1,6 +1,6 @@
 #include "Common.h"
 #include "Camera.h"
-#include "Astral/Components/Transform/Transform.h"
+#include "Astral/Model/Components/Transform/Transform.h"
 #include <glm/gtc/quaternion.hpp>
 
 namespace Astral {
@@ -15,9 +15,6 @@ namespace Astral {
 		aspect_ratio(aspect_ratio),
 		near_plane(near_plane),
 		far_plane(far_plane) {
-
-		ptr<Transform> cmp = std::make_unique<Transform>();
-		AddComponent(std::move(cmp));
 	}
 
 	void Camera::SetPerspective(double fov, double aspect_ratio, double near_plane, double far_plane) {
@@ -28,9 +25,9 @@ namespace Astral {
 	}
 	
 	mat4 Camera::ViewMatrix() {
-		Transform& transform = *GetComponent<Transform>();
-		mat4 rot = glm::mat4_cast(glm::conjugate(glm::quat(transform.rotation)));
-		mat4 trans = glm::translate(mat4(1.0), -glm::vec3(transform.position));
+		Transform& transform = owner->transform();
+		mat4 rot = glm::mat4_cast(glm::conjugate(glm::quat(transform.Rotation())));
+		mat4 trans = glm::translate(mat4(1.0), -glm::vec3(transform.Position()));
 		return glm::inverse(trans * rot);
 	}
 	

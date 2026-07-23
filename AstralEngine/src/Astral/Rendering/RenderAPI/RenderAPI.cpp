@@ -14,6 +14,10 @@ namespace Astral {
 	}
 
 	void OpenGLRenderAPI::Draw(const IVertexArray& vertexArray) {
-		glDrawElements(GL_TRIANGLES, vertexArray.Length(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertexArray.Length()), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void OpenGLRenderAPI::Present() {
+
 	}
 }

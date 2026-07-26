@@ -1,6 +1,6 @@
 #pragma once
-#include "Astral/Rendering/VertexArray/VertexArray.h"
-#include "Astral/Rendering/VertexArray/Attributes.h"
+#include "Astral/Rendering/Buffers/VertexArray.h"
+#include "Astral/Rendering/Buffers/Attributes.h"
 #include <glm/glm.hpp>
 
 namespace Astral {
@@ -16,7 +16,7 @@ namespace Astral {
 	public:
 		MeshData(std::vector<Vertex> verts, std::vector<uint32_t> indices);
 
-		void Draw();
+		void Draw() const;
 
 	private:
 		std::vector<Vertex> vertices;

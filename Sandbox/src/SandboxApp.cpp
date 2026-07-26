@@ -2,86 +2,52 @@
 
 class Sandbox : public Astral::Application {
 private:
-	struct Vertexx {
-		Astral::Attr::Vec4 color;
-		Astral::Attr::Vec2 pos;
-	};
-
-	inline static const std::array<Astral::AttributeLayout, 2> LAYOUT = {
-		Astral::Attr::Vec4::Layout(0, offsetof(Vertexx, color)),
-		Astral::Attr::Vec2::Layout(1, offsetof(Vertexx, pos)),
-	};
-
-private:
-	static const size_t VERT_COUNT = 3;
-	static const size_t INDICES_COUNT = 3;
-
 	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
 	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
+	const std::vector<Astral::Vertex> vertices = {
+			{ // Bottom left red
+				{ -0.5f, -0.5f, 0.0f },       // pos
+				{ 1.0f, 0.0f, 0.0f, 1.0f },   // color
+			},
+			{ // Bottom right green
+				{ 0.5f, -0.5f, 0.0f },
+				{ 0.0f, 1.0f, 0.0f, 1.0f },
+			},
+			{ // Top center blue
+				{ 0.0f,  0.5f, 0.0f },
+				{ 0.0f, 0.0f, 1.0f, 1.0f },
+			}
+	};
+	const std::vector<uint32_t> indices = {
+		0, 1, 2
+	};
+	const Astral::MeshData MESH_DATA = Astral::MeshData(std::move(vertices), std::move(indices));
+
+
+	Astral::Shader shader;
+	Astral::Mesh mesh;
 
 public:
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-		vertex_array(
-			VERT_COUNT,
-			INDICES_COUNT,
-			Astral::UsageHint::Static,
-			LAYOUT
-		),
-		shader(VERTEX_DIR, FRAGMENT_DIR)
-	{
-		Start();
-	}
-	~Sandbox() {}
+		shader(VERTEX_DIR, FRAGMENT_DIR),
+		mesh(&MESH_DATA) {
 
-
-	void Start() {
 		AST_USER_INFO("Hello from Sandbox Application!");
 
 		shader.Bind();
-		Vertexx vertices[VERT_COUNT] = {
-			{ // Bottom left red
-				{ 1.0f, 0.0f, 0.0f, 1.0f },   // color
-				{ -0.5f, -0.5f }              // pos
-			},
-			{ // Bottom right green
-				{ 0.0f, 1.0f, 0.0f, 1.0f },
-				{  0.5f, -0.5f }
-			},
-			{ // Top center blue
-				{ 0.0f, 0.0f, 1.0f, 1.0f },
-				{  0.0f,  0.5f }
-			}
-		};
-		vertex_array.WriteVertices(0, std::span<Vertexx, VERT_COUNT>(vertices));
-
-		uint32_t indices[INDICES_COUNT] = {
-			0, 1, 2
-		};
-		vertex_array.WriteIndices(0, std::span<uint32_t, INDICES_COUNT>(indices));
 	}
 
 	void Update() override {
-		shader.Bind();
-		Astral::Renderer::Submit(vertex_array);
+		mesh.Draw();
 	}
 
 	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {
 		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeatCount);
 		return false;
 	}
-
-	Astral::Shader shader;
-	Astral::VertexArray<Vertexx> vertex_array;
 };
 
 Astral::Application* Astral::CreateApplication(Astral::StartupConfig& config) {
 	return new Sandbox(config);
 }
-
-/*
-
-Severity	Code	Description	Project	File	Line	Suppression State	Details
-Error	LNK2019	unresolved external symbol "private: virtual unsigned int __cdecl Astral::ABuffer<struct Sandbox::Vertex>::GLTarget(void)const " (?GLTarget@?$ABuffer@UVertex@Sandbox@@@Astral@@EEBAIXZ) referenced in function "public: __cdecl Astral::ABuffer<struct Sandbox::Vertex>::ABuffer<struct Sandbox::Vertex>(unsigned int,enum Astral::UsageHint)" (??0?$ABuffer@UVertex@Sandbox@@@Astral@@QEAA@IW4UsageHint@1@@Z)	Sandbox	S:\CPP\AstralEngine\Sandbox\SandboxApp.obj	1
-
-*/

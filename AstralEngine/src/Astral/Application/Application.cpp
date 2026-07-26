@@ -4,6 +4,7 @@
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/DebugLayer/DebugLayer.h"
 #include "Astral/Layers/GLSLLayer/GLSLLayer.h"
+#include "Astral/Rendering/Renderer/Renderer.h"
 
 namespace Astral {
 
@@ -12,6 +13,8 @@ namespace Astral {
 			event.Dispatch(*this);
 			layers.PropagateEvent(event);
 			});
+
+		Renderer::InitRenderer();
 
 		layers.PushOverlay(std::make_unique<DebugLayer>([this] {
 			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
@@ -32,10 +35,10 @@ namespace Astral {
 		isRunning = true;
 		while (isRunning) {
 			window.PumpEvents();
-			renderOrchestrator.SetupFrame(window.GetFramebufferSize());
+			Renderer::SetupFrame(window.GetFramebufferSize());
 			Update();
 			layers.Update(window.GetFrameContext());
-			renderOrchestrator.PresentFrame(window);
+			window.SwapBuffers(); // present frame
 		}
 	}
 }

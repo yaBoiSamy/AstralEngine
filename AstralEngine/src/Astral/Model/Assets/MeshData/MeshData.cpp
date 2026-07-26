@@ -11,15 +11,15 @@ namespace Astral {
 
 	MeshData::MeshData(
 		std::vector<Vertex> verts, 
-		std::vector<uint32_t> indices) : 
+		std::vector<uint32_t> idxs) : 
 		vertices(std::move(verts)), 
-		indices(std::move(indices)),
-		gpu_mesh(verts.size(), indices.size(), UsageHint::Static, VERTEX_LAYOUT) {
+		indices(std::move(idxs)),
+		gpu_mesh(vertices.size(), indices.size(), UsageHint::Static, VERTEX_LAYOUT) {
 		gpu_mesh.WriteVertices(0, vertices);
 		gpu_mesh.WriteIndices(0, indices);
 	}
 
-	void MeshData::Draw() {
+	void MeshData::Draw() const {
 		Renderer::Submit(gpu_mesh);
 	}
 }

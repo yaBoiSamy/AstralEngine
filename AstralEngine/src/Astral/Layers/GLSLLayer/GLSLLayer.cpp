@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "GLSLLayer.h"
-#include "Astral/Rendering/VertexArray/Attributes.h"
-#include "Astral/Rendering/VertexArray/VertexArray.h"
+#include "Astral/Rendering/Buffers/Attributes.h"
+#include "Astral/Rendering/Buffers/VertexArray.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 
 

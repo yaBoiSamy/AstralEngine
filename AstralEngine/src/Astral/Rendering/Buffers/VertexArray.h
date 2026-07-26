@@ -1,7 +1,7 @@
 #pragma once
 #include <span>
-#include "Astral/Rendering/VertexArray/Buffers.h"
-#include "Astral/Rendering/VertexArray/Attributes.h"
+#include "Astral/Rendering/Buffers/Buffers.h"
+#include "Astral/Rendering/Buffers/Attributes.h"
 
 namespace Astral {
 

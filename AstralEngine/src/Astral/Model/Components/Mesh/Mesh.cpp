@@ -1,8 +1,11 @@
 #include "Common.h"
 #include "Mesh.h"
 
-Astral::Mesh::Mesh(MeshData* meshdata) : meshdata(meshdata) {}
+namespace Astral {
 
-void Astral::Mesh::Draw() {
-	meshdata->Draw();
+	Mesh::Mesh(const MeshData* meshdata) : meshdata(meshdata) {}
+
+	void Mesh::Draw() {
+		meshdata->Draw();
+	}
 }

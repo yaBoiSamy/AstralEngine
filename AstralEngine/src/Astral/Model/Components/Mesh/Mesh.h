@@ -6,9 +6,9 @@ namespace Astral {
 
 	class Mesh : AComponent {
 	public:
-		Mesh(MeshData* meshdata);
+		Mesh(const MeshData* meshdata);
 		void Draw();
-		MeshData* meshdata;
+		const MeshData* meshdata;
 	};
 }
 

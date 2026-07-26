@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Astral/Window/Window.h"
-#include "Astral/Rendering/RenderOrchestrator/RenderOrchestrator.h"
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/LayerStack.h"
 #include "Astral/Events/EventListener.h"
@@ -23,7 +22,6 @@ namespace Astral {
 
 		bool isRunning;
 		Window window;
-		RenderOrchestrator renderOrchestrator;
 		LayerStack layers;
 	};
 

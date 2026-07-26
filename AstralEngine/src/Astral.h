@@ -14,7 +14,12 @@
 #include "Astral/Events/Event.h"
 #include "Astral/Events/KeyCodes.h"
 
-#include "Astral/Rendering/VertexArray/VertexArray.h"
-#include "Astral/Rendering/VertexArray/Attributes.h"
+
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Rendering/Shader/Shader.h"
+
+#include "Astral/Model/Entity.h"
+#include "Astral/Model/Component.h"
+#include "Astral/Model/Components/Transform/Transform.h"
+#include "Astral/Model/Components/Camera/Camera.h"
+#include "Astral/Model/Components/Mesh/Mesh.h"

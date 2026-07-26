@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <span>
-#include "Astral/Rendering/VertexArray/Attributes.h"
+#include "Astral/Rendering/Buffers/Attributes.h"
 
 
 namespace Astral {
@@ -156,7 +156,6 @@ namespace Astral {
 		uint32_t advancement_rate
 	) : ABuffer<VertexT>(length, usage, GL_ARRAY_BUFFER),
 		layout(layout.begin(), layout.end()) {
-
 
 		glGenVertexArrays(1, &layoutHandle);
 		Bind();

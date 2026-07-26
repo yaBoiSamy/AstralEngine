@@ -3,8 +3,8 @@
 #include <string>
 #include "Astral/Layers/ALayer.h"
 #include "Astral/Rendering/Shader/Shader.h"
-#include "Astral/Rendering/VertexArray/Attributes.h"
-#include "Astral/Rendering/VertexArray/VertexArray.h"
+#include "Astral/Rendering/Buffers/Attributes.h"
+#include "Astral/Rendering/Buffers/VertexArray.h"
 
 namespace Astral
 {

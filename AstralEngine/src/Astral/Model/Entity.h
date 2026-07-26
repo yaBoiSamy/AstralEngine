@@ -59,7 +59,7 @@ namespace Astral {
 		private:
 			std::stack<ChildrenIterator> descendant_its;
 
-			void VisitDescendant(ChildrenIterator descendant_children_it);
+			void Normalize();
 		};
 
 
@@ -217,7 +217,8 @@ namespace Astral {
 	// =================================================================================================================
 
 	inline Entity::DescendantIterator::DescendantIterator(ChildrenIterator root_children) {
-		VisitDescendant(root_children);
+		descendant_its.push(root_children);
+		Normalize();
 	}
 
 	inline bool Entity::DescendantIterator::Finished() const {
@@ -231,15 +232,11 @@ namespace Astral {
 	inline Entity::DescendantIterator& Entity::DescendantIterator::operator++() {
 		assert(!descendant_its.empty());
 
-		if (!descendant_its.top().Finished()) {
-			Entity& visited_descendant = *descendant_its.top();
-			++descendant_its.top();
-			VisitDescendant(visited_descendant.BeginChildren());
-			return *this;
-		}
-
-		descendant_its.pop();
-		return ++ * this;
+		Entity& visited_descendant = *descendant_its.top();
+		++descendant_its.top();
+		descendant_its.push(visited_descendant.BeginChildren());
+		Normalize();
+		return *this;
 	}
 
 	inline Entity::DescendantIterator Entity::DescendantIterator::operator++(int) {
@@ -259,10 +256,8 @@ namespace Astral {
 		return !(*this == other);
 	}
 
-	inline void Entity::DescendantIterator::VisitDescendant(ChildrenIterator descendant_children_it) {
-		descendant_its.push(descendant_children_it);
-
-		if (descendant_its.top().Finished())
+	inline void Entity::DescendantIterator::Normalize() {
+		while (!Finished() && descendant_its.top().Finished())
 			descendant_its.pop();
 	}
 

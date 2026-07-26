@@ -5,8 +5,9 @@ namespace Astral {
 
 	class Scene {
 	public:
+		Scene() = default;
+		void Draw();
 
-	private:
 		Entity root;
 	};
 }

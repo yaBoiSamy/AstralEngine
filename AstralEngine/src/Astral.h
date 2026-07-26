@@ -23,3 +23,4 @@
 #include "Astral/Model/Components/Transform/Transform.h"
 #include "Astral/Model/Components/Camera/Camera.h"
 #include "Astral/Model/Components/Mesh/Mesh.h"
+#include "Astral/Model/Scene/Scene.h"

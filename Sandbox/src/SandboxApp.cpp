@@ -25,21 +25,26 @@ private:
 
 
 	Astral::Shader shader;
-	Astral::Mesh mesh;
+	Astral::Scene scene;
 
 public:
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-		shader(VERTEX_DIR, FRAGMENT_DIR),
-		mesh(&MESH_DATA) {
+		shader(VERTEX_DIR, FRAGMENT_DIR) {
 
 		AST_USER_INFO("Hello from Sandbox Application!");
 
 		shader.Bind();
+
+		ptr<Astral::Entity> triangle = std::make_unique<Astral::Entity>("triangole");
+		ptr<Astral::Mesh> triangle_mesh_component = std::make_unique<Astral::Mesh>(&MESH_DATA);
+		triangle->AddComponent(std::move(triangle_mesh_component));
+		scene.root.AddChild(std::move(triangle));
+
 	}
 
 	void Update() override {
-		mesh.Draw();
+		scene.Draw();
 	}
 
 	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {

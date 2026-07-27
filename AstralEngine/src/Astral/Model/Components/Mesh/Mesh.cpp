@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "Mesh.h"
+#include "Astral/Model/Entity.h"
 
 namespace Astral {
 
@@ -7,6 +8,7 @@ namespace Astral {
 
 	void Mesh::Draw() {
 		AST_CORE_ASSERT(meshdata, "Tried to render mesh component with no mesh data attached");
+		Owner()->transform().UpdateRenderedWorldSpace();
 		meshdata->Draw();
 	}
 }

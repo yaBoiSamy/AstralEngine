@@ -21,16 +21,17 @@ namespace Astral {
 		const GLchar* message,
 		const void* userParam);
 
-	void OpenGLRenderAPI::ConfigureErrorMessageLogging() {
+	void OpenGLRenderAPI::Setup() {
 		AST_CORE_ASSERT(glDebugMessageCallback != nullptr, "GLAD Extension not included");
 		if (glDebugMessageCallback) {
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLMessageCallback, this);
 		}
-	}
 
-	void OpenGLRenderAPI::LogDriverInfo() {
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
 		AST_CORE_INFO("\nOpenGL Info:\n    Vendor: {0}\n    Renderer: {1}\n    Version: {2}",
 			(char*)glGetString(GL_VENDOR),
 			(char*)glGetString(GL_RENDERER),

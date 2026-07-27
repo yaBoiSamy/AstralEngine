@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "Camera.h"
 #include "Astral/Model/Components/Transform/Transform.h"
+#include "Astral/Rendering/Renderer/Renderer.h"
 #include <glm/gtc/quaternion.hpp>
 
 namespace Astral {
@@ -14,8 +15,7 @@ namespace Astral {
 		fov(fov),
 		aspect_ratio(aspect_ratio),
 		near_plane(near_plane),
-		far_plane(far_plane) {
-	}
+		far_plane(far_plane) {}
 
 	void Camera::SetPerspective(double fov, double aspect_ratio, double near_plane, double far_plane) {
 		this->fov = fov;
@@ -25,13 +25,22 @@ namespace Astral {
 	}
 	
 	mat4 Camera::ViewMatrix() {
+		AST_CORE_ASSERT(owner, "Camera component used before being attached");
 		Transform& transform = owner->transform();
-		mat4 rot = glm::mat4_cast(glm::conjugate(glm::quat(transform.Rotation())));
-		mat4 trans = glm::translate(mat4(1.0), -glm::vec3(transform.Position()));
-		return glm::inverse(trans * rot);
+		mat4 rot = glm::mat4_cast(glm::conjugate(glm::quat(transform.GlobalRotation())));
+		mat4 trans = glm::translate(mat4(1.0), -glm::vec3(transform.GlobalPosition()));
+		return rot * trans;
 	}
 	
 	mat4 Camera::ProjectionMatrix() {
 		return glm::perspective((float)fov, (float)aspect_ratio, (float)near_plane, (float)far_plane);
+	}
+
+	void Camera::UpdateRenderedPOV() {
+		Renderer::CameraData camdata = {
+			ViewMatrix(),
+			ProjectionMatrix()
+		};
+		Renderer::UpdateCameraData(camdata);
 	}
 }

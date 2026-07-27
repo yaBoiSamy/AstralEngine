@@ -33,10 +33,12 @@ namespace Astral {
 
 		size_t Length() const;
 
-	private:
+	protected:
 		GLuint handle;
-		const UsageHint usage;
 		const GLenum target;
+
+	private:
+		const UsageHint usage;
 		const size_t length;
 	};
 
@@ -75,16 +77,13 @@ namespace Astral {
 	template <typename UniformT>
 	class UniformBuffer : public ABuffer<UniformT> {
 	public:
-		UniformBuffer(UsageHint usage);
+		UniformBuffer(UsageHint usage, uint32_t binding_point);
 
 		// moving is supported
 		UniformBuffer(UniformBuffer&&) = default;
 		UniformBuffer& operator=(UniformBuffer&& other) = default;
 
 		void Write(UniformT& data);
-
-	private:
-		virtual GLenum GLTarget() const override;
 	};
 
 
@@ -108,7 +107,7 @@ namespace Astral {
 	}
 
 	template <typename BufferElementT>
-	ABuffer<BufferElementT>::ABuffer(ABuffer&& other) : handle(other.handle), usage(other.usage), length(other.length) {
+	ABuffer<BufferElementT>::ABuffer(ABuffer&& other) : handle(other.handle), usage(other.usage), length(other.length), target(other.target) {
 		other.handle = 0;
 	}
 
@@ -200,16 +199,12 @@ namespace Astral {
 // ================================================= Uniform buffer =================================================
 
 	template <typename UniformT>
-	UniformBuffer<UniformT>::UniformBuffer(UsageHint usage) : ABuffer<UniformT>(1, usage, GL_UNIFORM_BUFFER) {}
+	UniformBuffer<UniformT>::UniformBuffer(UsageHint usage, uint32_t binding_point) : ABuffer<UniformT>(1, usage, GL_UNIFORM_BUFFER) {
+		glBindBufferBase(this->target, binding_point, this->handle);
+	}
 
 	template <typename UniformT>
 	void UniformBuffer<UniformT>::Write(UniformT& data) {
-		ABuffer<UniformT>::Write(0, span<UniformT>(&data, 1));
+		ABuffer<UniformT>::Write(0, std::span<UniformT>(&data, 1));
 	}
-	
-	template <typename UniformT>
-	GLenum UniformBuffer<UniformT>::GLTarget() const {
-		return GL_UNIFORM_BUFFER;
-	}
-
 }

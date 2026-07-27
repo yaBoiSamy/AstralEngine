@@ -11,8 +11,8 @@ namespace Astral {
 		bool vSync = true;
 
 		// Graphics API	parameters
-		int glMajor = 3;
-		int glMinor = 3;
+		int glMajor = 4;
+		int glMinor = 6;
 	};
 
 	Window WindowStartup(const StartupConfig& startupConfig);

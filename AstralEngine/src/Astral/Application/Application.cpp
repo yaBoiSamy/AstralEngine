@@ -36,7 +36,7 @@ namespace Astral {
 		while (isRunning) {
 			window.PumpEvents();
 			Renderer::SetupFrame(window.GetFramebufferSize());
-			Update();
+			Update(window.GetFrameContext());
 			layers.Update(window.GetFrameContext());
 			window.SwapBuffers(); // present frame
 		}

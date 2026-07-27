@@ -4,23 +4,63 @@ class Sandbox : public Astral::Application {
 private:
 	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
 	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
-	const std::vector<Astral::Vertex> vertices = {
-			{ // Bottom left red
-				{ -0.5f, -0.5f, 0.0f },       // pos
-				{ 1.0f, 0.0f, 0.0f, 1.0f },   // color
-			},
-			{ // Bottom right green
-				{ 0.5f, -0.5f, 0.0f },
-				{ 0.0f, 1.0f, 0.0f, 1.0f },
-			},
-			{ // Top center blue
-				{ 0.0f,  0.5f, 0.0f },
-				{ 0.0f, 0.0f, 1.0f, 1.0f },
-			}
-	};
-	const std::vector<uint32_t> indices = {
-		0, 1, 2
-	};
+    const std::vector<Astral::Vertex> vertices = {
+        // Front (Red)
+        { { -0.5f, -0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 0
+        { {  0.5f, -0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 1
+        { {  0.5f,  0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 2
+        { { -0.5f,  0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 3
+
+        // Right (Green)
+        { {  0.5f, -0.5f,  0.5f }, { 0, 1, 0, 1 } }, // 4
+        { {  0.5f, -0.5f, -0.5f }, { 0, 1, 0, 1 } }, // 5
+        { {  0.5f,  0.5f, -0.5f }, { 0, 1, 0, 1 } }, // 6
+        { {  0.5f,  0.5f,  0.5f }, { 0, 1, 0, 1 } }, // 7
+
+        // Back (Blue)
+        { {  0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 8
+        { { -0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 9
+        { { -0.5f,  0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 10
+        { {  0.5f,  0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 11
+
+        // Left (Yellow)
+        { { -0.5f, -0.5f, -0.5f }, { 1, 1, 0, 1 } }, // 12
+        { { -0.5f, -0.5f,  0.5f }, { 1, 1, 0, 1 } }, // 13
+        { { -0.5f,  0.5f,  0.5f }, { 1, 1, 0, 1 } }, // 14
+        { { -0.5f,  0.5f, -0.5f }, { 1, 1, 0, 1 } }, // 15
+
+        // Top (Magenta)
+        { { -0.5f,  0.5f,  0.5f }, { 1, 0, 1, 1 } }, // 16
+        { {  0.5f,  0.5f,  0.5f }, { 1, 0, 1, 1 } }, // 17
+        { {  0.5f,  0.5f, -0.5f }, { 1, 0, 1, 1 } }, // 18
+        { { -0.5f,  0.5f, -0.5f }, { 1, 0, 1, 1 } }, // 19
+
+        // Bottom (Cyan)
+        { { -0.5f, -0.5f, -0.5f }, { 0, 1, 1, 1 } }, // 20
+        { {  0.5f, -0.5f, -0.5f }, { 0, 1, 1, 1 } }, // 21
+        { {  0.5f, -0.5f,  0.5f }, { 0, 1, 1, 1 } }, // 22
+        { { -0.5f, -0.5f,  0.5f }, { 0, 1, 1, 1 } }, // 23
+    };
+
+    const std::vector<uint32_t> indices = {
+        // Front
+        0, 1, 2,  2, 3, 0,
+
+        // Right
+        4, 5, 6,  6, 7, 4,
+
+        // Back
+        8, 9, 10, 10, 11, 8,
+
+        // Left
+        12, 13, 14, 14, 15, 12,
+
+        // Top
+        16, 17, 18, 18, 19, 16,
+
+        // Bottom
+        20, 21, 22, 22, 23, 20
+    };
 	const Astral::MeshData MESH_DATA = Astral::MeshData(std::move(vertices), std::move(indices));
 
 
@@ -36,14 +76,38 @@ public:
 
 		shader.Bind();
 
-		ptr<Astral::Entity> triangle = std::make_unique<Astral::Entity>("triangole");
+		ptr<Astral::Entity> triangle = std::make_unique<Astral::Entity>("cube");
 		ptr<Astral::Mesh> triangle_mesh_component = std::make_unique<Astral::Mesh>(&MESH_DATA);
 		triangle->AddComponent(std::move(triangle_mesh_component));
 		scene.root.AddChild(std::move(triangle));
 
+        ptr<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
+		ptr<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
+		ptr<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
+			45,                 // FOV (degrees)
+            1920.0 / 1080.0,           // aspect ratio
+			0.1,                  // near plane
+			100                 // far plane
+		);
+		scene.SetMainCam(cam_component.get());
+		maincam->AddComponent(std::move(cam_component));
+        cam_parent->AddChild(std::move(maincam));
+		scene.root.AddChild(std::move(cam_parent));
+
+        Astral::Transform& cube_tr = *scene.root.Child("cube")->GetComponent<Astral::Transform>();
+        Astral::Transform& camdad_tr = *scene.root.Child("cam_dad")->GetComponent<Astral::Transform>();
+        Astral::Camera& cam = *scene.root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Camera>();
+        Astral::Transform& cam_tr = *scene.root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Transform>();
+
+        cam_tr.Translate(glm::vec3(0, 2, 2));
+        cam_tr.LookAt(cube_tr.Position());
 	}
 
-	void Update() override {
+	void Update(const Astral::FrameContext& context) override {
+		float cube_rotspeed = 1;
+        float cam_rotspeed = 0.25;
+		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
+        scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
 		scene.Draw();
 	}
 

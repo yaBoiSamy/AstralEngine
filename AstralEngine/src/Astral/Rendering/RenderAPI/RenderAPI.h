@@ -6,8 +6,7 @@ namespace Astral {
 
 	class RenderAPI {
 	public:
-		virtual void ConfigureErrorMessageLogging() = 0;
-		virtual void LogDriverInfo() = 0;
+		virtual void Setup() = 0;
 		virtual void SetActiveFrameBuffer(uint32_t id) = 0;
 		virtual void SetViewport(std::pair<uint32_t, uint32_t> framebufferSize) = 0;
 		virtual void SetClearColor(const glm::vec4& color) = 0;
@@ -20,8 +19,7 @@ namespace Astral {
 	class OpenGLRenderAPI : public RenderAPI {
 	public:
 		OpenGLRenderAPI();
-		virtual void ConfigureErrorMessageLogging() override;
-		virtual void LogDriverInfo() override;
+		virtual void Setup() override;
 		virtual void SetActiveFrameBuffer(uint32_t id) override;
 		virtual void SetViewport(std::pair<uint32_t, uint32_t> framebufferSize) override;
 		virtual void SetClearColor(const glm::vec4& color) override;

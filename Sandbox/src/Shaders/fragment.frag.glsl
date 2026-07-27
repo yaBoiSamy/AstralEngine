@@ -1,7 +1,7 @@
 
 
 
-#version 330 core
+#version 460 core
 
 in vec4 fcolor;
 

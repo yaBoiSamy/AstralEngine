@@ -39,7 +39,6 @@ namespace Astral {
 		void SetCallback(std::function<void(const Event&)> callback);
 		void SetVSync(bool vSync);
 
-		double GetDeltaTime() const;    
 		std::pair<uint32_t, uint32_t> GetFramebufferSize() const;
 
 		void PumpEvents();

@@ -10,30 +10,30 @@ namespace Astral {
 	public:
 		Transform(dvec3 init_pos = glm::dvec3(), dquat init_rot = glm::dquat(glm::dvec3()));
 
-		virtual void OnOwnerChange() override;
+		virtual void OnOwnerChange(Entity* prev_owner) override;
 
 		dvec3 Position() const;
 		dquat Rotation() const;
 
-		dvec3 GlobalPosition() const;
-		dquat GlobalRotation() const;
+		dvec3 GlobalPosition();
+		dquat GlobalRotation();
 
-		dvec3 Forward() const;
-		dvec3 Right() const;
-		dvec3 Up() const;
+		dvec3 Forward();
+		dvec3 Right();
+		dvec3 Up();
 
 		void LookAt(const dvec3& target);
 
 		void Translate(const dvec3& displacement);
 		void Rotate(const dquat& displacement);
 
-		mat4 ModelMatrix() const;
+		void UpdateRenderedWorldSpace();
 
 		dvec3 local_position;
 		dquat local_rotation;
 
-		dvec3 global_position;
-		dquat global_rotation;
+	private:
+		mat4 ModelMatrix();
 	};
 	
 }

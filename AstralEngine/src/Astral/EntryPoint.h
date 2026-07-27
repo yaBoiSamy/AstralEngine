@@ -17,8 +17,8 @@ int main(int argc, char** argv) {
 		true,  // vSync
 
 		// Graphics API	parameters
-		3,  // gl major
-		3,  // gl minor
+		4,  // gl major
+		6,  // gl minor
 	};
 
 	Astral::Log::Init();

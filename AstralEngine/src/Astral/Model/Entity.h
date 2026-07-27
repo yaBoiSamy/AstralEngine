@@ -363,7 +363,7 @@ namespace Astral {
 	inline Entity::Entity(std::string name) :
 		parent(nullptr),
 		name(name) {
-		components.push_back(std::make_unique<Transform>());
+		AddComponent(std::make_unique<Transform>());
 	}
 
 	inline Entity* Entity::Parent() {
@@ -373,8 +373,11 @@ namespace Astral {
 	inline Entity* Entity::Child(std::string name) {
 		auto it = children.find(name);
 
-		if (it == children.end())
+		if (it == children.end()) {
+			AST_CORE_WARN("Child with name {} not found", name);
 			return nullptr;
+		}
+
 
 		return it->second.get();
 	}

@@ -11,8 +11,8 @@ namespace Astral {
 		void SetOwner(Entity* owner);
 		
 	protected:
-		virtual void OnOwnerChange();
-		Entity* owner;
+		virtual void OnOwnerChange(Entity* prev_owner);
+		Entity* owner = nullptr;
 	};
 
 	inline AComponent::~AComponent() = default;
@@ -21,10 +21,13 @@ namespace Astral {
 		return owner; 
 	}
 
-	inline void AComponent::SetOwner(Entity* owner) { 
+	inline void AComponent::SetOwner(Entity* owner) {
+		bool ownerchange = this->owner && owner;
+		Entity* prev_owner = this->owner;
 		this->owner = owner; 
-		OnOwnerChange();
+		if (ownerchange)
+			OnOwnerChange(prev_owner);
 	}
 
-	inline void AComponent::OnOwnerChange() {}
+	inline void AComponent::OnOwnerChange(Entity* prev_owner) {}
 }

@@ -11,7 +11,7 @@ namespace Astral {
 		Application(const StartupConfig& config);
 		virtual ~Application();
 
-		virtual void Update() {};   // User-space simulation updates
+		virtual void Update(const FrameContext& context) {};   // User-space simulation updates
 		void Close() { 
 			AST_CORE_INFO("App closed"); isRunning = false; 
 		};

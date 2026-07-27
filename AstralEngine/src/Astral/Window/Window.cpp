@@ -78,10 +78,14 @@ namespace Astral {
 	}
 
     FrameContext Window::GetFrameContext() const {
+        static double last_frametime = 0;
+        double curr_frametime = glfwGetTime();
+        double deltatime = curr_frametime - last_frametime;
+        last_frametime = curr_frametime;
         return FrameContext{
             GetInputState(),
             GetWindowState(),
-            GetDeltaTime()
+            deltatime
         };
     }
 
@@ -139,10 +143,6 @@ namespace Astral {
         int width, height;
         glfwGetFramebufferSize(handle.get(), &width, &height);
         return { (uint32_t)width, (uint32_t)height };
-	}
-
-	double Window::GetDeltaTime() const {
-		return glfwGetTime();
 	}
 
     void Window::PumpEvents() {

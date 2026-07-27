@@ -9,8 +9,14 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
-    cppdialect "C++20"    
-    buildoptions { "/utf-8" }
+    cppdialect "C++20"        
+    buildoptions { 
+        "/utf-8",
+        "/wd6294",
+        "/wd26495",
+        "/wd26498",
+        "/wd26800",
+    }
     externalanglebrackets "On"
     externalwarnings "Off"
 

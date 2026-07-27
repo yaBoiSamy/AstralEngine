@@ -46,6 +46,7 @@ namespace Astral {
         glfwSetErrorCallback([](int error, const char* description) {
             AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
             });
+        //if (config.vSync)
 
 		// Load OpenGL functions using glad
         success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -73,16 +74,17 @@ namespace Astral {
 
         int x, y;
         glfwGetWindowPos(window, &x, &y);
+
         return Window(
             window, 
-            FrameContext::WindowSnapshot(
+            Window::State {
                 config.windowName,
-				(uint32_t)x,
-				(uint32_t)y,
-                config.resolutionWidth, 
-                config.resolutionHeight, 
+                (uint32_t)x,
+                (uint32_t)y,
+                config.resolutionWidth,
+                config.resolutionHeight,
                 true,
-                config.vSync), 
+                config.vSync },
             std::bind(ImGui_ImplGlfw_InitForOpenGL, window, true));
     }
 }

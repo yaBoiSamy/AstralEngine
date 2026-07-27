@@ -8,9 +8,9 @@ namespace Astral {
 	using namespace glm;
 	class Camera : public AComponent {
 	public:
-		Camera(double fov, double aspect_ratio, double near_plane, double far_plane);
+		Camera(double fov, double near_plane, double far_plane);
 
-		void SetPerspective(double fov, double aspect_ratio, double near_plane, double far_plane);
+		void SetPerspective(double fov, double near_plane, double far_plane);
 		void UpdateRenderedPOV();
 
 	private:
@@ -18,7 +18,6 @@ namespace Astral {
 		mat4 ProjectionMatrix();
 
 		double fov;
-		double aspect_ratio;
 		double near_plane;
 		double far_plane;
 	};

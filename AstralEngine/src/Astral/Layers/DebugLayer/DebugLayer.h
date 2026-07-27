@@ -11,11 +11,10 @@ namespace Astral
 		DebugLayer(std::function<void()> renderImGuiWidgets);
 
 		void OnUpdate(const FrameContext& context) override;
-		void OnImGuiRender() override;
 
 	private:
-		void SetupDebugLayer(const FrameContext& context);
-		void RenderDebugLayer(const FrameContext& context);
+		void SetupDebugLayer();
+		void RenderDebugLayer();
 
 		const std::function<void()> renderImGuiWidgets;
 	};

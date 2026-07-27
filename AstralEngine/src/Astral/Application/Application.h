@@ -9,12 +9,12 @@ namespace Astral {
 	class Application : public EventListener {
 	public:
 		Application(const StartupConfig& config);
-		virtual ~Application();
 
-		virtual void Update(const FrameContext& context) {};   // User-space simulation updates
-		void Close() { 
-			AST_CORE_INFO("App closed"); isRunning = false; 
-		};
+		virtual void Update() {};   // User-space simulation updates
+
+		FrameContext GetFrameContext() const;
+
+		void Close();
 		void Run();
 
 	private:

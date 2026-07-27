@@ -1,4 +1,5 @@
 #include <Common.h>
+//#include <GLFW/glfw3.h>
 
 #include "Application.h"
 #include "Astral/BootStrapper/BootStrapper.h"
@@ -29,14 +30,20 @@ namespace Astral {
 		return true;
 	}
 
-	Application::~Application() {}
+	FrameContext Application::GetFrameContext() const {
+		return window.GetFrameContext();
+	}
+
+	void Application::Close() {
+		AST_CORE_INFO("App closed"); isRunning = false;
+	};
 
 	void Application::Run() {
 		isRunning = true;
 		while (isRunning) {
 			window.PumpEvents();
 			Renderer::SetupFrame(window.GetFramebufferSize());
-			Update(window.GetFrameContext());
+			Update();
 			layers.Update(window.GetFrameContext());
 			window.SwapBuffers(); // present frame
 		}

@@ -15,35 +15,18 @@ namespace Astral
 
 
 	void DebugLayer::OnUpdate(const FrameContext& context) {
-		SetupDebugLayer(context);
+		SetupDebugLayer();
 		renderImGuiWidgets();
-		RenderDebugLayer(context);
+		RenderDebugLayer();
 	}
 
-	void DebugLayer::SetupDebugLayer(const FrameContext& context) {
-		FrameContext::WindowSnapshot ws = context.windowSnapshot;
-
-		ImGuiIO& io = ImGui::GetIO();
-		io.DeltaTime = (float)context.deltaTime;
-		io.DisplaySize = ImVec2(
-			(float)ws.width,
-			(float)ws.height
-		);
-		io.DisplayFramebufferScale = ImVec2(
-			(float)ws.framebufferSizeX / (float)ws.width,
-			(float)ws.framebufferSizeY / (float)ws.height
-		);
-
+	void DebugLayer::SetupDebugLayer() {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
 
-	void DebugLayer::OnImGuiRender() {
-		bool show = true;
-	}
-
-	void DebugLayer::RenderDebugLayer(const FrameContext& context) {
+	void DebugLayer::RenderDebugLayer() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

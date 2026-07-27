@@ -3,23 +3,21 @@
 #include "Astral/Model/Components/Transform/Transform.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include <glm/gtc/quaternion.hpp>
+#include <GLFW/glfw3.h>
 
 namespace Astral {
 	using namespace glm;
 	
 	Camera::Camera(
-		double fov, 
-		double aspect_ratio, 
+		double fov,
 		double near_plane, 
 		double far_plane) :
 		fov(fov),
-		aspect_ratio(aspect_ratio),
 		near_plane(near_plane),
 		far_plane(far_plane) {}
 
-	void Camera::SetPerspective(double fov, double aspect_ratio, double near_plane, double far_plane) {
+	void Camera::SetPerspective(double fov, double near_plane, double far_plane) {
 		this->fov = fov;
-		this->aspect_ratio = aspect_ratio;
 		this->near_plane = near_plane;
 		this->far_plane = far_plane;
 	}
@@ -33,7 +31,9 @@ namespace Astral {
 	}
 	
 	mat4 Camera::ProjectionMatrix() {
-		return glm::perspective((float)fov, (float)aspect_ratio, (float)near_plane, (float)far_plane);
+		int fbx, fby;
+		glfwGetFramebufferSize(glfwGetCurrentContext(), &fbx, &fby);
+		return glm::perspective((float)fov, (float)fbx / (float)fby, (float)near_plane, (float)far_plane);
 	}
 
 	void Camera::UpdateRenderedPOV() {

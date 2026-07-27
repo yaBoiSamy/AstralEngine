@@ -14,15 +14,6 @@ namespace Astral {
 	class Window {
 	public:
 		struct State {
-			State(FrameContext::WindowSnapshot const& snapshot)	: 
-				title(snapshot.title), 
-				x(snapshot.x),
-				y(snapshot.y),
-				width(snapshot.width), 
-				height(snapshot.height), 
-				focused(snapshot.focused),
-				vSync(snapshot.vSync) {}
-
 			std::string title;
 			uint32_t x, y;
 			uint32_t width, height;
@@ -30,7 +21,7 @@ namespace Astral {
 			bool vSync;
 		};
 
-		explicit Window(GLFWwindow* handle, FrameContext::WindowSnapshot state, std::function<void()> imguiSetup);
+		explicit Window(GLFWwindow* handle, State state, std::function<void()> imguiSetup);
 
 		FrameContext GetFrameContext() const;
 		FrameContext::WindowSnapshot GetWindowState() const;

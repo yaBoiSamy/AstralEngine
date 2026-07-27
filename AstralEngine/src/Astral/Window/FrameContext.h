@@ -14,11 +14,11 @@ namespace Astral
 		struct WindowSnapshot {
 			const std::string title;
 			const uint32_t x;
-			const uint32_t y;
+			const uint32_t y;     
 			const uint32_t width;
-			const uint32_t height;        
-			const uint32_t framebufferSizeX;
-			const uint32_t framebufferSizeY;
+			const uint32_t height;
+			const uint32_t resolutionX;
+			const uint32_t resolutionY;
 			const bool focused;
 			const bool vSync;
 		};

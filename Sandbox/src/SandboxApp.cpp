@@ -63,7 +63,6 @@ private:
     };
 	const Astral::MeshData MESH_DATA = Astral::MeshData(std::move(vertices), std::move(indices));
 
-
 	Astral::Shader shader;
 	Astral::Scene scene;
 
@@ -72,21 +71,22 @@ public:
 		Astral::Application(config), 
 		shader(VERTEX_DIR, FRAGMENT_DIR) {
 
+
 		AST_USER_INFO("Hello from Sandbox Application!");
 
 		shader.Bind();
 
-		ptr<Astral::Entity> triangle = std::make_unique<Astral::Entity>("cube");
-		ptr<Astral::Mesh> triangle_mesh_component = std::make_unique<Astral::Mesh>(&MESH_DATA);
-		triangle->AddComponent(std::move(triangle_mesh_component));
-		scene.root.AddChild(std::move(triangle));
+		ptr<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
+		ptr<Astral::Mesh> cube_mesh = std::make_unique<Astral::Mesh>(&MESH_DATA);
+        cube->AddComponent(std::move(cube_mesh));
+		scene.root.AddChild(std::move(cube));
 
         ptr<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
 		ptr<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
+        const Astral::FrameContext context = GetFrameContext();
 		ptr<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
 			45,                 // FOV (degrees)
-            1920.0 / 1080.0,           // aspect ratio
-			0.1,                  // near plane
+			0.1,                // near plane
 			100                 // far plane
 		);
 		scene.SetMainCam(cam_component.get());
@@ -103,9 +103,11 @@ public:
         cam_tr.LookAt(cube_tr.Position());
 	}
 
-	void Update(const Astral::FrameContext& context) override {
-		float cube_rotspeed = 1;
-        float cam_rotspeed = 0.25;
+	void Update() override {
+		const float cube_rotspeed = 1;
+        const float cam_rotspeed = 0.25;
+        const Astral::FrameContext context = GetFrameContext();
+        AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
 		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
         scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
 		scene.Draw();

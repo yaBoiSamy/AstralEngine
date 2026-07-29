@@ -8,15 +8,18 @@
 namespace Astral {
 	Transform::Transform(
 		dvec3 init_pos,
-		dquat init_rot) :
+		dquat init_rot,
+		dvec3 init_scale) :
 		local_position(init_pos),
-		local_rotation(init_rot) {}
+		local_rotation(init_rot),
+	    local_scale(init_scale) {}
 
 	void Transform::OnOwnerChange(Entity* prev_owner) {
 		Transform& parent_tr = Owner()->Parent()->transform();
 		Transform& prev_tr = prev_owner->transform();
 		local_position = prev_tr.GlobalPosition() - parent_tr.GlobalPosition();
 		local_rotation = glm::inverse(parent_tr.GlobalRotation()) * prev_tr.GlobalRotation();
+		local_scale = prev_tr.GlobalScale() / parent_tr.GlobalScale();
 	}
 
 	dvec3 Transform::Position() const {
@@ -25,6 +28,10 @@ namespace Astral {
 
 	dquat Transform::Rotation() const {
 		return local_rotation;
+	}
+
+	dvec3 Transform::Scale() const {
+		return local_scale;
 	}
 
 	dvec3 Transform::GlobalPosition() {
@@ -43,6 +50,15 @@ namespace Astral {
 			return parent_tr.GlobalRotation() * local_rotation;
 		}
 		return local_rotation;
+	}
+
+	dvec3 Transform::GlobalScale() {
+		Entity* parent = Owner()->Parent();
+		if (parent) {
+			Transform& parent_tr = parent->transform();
+			return parent_tr.GlobalScale() * local_scale;
+		}
+		return local_scale;
 	}
 
 	dvec3 Transform::Forward() {
@@ -70,6 +86,10 @@ namespace Astral {
 		local_rotation *= displacement;
 	}
 
+	void Transform::Scale(const dvec3& displacement) {
+		local_scale *= displacement;
+	}
+
 	void Transform::UpdateRenderedWorldSpace() {
 		Renderer::ModelData modeldata = {
 			ModelMatrix()
@@ -78,6 +98,8 @@ namespace Astral {
 	}
 
 	mat4 Transform::ModelMatrix() {
-		return glm::translate(glm::mat4(1.0f), glm::vec3(GlobalPosition())) * glm::mat4_cast(glm::quat(GlobalRotation()));
+		return glm::translate(glm::mat4(1.0f), glm::vec3(GlobalPosition()))
+			* glm::mat4_cast(glm::quat(GlobalRotation()))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(GlobalScale()));
 	}
 }

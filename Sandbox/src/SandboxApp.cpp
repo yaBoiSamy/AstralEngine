@@ -106,11 +106,16 @@ public:
 	void Update() override {
 		const float cube_rotspeed = 1;
         const float cam_rotspeed = 0.25;
+        const float cube_oscillationspeed = 1;
+        const float cube_oscillationrange = 1;
+        static double time = 0;
         const Astral::FrameContext context = GetFrameContext();
         AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
 		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
         scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
+        scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
 		scene.Draw();
+        time += context.deltaTime;
 	}
 
 	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {

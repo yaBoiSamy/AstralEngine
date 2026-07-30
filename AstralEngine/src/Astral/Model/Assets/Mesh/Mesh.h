@@ -1,7 +1,9 @@
 #pragma once
+#include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 #include "Astral/Rendering/Buffers/Attributes.h"
-#include <glm/glm.hpp>
+#include "Astral/Rendering/Shader/Shader.h"
+
 
 namespace Astral {
 
@@ -12,11 +14,11 @@ namespace Astral {
 
 	extern const std::array<AttributeLayout, 2> VERTEX_LAYOUT;
 
-	class MeshData {
+	class Mesh {
 	public:
-		MeshData(std::vector<Vertex> verts, std::vector<uint32_t> indices);
+		Mesh(std::vector<Vertex> verts, std::vector<uint32_t> indices);
 
-		void Draw() const;
+		void Draw(const Shader& shader) const;
 
 	private:
 		std::vector<Vertex> vertices;

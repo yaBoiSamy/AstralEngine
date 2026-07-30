@@ -33,7 +33,8 @@ namespace Astral {
 		gpu_model_data->Write(modeldata);
 	}
 
-	void Renderer::Submit(const IVertexArray& vertexArray) {
+	void Renderer::Submit(const IVertexArray& vertexArray, const Shader& shader) {
+		shader.Bind();
 		RenderCommand::Draw(vertexArray);
 	}
 }

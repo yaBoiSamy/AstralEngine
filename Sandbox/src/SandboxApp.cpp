@@ -61,7 +61,7 @@ private:
         // Bottom
         20, 21, 22, 22, 23, 20
     };
-	const Astral::MeshData MESH_DATA = Astral::MeshData(std::move(vertices), std::move(indices));
+	const Astral::Mesh MESH = Astral::Mesh(std::move(vertices), std::move(indices));
 
 	Astral::Shader shader;
 	Astral::Scene scene;
@@ -71,13 +71,8 @@ public:
 		Astral::Application(config), 
 		shader(VERTEX_DIR, FRAGMENT_DIR) {
 
-
-		AST_USER_INFO("Hello from Sandbox Application!");
-
-		shader.Bind();
-
 		ptr<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
-		ptr<Astral::Mesh> cube_mesh = std::make_unique<Astral::Mesh>(&MESH_DATA);
+		ptr<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, &shader);
         cube->AddComponent(std::move(cube_mesh));
 		scene.root.AddChild(std::move(cube));
 
@@ -110,7 +105,7 @@ public:
         const float cube_oscillationrange = 1;
         static double time = 0;
         const Astral::FrameContext context = GetFrameContext();
-        AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
+        //AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
 		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
         scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
         scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);

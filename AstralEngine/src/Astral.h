@@ -21,7 +21,10 @@
 
 #include "Astral/Model/Entity.h"
 #include "Astral/Model/Component.h"
+#include "Astral/Model/Scene/Scene.h"
+
 #include "Astral/Model/Components/Transform/Transform.h"
 #include "Astral/Model/Components/Camera/Camera.h"
-#include "Astral/Model/Components/Mesh/Mesh.h"
-#include "Astral/Model/Scene/Scene.h"
+#include "Astral/Model/Components/MeshRenderer/MeshRenderer.h"
+
+#include "Astral/Model/Assets/Mesh/Mesh.h"

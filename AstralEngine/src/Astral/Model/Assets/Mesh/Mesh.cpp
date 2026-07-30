@@ -1,5 +1,5 @@
 #include "Common.h"
-#include "MeshData.h"
+#include "Mesh.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 
 namespace Astral {
@@ -9,7 +9,7 @@ namespace Astral {
 	   Attr::Vec4::Layout(1, offsetof(Vertex, color)),
 	};
 
-	MeshData::MeshData(
+	Mesh::Mesh(
 		std::vector<Vertex> verts, 
 		std::vector<uint32_t> idxs) : 
 		vertices(std::move(verts)), 
@@ -19,8 +19,8 @@ namespace Astral {
 		gpu_mesh.WriteIndices(0, indices);
 	}
 
-	void MeshData::Draw() const {
-		Renderer::Submit(gpu_mesh);
+	void Mesh::Draw(const Shader& shader) const {
+		Renderer::Submit(gpu_mesh, shader);
 	}
 }
 

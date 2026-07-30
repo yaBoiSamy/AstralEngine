@@ -23,7 +23,7 @@ namespace Astral {
 
 	void OpenGLRenderAPI::Setup() {
 		AST_CORE_ASSERT(glDebugMessageCallback != nullptr, "GLAD Extension not included");
-		if (glDebugMessageCallback) {
+		if (glDebugMessageCallback && AST_DEBUG) {
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLMessageCallback, this);

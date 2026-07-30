@@ -1,6 +1,7 @@
 #pragma once
+#include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
-#include <glm/glm.hpp>
+#include "Astral/Rendering/shader/Shader.h"
 
 namespace Astral {
 
@@ -10,7 +11,7 @@ namespace Astral {
 
 		static void SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize);
 
-		static void Submit(const IVertexArray& vertexArray);
+		static void Submit(const IVertexArray& vertexArray, const Shader& shader);
 
 	private:
 		static const glm::vec4 CLEAR_COLOR;

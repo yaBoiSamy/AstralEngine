@@ -1,7 +1,7 @@
 #pragma once
+#include "Common.h"
 #include "Astral/Model/Entity.h"
 #include "Astral/Rendering/Buffers/Buffers.h"
-#include <glm/glm.hpp>
 
 
 namespace Astral {

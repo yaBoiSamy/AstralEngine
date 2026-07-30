@@ -1,5 +1,5 @@
 #pragma once
-#include <glm/glm.hpp>
+#include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 
 namespace Astral {

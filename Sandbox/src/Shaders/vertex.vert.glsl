@@ -16,9 +16,11 @@ layout(std140, binding = 1) uniform Model
     mat4 model;
 };
 
+uniform vec4 nigger;
+
 out vec4 fcolor;
 
 void main() {
-    fcolor = color;
+    fcolor = nigger;
     gl_Position = projection * view * model * vec4(pos, 1.0);
 }

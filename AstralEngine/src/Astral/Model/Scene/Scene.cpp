@@ -1,6 +1,6 @@
 #include "Common.h"
 #include "Scene.h"
-#include "Astral/Model/Components/Mesh/Mesh.h"
+#include "Astral/Model/Components/MeshRenderer/MeshRenderer.h"
 
 namespace Astral {
 	Scene::Scene() : main_camera(nullptr) {}
@@ -14,7 +14,7 @@ namespace Astral {
 		main_camera->UpdateRenderedPOV();
 
 		for (auto& desc : root.Descendants())
-			for (auto& mesh_component : desc.Components<Mesh>())
+			for (auto& mesh_component : desc.Components<MeshRenderer>())
 				mesh_component.Draw();
 	}
 }

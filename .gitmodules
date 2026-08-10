@@ -10,3 +10,6 @@
 [submodule "AstralEngine/vendors/glm"]
 	path = AstralEngine/vendors/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "AstralEngine/vendors/stb"]
+	path = AstralEngine/vendors/stb
+	url = https://github.com/nothings/stb.git

@@ -35,6 +35,7 @@ project "Sandbox"
         "AstralEngine/vendors/imgui",
         "AstralEngine/vendors/imgui/backends",
         "AstralEngine/vendors/glm",
+        "AstralEngine/vendors/stb",
     }
 
     includedirs {
@@ -103,6 +104,7 @@ project "AstralEngine"
         "AstralEngine/vendors/imgui",
         "AstralEngine/vendors/imgui/backends",
         "AstralEngine/vendors/glm",
+        "AstralEngine/vendors/stb",
     }
 
     includedirs {

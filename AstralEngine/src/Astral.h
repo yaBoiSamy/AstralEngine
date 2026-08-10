@@ -18,6 +18,7 @@
 
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Rendering/Shader/Shader.h"
+#include "Astral/Rendering/Texture/Texture.h"
 
 #include "Astral/Model/Entity.h"
 #include "Astral/Model/Component.h"

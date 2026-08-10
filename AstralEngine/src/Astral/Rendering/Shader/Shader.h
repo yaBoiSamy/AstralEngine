@@ -119,7 +119,7 @@ namespace Astral
 					glGetShaderiv(shaderStageHandle, GL_INFO_LOG_LENGTH, &length);
 					std::string message = std::string(length, '\0');
 					glGetShaderInfoLog(shaderStageHandle, length, &length, message.data());
-					AST_CORE_ASSERT(false, "Failed to compile shader: {0}", message);
+					AST_CORE_ASSERT(false, "Failed to compile shader stage: {0}", message);
 					glDeleteShader(shaderStageHandle);
 					return 0;
 				}

@@ -2,8 +2,9 @@
 
 
 #version 460 core
+
 layout(location = 0) in vec3 pos;
-layout(location = 1) in vec4 color;
+layout(location = 1) in vec2 text_coord;
 
 layout(std140, binding = 0) uniform Camera
 {
@@ -16,11 +17,10 @@ layout(std140, binding = 1) uniform Model
     mat4 model;
 };
 
-uniform vec4 nigger;
 
-out vec4 fcolor;
+out vec2 ftext_coord;
 
 void main() {
-    fcolor = nigger;
+    ftext_coord = text_coord;
     gl_Position = projection * view * model * vec4(pos, 1.0);
 }

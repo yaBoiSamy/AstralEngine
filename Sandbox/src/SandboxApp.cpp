@@ -4,42 +4,43 @@ class Sandbox : public Astral::Application {
 private:
 	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
 	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
+    const std::string TEXTURE_DIR = "resources/finger.png";
     const std::vector<Astral::Vertex> vertices = {
-        // Front (Red)
-        { { -0.5f, -0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 0
-        { {  0.5f, -0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 1
-        { {  0.5f,  0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 2
-        { { -0.5f,  0.5f,  0.5f }, { 1, 0, 0, 1 } }, // 3
+        // Front
+        { { -0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 0
+        { {  0.5f, -0.5f,  0.5f }, { 1, 0 } }, // 1
+        { {  0.5f,  0.5f,  0.5f }, { 1, 1 } }, // 2
+        { { -0.5f,  0.5f,  0.5f }, { 0, 1 } }, // 3
 
-        // Right (Green)
-        { {  0.5f, -0.5f,  0.5f }, { 0, 1, 0, 1 } }, // 4
-        { {  0.5f, -0.5f, -0.5f }, { 0, 1, 0, 1 } }, // 5
-        { {  0.5f,  0.5f, -0.5f }, { 0, 1, 0, 1 } }, // 6
-        { {  0.5f,  0.5f,  0.5f }, { 0, 1, 0, 1 } }, // 7
+        // Right
+        { {  0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 4
+        { {  0.5f, -0.5f, -0.5f }, { 1, 0 } }, // 5
+        { {  0.5f,  0.5f, -0.5f }, { 1, 1 } }, // 6
+        { {  0.5f,  0.5f,  0.5f }, { 0, 1 } }, // 7
 
-        // Back (Blue)
-        { {  0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 8
-        { { -0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 9
-        { { -0.5f,  0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 10
-        { {  0.5f,  0.5f, -0.5f }, { 0, 0, 1, 1 } }, // 11
+        // Back
+        { {  0.5f, -0.5f, -0.5f }, { 0, 0 } }, // 8
+        { { -0.5f, -0.5f, -0.5f }, { 1, 0 } }, // 9
+        { { -0.5f,  0.5f, -0.5f }, { 1, 1 } }, // 10
+        { {  0.5f,  0.5f, -0.5f }, { 0, 1 } }, // 11
 
-        // Left (Yellow)
-        { { -0.5f, -0.5f, -0.5f }, { 1, 1, 0, 1 } }, // 12
-        { { -0.5f, -0.5f,  0.5f }, { 1, 1, 0, 1 } }, // 13
-        { { -0.5f,  0.5f,  0.5f }, { 1, 1, 0, 1 } }, // 14
-        { { -0.5f,  0.5f, -0.5f }, { 1, 1, 0, 1 } }, // 15
+        // Left
+        { { -0.5f, -0.5f, -0.5f }, { 0, 0 } }, // 12
+        { { -0.5f, -0.5f,  0.5f }, { 1, 0 } }, // 13
+        { { -0.5f,  0.5f,  0.5f }, { 1, 1 } }, // 14
+        { { -0.5f,  0.5f, -0.5f }, { 0, 1 } }, // 15
 
-        // Top (Magenta)
-        { { -0.5f,  0.5f,  0.5f }, { 1, 0, 1, 1 } }, // 16
-        { {  0.5f,  0.5f,  0.5f }, { 1, 0, 1, 1 } }, // 17
-        { {  0.5f,  0.5f, -0.5f }, { 1, 0, 1, 1 } }, // 18
-        { { -0.5f,  0.5f, -0.5f }, { 1, 0, 1, 1 } }, // 19
+        // Top
+        { { -0.5f,  0.5f,  0.5f }, { 0, 0 } }, // 16
+        { {  0.5f,  0.5f,  0.5f }, { 1, 0 } }, // 17
+        { {  0.5f,  0.5f, -0.5f }, { 1, 1 } }, // 18
+        { { -0.5f,  0.5f, -0.5f }, { 0, 1 } }, // 19
 
-        // Bottom (Cyan)
-        { { -0.5f, -0.5f, -0.5f }, { 0, 1, 1, 1 } }, // 20
-        { {  0.5f, -0.5f, -0.5f }, { 0, 1, 1, 1 } }, // 21
-        { {  0.5f, -0.5f,  0.5f }, { 0, 1, 1, 1 } }, // 22
-        { { -0.5f, -0.5f,  0.5f }, { 0, 1, 1, 1 } }, // 23
+        // Bottom
+        { { -0.5f, -0.5f, -0.5f }, { 0, 0 } }, // 20
+        { {  0.5f, -0.5f, -0.5f }, { 1, 0 } }, // 21
+        { {  0.5f, -0.5f,  0.5f }, { 1, 1 } }, // 22
+        { { -0.5f, -0.5f,  0.5f }, { 0, 1 } }, // 23
     };
 
     const std::vector<uint32_t> indices = {
@@ -65,11 +66,13 @@ private:
 
 	Astral::Shader shader;
 	Astral::Scene scene;
+    Astral::Texture texture;
 
 public:
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-		shader(VERTEX_DIR, FRAGMENT_DIR) {
+		shader(VERTEX_DIR, FRAGMENT_DIR),
+        texture(TEXTURE_DIR) {
 
 		ptr<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
 		ptr<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, &shader);
@@ -108,7 +111,7 @@ public:
         //AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
 		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
         scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
-        scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
+        //scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
 		scene.Draw();
         time += context.deltaTime;
 	}

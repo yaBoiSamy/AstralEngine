@@ -6,7 +6,7 @@ namespace Astral {
 
 	const std::array<AttributeLayout, 2> VERTEX_LAYOUT = {
 	   Attr::Vec3::Layout(0, offsetof(Vertex, position)),
-	   Attr::Vec4::Layout(1, offsetof(Vertex, color)),
+	   Attr::Vec2::Layout(1, offsetof(Vertex, text_coord)),
 	};
 
 	Mesh::Mesh(

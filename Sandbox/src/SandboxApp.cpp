@@ -4,7 +4,7 @@ class Sandbox : public Astral::Application {
 private:
 	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
 	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
-    const std::string TEXTURE_DIR = "resources/finger.png";
+    const std::string TEXTURE_DIR = "resources/checkmark.png";
     const std::vector<Astral::Vertex> vertices = {
         // Front
         { { -0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 0

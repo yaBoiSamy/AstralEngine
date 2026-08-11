@@ -7,11 +7,15 @@
 namespace Astral {
 
 	Texture::Texture(std::string path) {
-		int _;
+		int w, h, _;
 		const uint32_t CHANNELS = 4;
         stbi_set_flip_vertically_on_load(true);
-		uint8_t* image_data = stbi_load(path.c_str(), (int*)&width, (int*)&height, &_, CHANNELS);
+		uint8_t* image_data = stbi_load(path.c_str(), &w, &h, &_, CHANNELS);
+        width = static_cast<uint32_t>(w);
+        height = static_cast<uint32_t>(h);
         stbi_set_flip_vertically_on_load(false);
+
+        AST_CORE_ASSERT(image_data, "stb failed to parse image: {0}", stbi_failure_reason());
 
         glGenTextures(1, &handle);
         glBindTexture(GL_TEXTURE_2D, handle);

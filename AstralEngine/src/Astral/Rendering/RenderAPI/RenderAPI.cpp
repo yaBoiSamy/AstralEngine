@@ -32,6 +32,9 @@ namespace Astral {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		AST_CORE_INFO("\nOpenGL Info:\n    Vendor: {0}\n    Renderer: {1}\n    Version: {2}",
 			(char*)glGetString(GL_VENDOR),
 			(char*)glGetString(GL_RENDERER),

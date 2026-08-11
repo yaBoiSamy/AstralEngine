@@ -64,20 +64,25 @@ private:
     };
 	const Astral::Mesh MESH = Astral::Mesh(std::move(vertices), std::move(indices));
 
-	Astral::Shader shader;
-	Astral::Scene scene;
-    Astral::Texture texture;
+    ptr<Astral::Scene> scene;
+	ptr<Astral::Shader> shader;
+    ptr<Astral::Texture> texture;
+    ptr<Astral::Material> material;
 
 public:
+
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-		shader(VERTEX_DIR, FRAGMENT_DIR),
-        texture(TEXTURE_DIR) {
+        scene(std::make_unique<Astral::Scene>()),
+		shader(std::make_unique<Astral::Shader>(VERTEX_DIR, FRAGMENT_DIR)),
+        texture(std::make_unique<Astral::Texture>(TEXTURE_DIR)),
+        material(nullptr) {
+        material = std::make_unique<Astral::Material>(shader.get(), glm::vec4(1, 1, 1, 0), texture.get());
 
 		ptr<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
-		ptr<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, &shader);
+        ptr<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, material.get());
         cube->AddComponent(std::move(cube_mesh));
-		scene.root.AddChild(std::move(cube));
+		scene->root.AddChild(std::move(cube));
 
         ptr<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
 		ptr<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
@@ -87,15 +92,15 @@ public:
 			0.1,                // near plane
 			100                 // far plane
 		);
-		scene.SetMainCam(cam_component.get());
+		scene->SetMainCam(cam_component.get());
 		maincam->AddComponent(std::move(cam_component));
         cam_parent->AddChild(std::move(maincam));
-		scene.root.AddChild(std::move(cam_parent));
+		scene->root.AddChild(std::move(cam_parent));
 
-        Astral::Transform& cube_tr = *scene.root.Child("cube")->GetComponent<Astral::Transform>();
-        Astral::Transform& camdad_tr = *scene.root.Child("cam_dad")->GetComponent<Astral::Transform>();
-        Astral::Camera& cam = *scene.root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Camera>();
-        Astral::Transform& cam_tr = *scene.root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Transform>();
+        Astral::Transform& cube_tr = *scene->root.Child("cube")->GetComponent<Astral::Transform>();
+        Astral::Transform& camdad_tr = *scene->root.Child("cam_dad")->GetComponent<Astral::Transform>();
+        Astral::Camera& cam = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Camera>();
+        Astral::Transform& cam_tr = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Transform>();
 
         cam_tr.Translate(glm::vec3(0, 2, 2));
         cam_tr.LookAt(cube_tr.Position());
@@ -109,10 +114,10 @@ public:
         static double time = 0;
         const Astral::FrameContext context = GetFrameContext();
         //AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
-		scene.root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
-        scene.root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
+		scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
+        scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
         //scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
-		scene.Draw();
+		scene->Draw();
         time += context.deltaTime;
 	}
 

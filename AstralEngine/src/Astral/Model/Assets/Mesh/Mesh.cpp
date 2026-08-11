@@ -1,6 +1,5 @@
 #include "Common.h"
 #include "Mesh.h"
-#include "Astral/Rendering/Renderer/Renderer.h"
 
 namespace Astral {
 
@@ -19,8 +18,9 @@ namespace Astral {
 		gpu_mesh.WriteIndices(0, indices);
 	}
 
-	void Mesh::Draw(const Shader& shader) const {
-		Renderer::Submit(gpu_mesh, shader);
+	const IVertexArray& Mesh::GetVertexArray() const {
+		return static_cast<const IVertexArray&>(gpu_mesh);
 	}
+
 }
 

@@ -16,16 +16,16 @@ namespace Astral
 		void Bind() const;
 
 		template <typename T>
-		void CreateUniform(const std::string& name);
+		void CreateUniform(const std::string& name, const T& data);
 
 		template <typename T>
 		void CreateUniformArray(const std::string& name);
 
 		template <typename T>
-		void SetUniform(const std::string& name, const T& data);
+		void SetUniform(const std::string& name, const T& data) const;
 
 		template <typename T>
-		void SetUniformArray(const std::string& name, std::span<const T> data);
+		void SetUniformArray(const std::string& name, std::span<const T> data) const;
 
 	private:
 		typedef GLuint ShaderStageHandle;
@@ -99,6 +99,10 @@ namespace Astral
 
 		glDetachShader(shaderHandle, vs);
 		glDetachShader(shaderHandle, fs);
+
+		// STANDARD UNIFORM CREATION
+		this->CreateUniform<bool>("HAS_ALBEDO_TEXTURE", false);
+		this->CreateUniform<glm::vec4>("ALBEDO", glm::vec4(1, 1, 1, 0));
 	}
 
 	inline Shader::~Shader() {
@@ -141,9 +145,10 @@ namespace Astral
 	}
 
 	template <typename T>
-	inline void Shader::CreateUniform(const std::string& name) {
+	inline void Shader::CreateUniform(const std::string& name, const T& data) {
 		AST_CORE_ASSERT(!uniforms.contains(name), "Uniform with identical name already exists");
 		uniforms.emplace(name, Uniform<T>(name, shaderHandle));
+		SetUniform<T>(name, data);
 	}
 
 	template <typename T>
@@ -153,7 +158,7 @@ namespace Astral
 	}
 
 	template <typename T>
-	inline void Shader::SetUniform(const std::string& name, const T& data) {
+	inline void Shader::SetUniform(const std::string& name, const T& data) const {
 		AST_CORE_ASSERT(uniforms.contains(name), "Uniform {} does not exist", name);
 		Bind();
 		std::visit(
@@ -176,7 +181,7 @@ namespace Astral
 	}
 
 	template <typename T>
-	inline void Shader::SetUniformArray(const std::string& name, std::span<const T> data) {
+	inline void Shader::SetUniformArray(const std::string& name, std::span<const T> data) const {
 		AST_CORE_ASSERT(uniforms.contains(name), "Uniform {} does not exist", name);
 		Bind();
 		std::visit(

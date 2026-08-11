@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 #include "Astral/Rendering/Buffers/Attributes.h"
-#include "Astral/Rendering/Shader/Shader.h"
 
 
 namespace Astral {
@@ -17,8 +16,7 @@ namespace Astral {
 	class Mesh {
 	public:
 		Mesh(std::vector<Vertex> verts, std::vector<uint32_t> indices);
-
-		void Draw(const Shader& shader) const;
+		const IVertexArray& GetVertexArray() const;
 
 	private:
 		std::vector<Vertex> vertices;

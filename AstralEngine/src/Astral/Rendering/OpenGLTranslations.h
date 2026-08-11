@@ -12,6 +12,18 @@ namespace Astral {
 		AST_CORE_ASSERT(false, "Trying to write to a C++ type with no GLSL equivalent");
 	}
 
+	template<>
+	inline void GLUniformWrite<bool>(GLint handle, std::span<const bool> data) {
+		AST_CORE_ASSERT(!data.empty(), "Cannot write empty uniform data");
+		std::vector<uint32_t> values;
+		values.reserve(data.size());
+
+		for (bool value : data)
+			values.push_back(value ? 1 : 0);
+
+		glUniform1uiv(handle, static_cast<GLsizei>(values.size()), static_cast<GLuint*>(values.data()));
+	}
+
 	#define IMPLEMENT_GL_UNIFORM_WRITING(cpp_type, gl_write_func, ...) \
 	template<> \
 	inline void GLUniformWrite<cpp_type>(GLint handle, std::span<const cpp_type> data) { \

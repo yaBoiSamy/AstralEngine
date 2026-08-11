@@ -8,9 +8,9 @@ namespace Astral {
 
 	Texture::Texture(std::string path) {
 		int _;
-		uint32_t CHANNELS;
+		const uint32_t CHANNELS = 4;
         stbi_set_flip_vertically_on_load(true);
-		uint8_t* image_data = stbi_load(path.c_str(), (int*)&width, (int*)&height, &_, 4);
+		uint8_t* image_data = stbi_load(path.c_str(), (int*)&width, (int*)&height, &_, CHANNELS);
         stbi_set_flip_vertically_on_load(false);
 
         glGenTextures(1, &handle);

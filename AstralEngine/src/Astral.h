@@ -29,3 +29,4 @@
 #include "Astral/Model/Components/MeshRenderer/MeshRenderer.h"
 
 #include "Astral/Model/Assets/Mesh/Mesh.h"
+#include "Astral/Model/Assets/Material/Material.h"

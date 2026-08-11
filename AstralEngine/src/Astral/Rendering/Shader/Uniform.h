@@ -22,7 +22,7 @@ namespace Astral {
 		Uniform(const Uniform&) = delete;
 		Uniform& operator=(const Uniform&) = delete;
 
-		void Write(const FieldT& data) {
+		void Write(const FieldT& data) const {
 			GLUniformWrite<FieldT>(handle, std::span<const FieldT>(&data, 1));
 		}
 
@@ -46,7 +46,7 @@ namespace Astral {
 		UniformArray(const UniformArray&) = delete;
 		UniformArray& operator=(const UniformArray&) = delete;
 
-		void Write(std::span<const FieldT> data) {
+		void Write(std::span<const FieldT> data) const {
 			GLUniformWrite<FieldT>(handle, data);
 		}
 
@@ -56,6 +56,8 @@ namespace Astral {
 
 
 	using UniformVariant = std::variant <
+		Uniform<bool>,
+
 		Uniform<float>,
 		Uniform<glm::vec2>,
 		Uniform<glm::vec3>,

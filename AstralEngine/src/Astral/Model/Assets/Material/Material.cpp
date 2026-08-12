@@ -2,7 +2,7 @@
 #include "Material.h"
 
 namespace Astral {
-	Material::Material(const Shader* shader, glm::vec4 albedo, const Texture* albedo_texture) : shader(shader), albedo_texture(albedo_texture) {
+	Material::Material(Arc<Shader> shader, glm::vec4 albedo, const Texture* albedo_texture) : shader(shader), albedo_texture(albedo_texture) {
 		AST_CORE_ASSERT(shader, "shader cannot be null at material construction");
 		shader->SetUniform<glm::vec4>("ALBEDO", albedo);
 	}

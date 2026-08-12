@@ -12,8 +12,8 @@ namespace Astral {
 		class ChildrenIterator {
 		public:
 			ChildrenIterator(
-				std::unordered_map<std::string, ptr<Entity>>::iterator children_start,
-				std::unordered_map<std::string, ptr<Entity>>::iterator children_end);
+				std::unordered_map<std::string, Box<Entity>>::iterator children_start,
+				std::unordered_map<std::string, Box<Entity>>::iterator children_end);
 
 			bool Finished() const;
 
@@ -26,8 +26,8 @@ namespace Astral {
 			bool operator!=(const ChildrenIterator& other) const;
 
 		private:
-			std::unordered_map<std::string, ptr<Entity>>::iterator child_it;
-			const std::unordered_map<std::string, ptr<Entity>>::iterator children_end;
+			std::unordered_map<std::string, Box<Entity>>::iterator child_it;
+			const std::unordered_map<std::string, Box<Entity>>::iterator children_end;
 		};
 
 
@@ -77,8 +77,8 @@ namespace Astral {
 		class ComponentIterator {
 		public:
 			ComponentIterator(
-				std::vector<ptr<AComponent>>::iterator components_begin,
-				std::vector<ptr<AComponent>>::iterator components_end);
+				std::vector<Box<AComponent>>::iterator components_begin,
+				std::vector<Box<AComponent>>::iterator components_end);
 
 			bool Finished() const;
 
@@ -91,8 +91,8 @@ namespace Astral {
 			bool operator!=(const ComponentIterator& other) const;
 
 		private:
-			std::vector<ptr<AComponent>>::iterator component_it;
-			const std::vector<ptr<AComponent>>::iterator components_end;
+			std::vector<Box<AComponent>>::iterator component_it;
+			const std::vector<Box<AComponent>>::iterator components_end;
 
 			void Filter();
 		};
@@ -116,9 +116,9 @@ namespace Astral {
 		Entity* Parent();
 		Entity* Child(std::string child_name);
 
-		void AddChild(ptr<Entity> child);
+		void AddChild(Box<Entity> child);
 		void RemoveChild(std::string child_name);
-		void AddComponent(ptr<AComponent> component);
+		void AddComponent(Box<AComponent> component);
 
 		template <std::derived_from<AComponent> ComponentT>
 		ComponentT* GetComponent();
@@ -133,8 +133,8 @@ namespace Astral {
 	private:
 		Entity* parent;
 		std::string name;
-		std::unordered_map<std::string, ptr<Entity>> children;
-		std::vector<ptr<AComponent>> components;
+		std::unordered_map<std::string, Box<Entity>> children;
+		std::vector<Box<AComponent>> components;
 
 		bool CheckNameCollision(std::string name);
 		std::string GenerateDefaultName();
@@ -163,8 +163,8 @@ namespace Astral {
 	// =================================================================================================================
 
 	inline Entity::ChildrenIterator::ChildrenIterator(
-		std::unordered_map<std::string, ptr<Entity>>::iterator children_start,
-		std::unordered_map<std::string, ptr<Entity>>::iterator children_end) :
+		std::unordered_map<std::string, Box<Entity>>::iterator children_start,
+		std::unordered_map<std::string, Box<Entity>>::iterator children_end) :
 		child_it(children_start),
 		children_end(children_end) {}
 
@@ -284,8 +284,8 @@ namespace Astral {
 
 	template <std::derived_from<AComponent> ComponentT>
 	inline Entity::ComponentIterator<ComponentT>::ComponentIterator(
-		std::vector<ptr<AComponent>>::iterator components_begin,
-		std::vector<ptr<AComponent>>::iterator components_end) :
+		std::vector<Box<AComponent>>::iterator components_begin,
+		std::vector<Box<AComponent>>::iterator components_end) :
 		component_it(components_begin),
 		components_end(components_end) {
 		Filter();
@@ -382,7 +382,7 @@ namespace Astral {
 		return it->second.get();
 	}
 
-	inline void Entity::AddChild(ptr<Entity> child) {
+	inline void Entity::AddChild(Box<Entity> child) {
 		if (CheckNameCollision(child->name)) {
 			AST_CORE_ERROR("Cannot make entity with name {0}, since a sibling entity has the same name. Aborting the operation.", child->name);
 			return;
@@ -396,7 +396,7 @@ namespace Astral {
 		children.erase(name);
 	}
 
-	inline void Entity::AddComponent(ptr<AComponent> component) {
+	inline void Entity::AddComponent(Box<AComponent> component) {
 		component->SetOwner(this);
 		components.push_back(std::move(component));
 	}

@@ -11,9 +11,11 @@ namespace Astral
 {
 	class Shader {
 	public:
-		Shader(std::string_view vertexShaderPath, std::string_view fragmentShaderPath);
+		Shader(std::string name, std::string_view vertex_shader_path, std::string_view fragment_shader_path);
 		~Shader();
 		void Bind() const;
+
+		std::string_view GetName() const;
 
 		template <typename T>
 		void CreateUniform(const std::string& name, const T& data);
@@ -35,6 +37,7 @@ namespace Astral
 		ShaderStageHandle CompileShaderStage(uint32_t type, std::string_view src);
 
 		ShaderHandle shaderHandle;
+		std::string name;
 		std::unordered_map<std::string, UniformVariant> uniforms;
 	};
 
@@ -44,7 +47,7 @@ namespace Astral
 	// ================================================ IMPLEMENTATIONS ================================================
 	// =================================================================================================================
 
-	inline Shader::Shader(std::string_view vertexShaderPath, std::string_view fragmentShaderPath) : shaderHandle(glCreateProgram()) {
+	inline Shader::Shader(std::string name, std::string_view vertexShaderPath, std::string_view fragmentShaderPath) : name(name), shaderHandle(glCreateProgram()) {
 		std::string vert_shader = StringifyShaderStage(vertexShaderPath);
 		std::string frag_shader = StringifyShaderStage(fragmentShaderPath);
 		AST_CORE_ASSERT(vert_shader != "", "Vertex shader path invalid: {0}", std::filesystem::current_path().append(vertexShaderPath).string());
@@ -142,6 +145,10 @@ namespace Astral
 
 	inline void Shader::Bind() const {
 		glUseProgram(shaderHandle);
+	}
+
+	inline std::string_view Shader::GetName() const {
+		return name;
 	}
 
 	template <typename T>

@@ -3,7 +3,7 @@
 
 namespace Astral
 {
-	using LayerVect = std::vector<ptr<ALayer>>;
+	using LayerVect = std::vector<Box<ALayer>>;
 
 	LayerStack::LayerStack() : boundaryIndex(0) {}
 
@@ -17,7 +17,7 @@ namespace Astral
 		return layers.begin() + boundaryIndex;
 	}
 
-	void LayerStack::PushLayer(ptr<ALayer> pushedLayer) {
+	void LayerStack::PushLayer(Box<ALayer> pushedLayer) {
 		layers.insert(BoundaryIt(), std::move(pushedLayer));
 		boundaryIndex++;
 		(*cLayerBack())->OnAttach();
@@ -30,7 +30,7 @@ namespace Astral
 		boundaryIndex--;
 	}
 
-	void LayerStack::PushOverlay(ptr<ALayer> pushedOverlay) {
+	void LayerStack::PushOverlay(Box<ALayer> pushedOverlay) {
 		layers.insert(layers.end(), std::move(pushedOverlay));
 		(*cOverlayBack())->OnAttach();
 	}

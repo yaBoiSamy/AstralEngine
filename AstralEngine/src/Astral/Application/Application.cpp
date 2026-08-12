@@ -6,6 +6,7 @@
 #include "Astral/Layers/DebugLayer/DebugLayer.h"
 #include "Astral/Layers/GLSLLayer/GLSLLayer.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
+#include "Astral/Rendering/Shader/ShaderLibrary.h"
 
 namespace Astral {
 
@@ -22,6 +23,8 @@ namespace Astral {
 			}));
 
 		layers.PushLayer(std::make_unique<GLSLLayer>());
+
+		shaderlib.Load("Flat Shader", "src/Shaders/vertex.vert.glsl", "src/Shaders/fragment.frag.glsl");
 	}
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {

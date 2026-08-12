@@ -20,7 +20,7 @@ namespace Astral {
 		virtual ~ABuffer();
 
 		// moving is supported
-		ABuffer(ABuffer&&);
+		ABuffer(ABuffer&&) noexcept;
 		ABuffer& operator=(ABuffer&& other) = default;
 
 		// copying is not permitted
@@ -107,7 +107,7 @@ namespace Astral {
 	}
 
 	template <typename BufferElementT>
-	ABuffer<BufferElementT>::ABuffer(ABuffer&& other) : handle(other.handle), usage(other.usage), length(other.length), target(other.target) {
+	ABuffer<BufferElementT>::ABuffer(ABuffer&& other) noexcept: handle(other.handle), usage(other.usage), length(other.length), target(other.target) {
 		other.handle = 0;
 	}
 

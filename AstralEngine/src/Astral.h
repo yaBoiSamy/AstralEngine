@@ -14,6 +14,7 @@
 #include "Astral/Events/Event.h"
 #include "Astral/Events/KeyCodes.h"
 #include "Astral/Window/FrameContext.h"
+#include "Astral/Rendering/Shader/ShaderLibrary.h"
 
 
 #include "Astral/Rendering/Renderer/Renderer.h"

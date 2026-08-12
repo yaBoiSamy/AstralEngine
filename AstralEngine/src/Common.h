@@ -21,9 +21,14 @@
 #include <Astral/Logging/Log.h>
 #include <glm/glm.hpp>
 
+namespace Astral {
 
-template<typename T, typename Deleter = std::default_delete<T>>
-using ptr = std::unique_ptr<T, Deleter>;
+    template<typename T, typename Deleter = std::default_delete<T>>
+    using Box = std::unique_ptr<T, Deleter>;
+
+    template<typename T>
+    using Arc = std::shared_ptr<T>;
+}
 
 
 #ifdef AST_PLATFORM_WINDOWS

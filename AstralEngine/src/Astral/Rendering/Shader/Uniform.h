@@ -13,7 +13,7 @@ namespace Astral {
 		Uniform(std::string_view name, GLuint shaderid) : handle(glGetUniformLocation(shaderid, name.data())) {}
 
 		// moving is supported
-		Uniform(Uniform&& other) : handle(other.handle) {
+		Uniform(Uniform&& other) noexcept : handle(other.handle) {
 			other.handle = 0;
 		}
 		Uniform& operator=(Uniform&& other) = default;

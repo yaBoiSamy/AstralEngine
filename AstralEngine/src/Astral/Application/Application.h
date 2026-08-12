@@ -4,6 +4,7 @@
 #include "Astral/BootStrapper/BootStrapper.h"
 #include "Astral/Layers/LayerStack.h"
 #include "Astral/Events/EventListener.h"
+#include "Astral/Rendering/Shader/ShaderLibrary.h"
 
 namespace Astral {
 	class Application : public EventListener {
@@ -16,6 +17,9 @@ namespace Astral {
 
 		void Close();
 		void Run();
+
+	protected:
+		ShaderLibrary shaderlib;
 
 	private:
 		virtual bool OnWindowCloseEvent(const WindowCloseEvent& event) final;

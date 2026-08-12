@@ -13,13 +13,13 @@ namespace Astral
 	*/
 	class LayerStack
 	{
-		using LayerVect = std::vector<ptr<ALayer>>;
+		using LayerVect = std::vector<Box<ALayer>>;
 	public:
 		LayerStack();
 
-		void PushLayer(ptr<ALayer> layer);
+		void PushLayer(Box<ALayer> layer);
 		void PopLayer(LayerVect::const_iterator layer);
-		void PushOverlay(ptr<ALayer> overlay);
+		void PushOverlay(Box<ALayer> overlay);
 		void PopOverlay(LayerVect::const_iterator overlay);
 
 		void Update(const FrameContext& context);

@@ -47,8 +47,8 @@ namespace Astral {
 			void operator()(GLFWwindow* w) const noexcept;
 		};
 
-		ptr<State> state;
-		ptr<GLFWwindow, GLFWDeleter> handle;
+		Box<State> state;
+		Box<GLFWwindow, GLFWDeleter> handle;
 		std::function<void(const Event&)> callback;
 	};
 }

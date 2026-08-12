@@ -2,9 +2,7 @@
 
 class Sandbox : public Astral::Application {
 private:
-	const std::string VERTEX_DIR = "src/Shaders/vertex.vert.glsl";
-	const std::string FRAGMENT_DIR = "src/Shaders/fragment.frag.glsl";
-    const std::string TEXTURE_DIR = "resources/checkmark.png";
+    const std::string TEXTURE_DIR = "resources/finger.png";
     const std::vector<Astral::Vertex> vertices = {
         // Front
         { { -0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 0
@@ -64,30 +62,30 @@ private:
     };
 	const Astral::Mesh MESH = Astral::Mesh(std::move(vertices), std::move(indices));
 
-    ptr<Astral::Scene> scene;
-	ptr<Astral::Shader> shader;
-    ptr<Astral::Texture> texture;
-    ptr<Astral::Material> material;
+    Astral::Arc<Astral::Scene> scene;
+	Astral::Arc<Astral::Shader> shader;
+    Astral::Arc<Astral::Texture> texture;
+    Astral::Arc<Astral::Material> material;
 
 public:
 
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-        scene(std::make_unique<Astral::Scene>()),
-		shader(std::make_unique<Astral::Shader>(VERTEX_DIR, FRAGMENT_DIR)),
-        texture(std::make_unique<Astral::Texture>(TEXTURE_DIR)),
+        scene(std::make_shared<Astral::Scene>()),
+		shader(shaderlib.Get("Flat Shader")),
+        texture(std::make_shared<Astral::Texture>(TEXTURE_DIR)),
         material(nullptr) {
-        material = std::make_unique<Astral::Material>(shader.get(), glm::vec4(1, 1, 1, 0), texture.get());
+        material = std::make_shared<Astral::Material>(shader, glm::vec4(1, 1, 1, 0), texture.get());
 
-		ptr<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
-        ptr<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, material.get());
+		Astral::Box<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
+        Astral::Box<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, material.get());
         cube->AddComponent(std::move(cube_mesh));
 		scene->root.AddChild(std::move(cube));
 
-        ptr<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
-		ptr<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
+        Astral::Box<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
+		Astral::Box<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
         const Astral::FrameContext context = GetFrameContext();
-		ptr<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
+		Astral::Box<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
 			45,                 // FOV (degrees)
 			0.1,                // near plane
 			100                 // far plane

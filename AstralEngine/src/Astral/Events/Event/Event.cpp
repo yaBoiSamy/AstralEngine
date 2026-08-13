@@ -1,11 +1,12 @@
 #include <Common.h>
 
 #include "Event.h"
-#include "Astral/Events/EventListener.h"
+#include "Astral/Events/EventHandlers/EventHandlers.h"
 
 namespace Astral {
     bool WindowCloseEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
     bool WindowResizeEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
+    bool WindowFrameResizeEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
     bool WindowFocusEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
     bool WindowLostFocusEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
     bool WindowMovedEvent::Dispatch(EventListener& l) const { return l.Accept(*this); }
@@ -42,6 +43,10 @@ namespace Astral {
 
     WindowResizeEvent::operator std::string() const {
         return std::format("WindowResizeEvent {{ width = {0}, height = {1} }}", width, height);
+    }
+
+    WindowFrameResizeEvent::operator std::string() const {
+        return std::format("WindowFrameResizeEvent {{ frame_width = {0}, frame_height = {1} }}", frame_width, frame_height);
     }
 
     WindowFocusEvent::operator std::string() const {

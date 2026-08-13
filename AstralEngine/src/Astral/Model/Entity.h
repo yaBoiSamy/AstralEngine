@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Component.h"
 #include "Components/Transform/Transform.h"
+#include "Astral/Model/Layers/ALayer.h"
 #include <stack>
 
 
@@ -111,7 +112,9 @@ namespace Astral {
 	
 	// Back into AEntity, nested types done
 	public:
-		Entity(std::string name = "Entity");
+		Entity(std::string name, ALayer* layer = nullptr);
+		void SetName(std::string name);
+		ALayer* layer;
 
 		Entity* Parent();
 		Entity* Child(std::string child_name);
@@ -357,14 +360,30 @@ namespace Astral {
 
 
 	// =================================================================================================================
-	// ================================================= AEntity ======================================================
+	// ================================================== Entity ======================================================
 	// =================================================================================================================
 
-	inline Entity::Entity(std::string name) :
+	inline Entity::Entity(std::string name, ALayer* layer) :
 		parent(nullptr),
-		name(name) {
+		name(name),
+	    layer(layer) {
 		AddComponent(std::make_unique<Transform>());
 	}
+
+	inline void Entity::SetName(std::string name) {
+		if (!parent) {
+			this->name = name;
+			return;
+		}
+
+		if (parent->CheckNameCollision(name)) {
+			AST_CORE_ERROR("Entity '{0}' cannot be renamed to '{1}', since a sibling entity has the same name. Aborting the operation.", this->name, name);
+			return;
+		}
+
+		this->name = name;
+	}
+
 
 	inline Entity* Entity::Parent() {
 		return parent;
@@ -384,7 +403,7 @@ namespace Astral {
 
 	inline void Entity::AddChild(Box<Entity> child) {
 		if (CheckNameCollision(child->name)) {
-			AST_CORE_ERROR("Cannot make entity with name {0}, since a sibling entity has the same name. Aborting the operation.", child->name);
+			AST_CORE_ERROR("Entity '{0}' cannot adopt entity '{1}', since a sibling entity has the same name. Aborting the operation.", name, child->name);
 			return;
 		}
 

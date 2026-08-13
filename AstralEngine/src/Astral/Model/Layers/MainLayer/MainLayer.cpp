@@ -1,5 +1,5 @@
 #include "Common.h"
-#include "GLSLLayer.h"
+#include "MainLayer.h"
 #include "Astral/Rendering/Buffers/Attributes.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
@@ -7,12 +7,12 @@
 
 namespace Astral
 {
-	GLSLLayer::GLSLLayer() :
-		ALayer("TestRenderLayer")
+	MainLayer::MainLayer() :
+		ALayer("Main layer")
 
 	{
 	}
 
-	void GLSLLayer::OnUpdate(const FrameContext& context) {
+	void MainLayer::OnUpdate(const FrameContext& context) {
 	}
 }

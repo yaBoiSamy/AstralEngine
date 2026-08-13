@@ -5,26 +5,23 @@ namespace Astral
 {
 	struct FrameContext {
 		struct InputSnapshot {
-			const std::unordered_set<int> pressedKeys;
-			const std::unordered_set<int> pressedMouseButtons;
+			const std::unordered_set<int> pressed_keys;
+			const std::unordered_set<int> pressed_mouse_buttons;
 			const double mouseX;
 			const double mouseY;
 		};
 
 		struct WindowSnapshot {
 			const std::string title;
-			const uint32_t x;
-			const uint32_t y;     
-			const uint32_t width;
-			const uint32_t height;
-			const uint32_t resolutionX;
-			const uint32_t resolutionY;
+			const int32_t x, y;     
+			const uint32_t width, height;
+			const uint32_t frame_width, frame_height;
 			const bool focused;
-			const bool vSync;
+			const bool vsync;
+			const double deltaTime;
 		};
 
-		const InputSnapshot inputSnapshot;
-		const WindowSnapshot windowSnapshot;
-		const double deltaTime;
+		const InputSnapshot input_snapshot;
+		const WindowSnapshot window_snapshot;
 	};
 }

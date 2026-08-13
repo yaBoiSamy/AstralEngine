@@ -71,7 +71,7 @@ public:
 
 	Sandbox(const Astral::StartupConfig& config) : 
 		Astral::Application(config), 
-        scene(std::make_shared<Astral::Scene>()),
+        scene(std::make_shared<Astral::Scene>(this, "MainScene")),
 		shader(shaderlib.Get("Flat Shader")),
         texture(std::make_shared<Astral::Texture>(TEXTURE_DIR)),
         material(nullptr) {
@@ -83,8 +83,7 @@ public:
 		scene->root.AddChild(std::move(cube));
 
         Astral::Box<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
-		Astral::Box<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam");
-        const Astral::FrameContext context = GetFrameContext();
+		Astral::Box<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam", layers.Find("Main layer"));
 		Astral::Box<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
 			45,                 // FOV (degrees)
 			0.1,                // near plane
@@ -105,18 +104,17 @@ public:
 	}
 
 	void Update() override {
-		const float cube_rotspeed = 1;
-        const float cam_rotspeed = 0.25;
-        const float cube_oscillationspeed = 1;
-        const float cube_oscillationrange = 1;
+		const double cube_rotspeed = 1;
+        const double cam_rotspeed = 0.25;
+        const double cube_oscillationspeed = 1;
         static double time = 0;
-        const Astral::FrameContext context = GetFrameContext();
-        //AST_CORE_INFO("FPS: {}", 1 / context.deltaTime);
-		scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, context.deltaTime * cube_rotspeed, 0)));
-        scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(context.deltaTime * cam_rotspeed, 0, 0)));
+        double deltatime = GetFrameContext().window_snapshot.deltaTime;
+        //AST_CORE_INFO("FPS: {}", 1 / deltaTime);
+		scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
+        scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
         //scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
 		scene->Draw();
-        time += context.deltaTime;
+        time += deltatime;
 	}
 
 	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {

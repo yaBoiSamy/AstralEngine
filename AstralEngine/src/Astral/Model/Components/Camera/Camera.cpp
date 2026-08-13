@@ -30,17 +30,16 @@ namespace Astral {
 		return rot * trans;
 	}
 	
-	mat4 Camera::ProjectionMatrix() {
-		int fbx, fby;
-		glfwGetFramebufferSize(glfwGetCurrentContext(), &fbx, &fby);
-		return glm::perspective((float)fov, (float)fbx / (float)fby, (float)near_plane, (float)far_plane);
+	mat4 Camera::ProjectionMatrix(uint32_t frame_width, uint32_t frame_height) {
+		return glm::perspective((float)fov, (float)frame_width / (float)frame_height, (float)near_plane, (float)far_plane);
 	}
 
-	void Camera::UpdateRenderedPOV() {
+	void Camera::UpdateRenderedPOV(uint32_t frame_width, uint32_t frame_height) {
 		Renderer::CameraData camdata = {
 			ViewMatrix(),
-			ProjectionMatrix()
+			ProjectionMatrix(frame_width, frame_height)
 		};
 		Renderer::UpdateCameraData(camdata);
 	}
+
 }

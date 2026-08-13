@@ -7,8 +7,8 @@ namespace Astral {
 		GfxAPI().SetActiveFrameBuffer(id);
 	}
 
-	void RenderCommand::SetViewport(std::pair<uint32_t, uint32_t> framebufferSize) {
-		GfxAPI().SetViewport(framebufferSize);
+	void RenderCommand::SetViewport(uint32_t frame_width, uint32_t frame_height) {
+		GfxAPI().SetViewport(frame_width, frame_height);
 	}
 
 	void RenderCommand::SetClearColor(const glm::vec4& color) {

@@ -17,9 +17,9 @@ namespace Astral {
 		gpu_model_data.emplace(UniformBuffer<Renderer::ModelData>(UsageHint::Dynamic, 1));
 	}
 
-	void Renderer::SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize) {
+	void Renderer::SetupFrame(uint32_t frame_width, uint32_t frame_height) {
 		RenderCommand::SetActiveFrameBuffer(0);
-		RenderCommand::SetViewport(framebufferSize);
+		RenderCommand::SetViewport(frame_width, frame_height);
 		RenderCommand::Clear();
 	}
 

@@ -2,23 +2,24 @@
 
 #include <Common.h>
 
-#include "Astral/Events/Event.h"
+#include "Astral/Events/Event/Event.h"
+#include "Astral/Events/EventHandlers/EventHandlers.h"
 #include "Astral/Window/FrameContext.h"
 
 struct GLFWwindow;
 
 namespace Astral {
 
-	using EventCallbackFn = std::function<void(Event const&)>;
-
-	class Window {
+	class Window : public EventBroadcaster {
 	public:
 		struct State {
 			std::string title;
-			uint32_t x, y;
+			int32_t x, y;
 			uint32_t width, height;
+			uint32_t frame_width, frame_height;
 			bool focused;
-			bool vSync;
+			bool vsync;
+			double deltatime;
 		};
 
 		explicit Window(GLFWwindow* handle, State state, std::function<void()> imguiSetup);
@@ -27,10 +28,7 @@ namespace Astral {
 		FrameContext::WindowSnapshot GetWindowState() const;
 		FrameContext::InputSnapshot GetInputState() const;
 
-		void SetCallback(std::function<void(const Event&)> callback);
-		void SetVSync(bool vSync);
-
-		std::pair<uint32_t, uint32_t> GetFramebufferSize() const;
+		void SetVSync(bool vsync);
 
 		void PumpEvents();
 		void SwapBuffers();
@@ -49,6 +47,5 @@ namespace Astral {
 
 		Box<State> state;
 		Box<GLFWwindow, GLFWDeleter> handle;
-		std::function<void(const Event&)> callback;
 	};
 }

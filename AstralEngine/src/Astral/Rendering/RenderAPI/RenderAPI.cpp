@@ -45,9 +45,8 @@ namespace Astral {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLRenderAPI::SetViewport(std::pair<uint32_t, uint32_t> framebufferSize) {
-		auto [fbw, fbh] = framebufferSize;
-		glViewport(0, 0, fbw, fbh);
+	void OpenGLRenderAPI::SetViewport(uint32_t framebuffer_width, uint32_t frame_height) {
+		glViewport(0, 0, framebuffer_width, frame_height);
 	}
 
 	void OpenGLRenderAPI::SetClearColor(const glm::vec4& color) {

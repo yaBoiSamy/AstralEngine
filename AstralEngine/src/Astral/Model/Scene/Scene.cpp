@@ -3,7 +3,7 @@
 #include "Astral/Model/Components/MeshRenderer/MeshRenderer.h"
 
 namespace Astral {
-	Scene::Scene() : main_camera(nullptr) {}
+	Scene::Scene(Application* app, std::string name, ALayer* layer) : main_camera(nullptr), root("Scene", layer), app(app) {}
 
 	void Scene::SetMainCam(Camera* cam) {
 		main_camera = cam;
@@ -11,7 +11,12 @@ namespace Astral {
 
 	void Scene::Draw() {
 		AST_CORE_ASSERT(main_camera, "A main camera must be attached to the scene to render stuff");
-		main_camera->UpdateRenderedPOV();
+		FrameContext ctxt = app->GetFrameContext();
+		uint32_t fbx = ctxt.window_snapshot.frame_width;
+		uint32_t fby = ctxt.window_snapshot.frame_height;
+		if (fbx == 0 || fby == 0)
+			return;
+		main_camera->UpdateRenderedPOV(fbx, fby);
 
 		for (auto& desc : root.Descendants())
 			for (auto& mesh_component : desc.Components<MeshRenderer>())

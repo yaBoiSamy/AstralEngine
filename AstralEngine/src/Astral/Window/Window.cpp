@@ -10,45 +10,52 @@ namespace Astral {
 	Window::Window(GLFWwindow* handle, State _state, std::function<void()> imguiSetup) : handle(handle), state(std::make_unique<State>(_state)) {
 		AST_CORE_INFO("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
 		glfwSetWindowUserPointer(handle, this);
-		SetVSync(state->vSync);
+		SetVSync(state->vsync);
 
         glfwSetWindowCloseCallback(handle, [](GLFWwindow* handle) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-			window.callback(WindowCloseEvent());
+			window.Broadcast(WindowCloseEvent());
             });
 
         glfwSetWindowSizeCallback(handle, [](GLFWwindow* handle, int width, int height) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.callback(WindowResizeEvent(width, height));
+            window.Broadcast(WindowResizeEvent(width, height));
             window.state->width = width;
             window.state->height = height;
+            });
+
+        glfwSetFramebufferSizeCallback(handle, [](GLFWwindow* handle, int frame_width, int frame_height) {
+            Window& window = *(Window*)glfwGetWindowUserPointer(handle);
+            window.Broadcast(WindowFrameResizeEvent(frame_width, frame_height));
+            window.state->frame_width = frame_width;
+            window.state->frame_height = frame_height;
             });
 
         glfwSetWindowFocusCallback(handle, [](GLFWwindow* handle, int focus) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
 			window.state->focused = (focus != 0);
             if (focus)
-                window.callback(WindowFocusEvent());
+                window.Broadcast(WindowFocusEvent());
             else
-                window.callback(WindowLostFocusEvent());
+                window.Broadcast(WindowLostFocusEvent());
             });
 
         glfwSetWindowPosCallback(handle, [](GLFWwindow* handle, int x, int y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.callback(WindowMovedEvent(x, y));
+            window.Broadcast(WindowMovedEvent(x, y));
             });
 
         glfwSetKeyCallback(handle, [](GLFWwindow* handle, int key, int scancode, int action, int mods) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             switch (action) {
             case GLFW_PRESS:
-                window.callback(KeyPressedEvent(key, 0));
+                window.Broadcast(KeyPressedEvent(key, 0));
                 break;
             case GLFW_REPEAT:
-                window.callback(KeyPressedEvent(key, 1));
+                window.Broadcast(KeyPressedEvent(key, 1));
                 break;
             case GLFW_RELEASE:
-                window.callback(KeyReleasedEvent(key));
+                window.Broadcast(KeyReleasedEvent(key));
                 break;
             }
             });
@@ -58,51 +65,46 @@ namespace Astral {
             double x, y;
             glfwGetCursorPos(handle, &x, &y);
             if (action == GLFW_PRESS)
-                window.callback(MouseButtonPressedEvent(button, x, y));
+                window.Broadcast(MouseButtonPressedEvent(button, x, y));
             else if (action == GLFW_RELEASE)
-                window.callback(MouseButtonReleasedEvent(button, x, y));
+                window.Broadcast(MouseButtonReleasedEvent(button, x, y));
             });
 
         glfwSetCursorPosCallback(handle, [](GLFWwindow* handle, double x, double y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.callback(MouseMovedEvent(x, y));
+            window.Broadcast(MouseMovedEvent(x, y));
             });
 
         glfwSetScrollCallback(handle, [](GLFWwindow* handle, double xOffset, double yOffset) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.callback(MouseScrolledEvent(xOffset, yOffset));
+            window.Broadcast(MouseScrolledEvent(xOffset, yOffset));
             });
 
         imguiSetup();
 
-        if (state->vSync)
+        if (state->vsync)
             glfwSwapInterval(1);
 	}
 
     FrameContext Window::GetFrameContext() const {
-        static double last_frametime = 0;
-        double curr_frametime = glfwGetTime();
-        double deltatime = curr_frametime - last_frametime;
-        last_frametime = curr_frametime;
         return FrameContext{
             GetInputState(),
             GetWindowState(),
-            deltatime
         };
     }
 
     FrameContext::WindowSnapshot Window::GetWindowState() const {
-        auto [fbx, fby] = GetFramebufferSize();
         return FrameContext::WindowSnapshot{
             state->title,
             state->x,
             state->y,
             state->width,
             state->height,
-            fbx,
-            fby,
+            state->frame_width,
+            state->frame_height,
             state->focused,
-            state->vSync
+            state->vsync,
+            state->deltatime
         };
     }
 
@@ -137,26 +139,20 @@ namespace Astral {
 		if (w) glfwDestroyWindow(w);
 	}
 
-	void Window::SetCallback(std::function<void(const Event&)> callback) {
-		this->callback = callback;
-	}
-
-    std::pair<uint32_t, uint32_t> Window::GetFramebufferSize() const {
-        int width, height;
-        glfwGetFramebufferSize(handle.get(), &width, &height);
-        return { (uint32_t)width, (uint32_t)height };
-	}
-
     void Window::PumpEvents() {
 		glfwPollEvents();
     }
 
     void Window::SwapBuffers() {
+        static double last_frametime = 0;
+        double curr_frametime = glfwGetTime();
+        state->deltatime = curr_frametime - last_frametime;
+        last_frametime = curr_frametime;
         glfwSwapBuffers(handle.get());
     }
 
-	void Window::SetVSync(bool vSync) {
-		glfwSwapInterval(vSync ? 1 : 0);
-		state->vSync = vSync;
+	void Window::SetVSync(bool vsync) {
+		glfwSwapInterval(vsync ? 1 : 0);
+		state->vsync = vsync;
 	}
 }

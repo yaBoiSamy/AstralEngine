@@ -12,9 +12,9 @@ int main(int argc, char** argv) {
 	Astral::StartupConfig startupConfig{
 		// Window Parameters
 		"AstralEngine", // window name
-		1920,  // resolution width
-		1080,  // resolution height
-		true,  // vSync
+		1920,  // window width
+		1080,  // window height
+		true,  // vsync
 
 		// Graphics API	parameters
 		4,  // gl major

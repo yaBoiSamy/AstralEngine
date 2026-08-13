@@ -9,7 +9,7 @@ namespace Astral {
 	public:
 		static void InitRenderer();
 
-		static void SetupFrame(std::pair<uint32_t, uint32_t> framebufferSize);
+		static void SetupFrame(uint32_t frame_width, uint32_t frame_height);
 
 		static void Submit(const IVertexArray& vertexArray, const Shader& shader);
 

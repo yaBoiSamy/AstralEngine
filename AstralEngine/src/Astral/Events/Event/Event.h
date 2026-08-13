@@ -36,6 +36,13 @@ namespace Astral {
         virtual bool Dispatch(EventListener& l) const override;
     };
 
+    struct WindowFrameResizeEvent : WindowEvent {
+        const uint32_t frame_width, frame_height;
+        WindowFrameResizeEvent(uint32_t frame_width, uint32_t frame_height) : frame_width(frame_width), frame_height(frame_height) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
     struct WindowFocusEvent : WindowEvent {
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;

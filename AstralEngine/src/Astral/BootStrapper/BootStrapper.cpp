@@ -40,13 +40,12 @@ namespace Astral {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create window with graphics context
-        GLFWwindow* window = glfwCreateWindow((int)config.resolutionWidth, (int)config.resolutionHeight, config.windowName.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow((int)config.window_width, (int)config.window_height, config.windowName.c_str(), nullptr, nullptr);
         AST_CORE_ASSERT(window, "Failed to create GLFW window");
         glfwMakeContextCurrent(window);
         glfwSetErrorCallback([](int error, const char* description) {
             AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
             });
-        //if (config.vSync)
 
 		// Load OpenGL functions using glad
         success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -75,16 +74,21 @@ namespace Astral {
         int x, y;
         glfwGetWindowPos(window, &x, &y);
 
+        int fbx, fby;
+        glfwGetFramebufferSize(window, &fbx, &fby);
+
         return Window(
             window, 
             Window::State {
                 config.windowName,
-                (uint32_t)x,
-                (uint32_t)y,
-                config.resolutionWidth,
-                config.resolutionHeight,
+                (int32_t)x,
+                (int32_t)y,
+                config.window_width,
+                config.window_height,
+                (uint32_t)fbx,
+                (uint32_t)fby,
                 true,
-                config.vSync },
+                config.vsync },
             std::bind(ImGui_ImplGlfw_InitForOpenGL, window, true));
     }
 }

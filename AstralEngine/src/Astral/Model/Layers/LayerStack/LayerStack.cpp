@@ -1,5 +1,6 @@
 #include <Common.h>
 #include "LayerStack.h"
+#include "Astral/Model/Layers/ALayer.h"
 
 namespace Astral
 {
@@ -7,36 +8,49 @@ namespace Astral
 
 	LayerStack::LayerStack() : boundaryIndex(0) {}
 
-	LayerVect::const_iterator LayerStack::BoundaryIt() const {
-		AST_CORE_ASSERT(boundaryIndex <= layers.size(), "index out of bounds");
-		return layers.cbegin() + boundaryIndex;
-	}
-
 	LayerVect::iterator LayerStack::BoundaryIt() {
 		AST_CORE_ASSERT(boundaryIndex <= layers.size(), "index out of bounds");
 		return layers.begin() + boundaryIndex;
 	}
 
-	void LayerStack::PushLayer(Box<ALayer> pushedLayer) {
-		layers.insert(BoundaryIt(), std::move(pushedLayer));
-		boundaryIndex++;
-		(*cLayerBack())->OnAttach();
+	bool LayerStack::OnEvent(const Event& event) {
+		return Broadcast(event);
 	}
 
-	void LayerStack::PopLayer(LayerVect::const_iterator poppedLayer) {
-		AST_CORE_ASSERT(cLayerBegin() <= poppedLayer && poppedLayer < cLayerEnd(), "Iterator out of layer range");
+	ALayer* LayerStack::Find(std::string_view name) {
+		for (const Box<ALayer>& layer : *this) {
+			if (layer->name == name)
+				return layer.get();
+		}
+		AST_CORE_WARN("Layer with name '{0}' not found", name);
+		return nullptr;
+	}
+
+
+	void LayerStack::PushLayer(Box<ALayer> pushedLayer) {
+		pushedLayer->SubscribeTo(*this);
+		layers.insert(BoundaryIt(), std::move(pushedLayer));
+		boundaryIndex++;
+		(*LayerBack())->OnAttach();
+	}
+
+	void LayerStack::PopLayer(LayerVect::iterator poppedLayer) {
+		AST_CORE_ASSERT(LayerBegin() <= poppedLayer && poppedLayer < LayerEnd(), "Iterator out of layer range");
+		(*poppedLayer)->UnsubscribeTo(*this);
 		(*poppedLayer)->OnDetach();
 		layers.erase(poppedLayer);
 		boundaryIndex--;
 	}
 
 	void LayerStack::PushOverlay(Box<ALayer> pushedOverlay) {
+		pushedOverlay->SubscribeTo(*this);
 		layers.insert(layers.end(), std::move(pushedOverlay));
-		(*cOverlayBack())->OnAttach();
+		(*OverlayBack())->OnAttach();
 	}
 
-	void LayerStack::PopOverlay(LayerVect::const_iterator poppedOverlay) {
-		AST_CORE_ASSERT(cOverlayBegin() <= poppedOverlay && poppedOverlay < cOverlayEnd(), "Iterator out of overlay range");
+	void LayerStack::PopOverlay(LayerVect::iterator poppedOverlay) {
+		AST_CORE_ASSERT(OverlayBegin() <= poppedOverlay && poppedOverlay < OverlayEnd(), "Iterator out of overlay range");
+		(*poppedOverlay)->UnsubscribeTo(*this);
 		(*poppedOverlay)->OnDetach();
 		layers.erase(poppedOverlay);
 	}

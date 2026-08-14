@@ -9,7 +9,7 @@ extern Astral::Application* Astral::CreateApplication(StartupConfig& config);
 
 int main(int argc, char** argv) {
 
-	Astral::StartupConfig startupConfig{
+	Astral::StartupConfig startup_config{
 		// Window Parameters
 		"AstralEngine", // window name
 		1920,  // window width
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	};
 
 	Astral::Log::Init();
-	Astral::Application* app = Astral::CreateApplication(startupConfig);
+	Astral::Application* app = Astral::CreateApplication(startup_config);
 	app->Run();
 	delete app;
 }

@@ -74,7 +74,7 @@ namespace Astral {
     }
 
     KeyPressedEvent::operator std::string() const {
-        return std::format("KeyPressedEvent {{ keycode = {0}, repeatCount = {1} }}", keycode, repeatCount);
+        return std::format("KeyPressedEvent {{ keycode = {0}, repeat_count = {1} }}", keycode, repeat_count);
     }
 
     KeyReleasedEvent::operator std::string() const {
@@ -94,6 +94,6 @@ namespace Astral {
     }
 
     MouseScrolledEvent::operator std::string() const {
-        return std::format("MouseScrolledEvent {{ x = {0}, y = {1} }}", xOffset, yOffset);
+        return std::format("MouseScrolledEvent {{ x = {0}, y = {1} }}", x_offset, y_offset);
     }
 }

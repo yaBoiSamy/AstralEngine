@@ -76,8 +76,8 @@ namespace Astral {
     };
 
     struct KeyPressedEvent : InputEvent {
-        const uint32_t keycode, repeatCount;
-        KeyPressedEvent(uint32_t keycode, uint32_t repeatCount) : keycode(keycode), repeatCount(repeatCount) {}
+        const uint32_t keycode, repeat_count;
+        KeyPressedEvent(uint32_t keycode, uint32_t repeat_count) : keycode(keycode), repeat_count(repeat_count) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };
@@ -113,8 +113,8 @@ namespace Astral {
     };
 
     struct MouseScrolledEvent : InputEvent {
-        const double xOffset, yOffset;
-        MouseScrolledEvent(double xOffset, double yOffset) : xOffset(xOffset), yOffset(yOffset) {}
+        const double x_offset, y_offset;
+        MouseScrolledEvent(double x_offset, double y_offset) : x_offset(x_offset), y_offset(y_offset) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };

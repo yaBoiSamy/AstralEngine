@@ -7,8 +7,8 @@ namespace Astral
 		struct InputSnapshot {
 			const std::unordered_set<int> pressed_keys;
 			const std::unordered_set<int> pressed_mouse_buttons;
-			const double mouseX;
-			const double mouseY;
+			const double mouse_x;
+			const double mouse_y;
 		};
 
 		struct WindowSnapshot {
@@ -18,7 +18,7 @@ namespace Astral
 			const uint32_t frame_width, frame_height;
 			const bool focused;
 			const bool vsync;
-			const double deltaTime;
+			const double deltatime;
 		};
 
 		const InputSnapshot input_snapshot;

@@ -21,12 +21,12 @@ namespace Astral{
 	public:
 		static void Init();
 
-		static std::shared_ptr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
-		static std::shared_ptr<spdlog::logger> GetClientLogger() { return ClientLogger; }
+		static std::shared_ptr<spdlog::logger> GetCoreLogger() { return core_logger; }
+		static std::shared_ptr<spdlog::logger> GetClientLogger() { return client_logger; }
 
 	private:
-		static std::shared_ptr<spdlog::logger> CoreLogger;
-		static std::shared_ptr<spdlog::logger> ClientLogger;
+		static std::shared_ptr<spdlog::logger> core_logger;
+		static std::shared_ptr<spdlog::logger> client_logger;
 	};
 
 }

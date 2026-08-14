@@ -6,11 +6,11 @@ namespace Astral
 {
 	using LayerVect = std::vector<Box<ALayer>>;
 
-	LayerStack::LayerStack() : boundaryIndex(0) {}
+	LayerStack::LayerStack() : boundary_index(0) {}
 
 	LayerVect::iterator LayerStack::BoundaryIt() {
-		AST_CORE_ASSERT(boundaryIndex <= layers.size(), "index out of bounds");
-		return layers.begin() + boundaryIndex;
+		AST_CORE_ASSERT(boundary_index <= layers.size(), "index out of bounds");
+		return layers.begin() + boundary_index;
 	}
 
 	bool LayerStack::OnEvent(const Event& event) {
@@ -30,7 +30,7 @@ namespace Astral
 	void LayerStack::PushLayer(Box<ALayer> pushedLayer) {
 		pushedLayer->SubscribeTo(*this);
 		layers.insert(BoundaryIt(), std::move(pushedLayer));
-		boundaryIndex++;
+		boundary_index++;
 		(*LayerBack())->OnAttach();
 	}
 
@@ -39,7 +39,7 @@ namespace Astral
 		(*poppedLayer)->UnsubscribeTo(*this);
 		(*poppedLayer)->OnDetach();
 		layers.erase(poppedLayer);
-		boundaryIndex--;
+		boundary_index--;
 	}
 
 	void LayerStack::PushOverlay(Box<ALayer> pushedOverlay) {

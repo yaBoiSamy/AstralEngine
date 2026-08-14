@@ -35,12 +35,12 @@ namespace Astral {
         AST_CORE_ASSERT(success, "glfw init unsuccessful");
 
        // OpenGL Versioning
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, config.glMajor);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, config.glMinor);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, config.gl_major);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, config.gl_minor);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create window with graphics context
-        GLFWwindow* window = glfwCreateWindow((int)config.window_width, (int)config.window_height, config.windowName.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow((int)config.window_width, (int)config.window_height, config.window_name.c_str(), nullptr, nullptr);
         AST_CORE_ASSERT(window, "Failed to create GLFW window");
         glfwMakeContextCurrent(window);
         glfwSetErrorCallback([](int error, const char* description) {
@@ -69,7 +69,7 @@ namespace Astral {
         style.FontScaleDpi = main_scale;
 
         // Setup Platform/Renderer backends
-        ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.glMajor, config.glMinor));
+        ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.gl_major, config.gl_minor));
 
         int x, y;
         glfwGetWindowPos(window, &x, &y);
@@ -80,7 +80,7 @@ namespace Astral {
         return Window(
             window, 
             Window::State {
-                config.windowName,
+                config.window_name,
                 (int32_t)x,
                 (int32_t)y,
                 config.window_width,

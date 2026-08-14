@@ -10,7 +10,7 @@ namespace Astral
 		MainLayer();
 		
 		virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {
-			AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeatCount);
+			AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeat_count);
 			return false;
 		}
 

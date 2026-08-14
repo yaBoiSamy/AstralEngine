@@ -8,8 +8,8 @@ namespace Astral
 {
 	/*
 	Invariant:
-	[0, boundaryIndex) => layers
-	[boundaryIndex, layers.size()) => overlays
+	[0, boundary_index) => layers
+	[boundary_index, layers.size()) => overlays
 	*/
 	class LayerStack : public EventListener, public EventBroadcaster
 	{
@@ -42,7 +42,7 @@ namespace Astral
 
 	private:
 		LayerVect layers;
-		size_t boundaryIndex;
+		size_t boundary_index;
 
 		LayerVect::iterator BoundaryIt();
 	};

@@ -75,9 +75,9 @@ namespace Astral {
             window.Broadcast(MouseMovedEvent(x, y));
             });
 
-        glfwSetScrollCallback(handle, [](GLFWwindow* handle, double xOffset, double yOffset) {
+        glfwSetScrollCallback(handle, [](GLFWwindow* handle, double x_offset, double y_offset) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.Broadcast(MouseScrolledEvent(xOffset, yOffset));
+            window.Broadcast(MouseScrolledEvent(x_offset, y_offset));
             });
 
         imguiSetup();
@@ -110,7 +110,7 @@ namespace Astral {
 
     FrameContext::InputSnapshot Window::GetInputState() const {
         std::unordered_set<int> keys;
-        std::unordered_set<int> mouseButtons;
+        std::unordered_set<int> mouse_buttons;
 
         // Poll keyboard
         for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key)
@@ -120,17 +120,17 @@ namespace Astral {
         // Poll mouse buttons
         for (int button = GLFW_MOUSE_BUTTON_1; button <= GLFW_MOUSE_BUTTON_LAST; ++button)
             if (glfwGetMouseButton(handle.get(), button) == GLFW_PRESS)
-                mouseButtons.insert(button);
+                mouse_buttons.insert(button);
 
         // Poll mouse position
-        double mouseX, mouseY;
-        glfwGetCursorPos(handle.get(), &mouseX, &mouseY);
+        double mouse_x, mouse_y;
+        glfwGetCursorPos(handle.get(), &mouse_x, &mouse_y);
 
         return FrameContext::InputSnapshot{
             std::move(keys),
-            std::move(mouseButtons),
-            mouseX,
-            mouseY
+            std::move(mouse_buttons),
+            mouse_x,
+            mouse_y
         };
     }
 

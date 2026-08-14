@@ -5,14 +5,14 @@ namespace Astral {
 
 	struct StartupConfig {
 		// Window Parameters
-		std::string windowName = "AstralEngine";
+		std::string window_name = "AstralEngine";
 		uint32_t window_width = 1920;
 		uint32_t window_height = 1080;
 		bool vsync = true;
 
 		// Graphics API	parameters
-		int glMajor = 4;
-		int glMinor = 6;
+		int gl_major = 4;
+		int gl_minor = 6;
 	};
 
 	Window WindowStartup(const StartupConfig& startupConfig);

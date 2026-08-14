@@ -108,8 +108,8 @@ public:
         const double cam_rotspeed = 0.25;
         const double cube_oscillationspeed = 1;
         static double time = 0;
-        double deltatime = GetFrameContext().window_snapshot.deltaTime;
-        //AST_CORE_INFO("FPS: {}", 1 / deltaTime);
+        double deltatime = GetFrameContext().window_snapshot.deltatime;
+        //AST_CORE_INFO("FPS: {}", 1 / deltatime);
 		scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
         scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
         //scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
@@ -118,7 +118,7 @@ public:
 	}
 
 	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {
-		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeatCount);
+		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeat_count);
 		return false;
 	}
 };

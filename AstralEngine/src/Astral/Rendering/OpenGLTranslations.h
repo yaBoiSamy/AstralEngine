@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Astral {
+namespace Astral::Render {
 
 	// Providing a C++-friendly interface for the uniform writing functions
 	template<typename T>

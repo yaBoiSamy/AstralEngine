@@ -1,8 +1,9 @@
 #include "Common.h"
 #include "RenderCommand.h"
 #include "Astral/Rendering/RenderAPI/RenderAPI.h"
+#include "Astral/Rendering/Buffers/VertexArray.h"
 
-namespace Astral {
+namespace Astral::Render {
 	void RenderCommand::SetActiveFrameBuffer(uint32_t id) {
 		GfxAPI().SetActiveFrameBuffer(id);
 	}

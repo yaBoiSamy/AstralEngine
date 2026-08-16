@@ -2,12 +2,14 @@
 #include "Common.h"
 #include <glad/glad.h>
 
-namespace Astral {
+namespace Astral::Render {
 
 	class Texture {
 	public:
-		Texture(std::string path);
+		Texture() = default;
 		~Texture();
+
+		void Load(uint8_t* img_data, uint32_t width, uint32_t height);
 
 		void Bind(uint32_t slot) const;
 

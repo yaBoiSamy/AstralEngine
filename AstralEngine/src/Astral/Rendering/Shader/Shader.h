@@ -3,19 +3,14 @@
 #include "Common.h"
 #include "Uniform.h"
 #include <glad/glad.h>
-#include <fstream>
-#include <sstream>
-#include <filesystem>
 
-namespace Astral
-{
+namespace Astral::Render {
+
 	class Shader {
 	public:
-		Shader(std::string name, std::string_view vertex_shader_path, std::string_view fragment_shader_path);
+		Shader(const std::string& vertex_src, const std::string& fragment_src);
 		~Shader();
 		void Bind() const;
-
-		std::string_view GetName() const;
 
 		template <typename T>
 		void CreateUniform(const std::string& name, const T& data);
@@ -33,28 +28,21 @@ namespace Astral
 		typedef GLuint ShaderStageHandle;
 		typedef GLuint ShaderHandle;
 
-		std::string StringifyShaderStage(std::string_view filepath);
-		ShaderStageHandle CompileShaderStage(uint32_t type, std::string_view src);
+		ShaderStageHandle CompileShaderStage(uint32_t type, const std::string& src);
 
 		ShaderHandle shaderHandle;
-		std::string name;
 		std::unordered_map<std::string, UniformVariant> uniforms;
 	};
-
 
 
 	// =================================================================================================================
 	// ================================================ IMPLEMENTATIONS ================================================
 	// =================================================================================================================
 
-	inline Shader::Shader(std::string name, std::string_view vertexShaderPath, std::string_view fragmentShaderPath) : name(name), shaderHandle(glCreateProgram()) {
-		std::string vert_shader = StringifyShaderStage(vertexShaderPath);
-		std::string frag_shader = StringifyShaderStage(fragmentShaderPath);
-		AST_CORE_ASSERT(vert_shader != "", "Vertex shader path invalid: {0}", std::filesystem::current_path().append(vertexShaderPath).string());
-		AST_CORE_ASSERT(frag_shader != "", "Fragment shader path invalid: {0}", std::filesystem::current_path().append(fragmentShaderPath).string());
+	inline Shader::Shader(const std::string& vertex_src, const std::string& fragment_src) : shaderHandle(glCreateProgram()) {
 
-		ShaderStageHandle vs = CompileShaderStage(GL_VERTEX_SHADER, StringifyShaderStage(vertexShaderPath));
-		ShaderStageHandle fs = CompileShaderStage(GL_FRAGMENT_SHADER, StringifyShaderStage(fragmentShaderPath));
+		ShaderStageHandle vs = CompileShaderStage(GL_VERTEX_SHADER, vertex_src);
+		ShaderStageHandle fs = CompileShaderStage(GL_FRAGMENT_SHADER, fragment_src);
 
 		if (vs == 0 || fs == 0) {
 			glDeleteProgram(shaderHandle);
@@ -112,7 +100,7 @@ namespace Astral
 		glDeleteProgram(shaderHandle);
 	}
 
-	inline Shader::ShaderStageHandle Shader::CompileShaderStage(uint32_t type, std::string_view src) {
+	inline Shader::ShaderStageHandle Shader::CompileShaderStage(uint32_t type, const std::string& src) {
 		ShaderStageHandle shaderStageHandle = glCreateShader(type);
 		const char* rawsrc = src.data();
 		glShaderSource(shaderStageHandle, 1, &rawsrc, nullptr);
@@ -135,20 +123,8 @@ namespace Astral
 		return shaderStageHandle;
 	}
 
-	inline std::string Shader::StringifyShaderStage(std::string_view path) {
-		std::ifstream file = std::ifstream(std::string(path), std::ios::in);
-		std::stringstream buffer;
-
-		buffer << file.rdbuf();
-		return buffer.str();
-	}
-
 	inline void Shader::Bind() const {
 		glUseProgram(shaderHandle);
-	}
-
-	inline std::string_view Shader::GetName() const {
-		return name;
 	}
 
 	template <typename T>

@@ -39,7 +39,8 @@ project "Sandbox"
     }
 
     includedirs {
-        "AstralEngine/src"
+        "AstralEngine/src",
+        "AstralEngine/src/Astral/Misc/PCH"
     }
 
     links {
@@ -108,7 +109,8 @@ project "AstralEngine"
     }
 
     includedirs {
-        "AstralEngine/src"
+        "AstralEngine/src",
+        "AstralEngine/src/Astral/Misc/PCH"
     }
 
     links{
@@ -119,7 +121,7 @@ project "AstralEngine"
     }
     
     pchheader "Common.h"
-    pchsource "AstralEngine/src/Common.cpp"
+    pchsource "AstralEngine/src/Astral/Misc/PCH/Common.cpp"
 
     filter "system:windows" 
         systemversion "latest"

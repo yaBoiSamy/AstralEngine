@@ -1,8 +1,9 @@
 #include "Common.h"
 #include "RenderAPI.h"
 #include <glad/glad.h>
+#include "Astral/Rendering/Buffers/VertexArray.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	static OpenGLRenderAPI api = OpenGLRenderAPI();
 

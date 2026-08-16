@@ -3,7 +3,7 @@
 
 #include "Astral/Rendering/Buffers/VertexArray.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	class RenderAPI {
 	public:

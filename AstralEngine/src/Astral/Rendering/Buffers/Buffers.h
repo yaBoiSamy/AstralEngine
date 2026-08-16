@@ -4,7 +4,7 @@
 #include "Astral/Rendering/Buffers/Attributes.h"
 
 
-namespace Astral {
+namespace Astral::Render {
 
 	enum class UsageHint {
 		Static = GL_STATIC_DRAW,

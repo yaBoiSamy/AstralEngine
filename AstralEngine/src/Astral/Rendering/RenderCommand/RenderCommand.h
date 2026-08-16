@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	class RenderCommand {
 	public:

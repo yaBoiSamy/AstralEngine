@@ -4,7 +4,7 @@
 #include "Astral/Rendering/OpenGLTranslations.h"
 #include <glad/glad.h>
 
-namespace Astral {
+namespace Astral::Render {
 	using namespace glm;
 
 	template <typename FieldT>

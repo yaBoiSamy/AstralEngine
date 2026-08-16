@@ -1,9 +1,13 @@
 #include <Astral.h>
+#include <filesystem>
+#include "MainLayer/MainLayer.h"
 
-class Sandbox : public Astral::Application {
+using namespace Astral;
+
+class Sandbox : public App::Application {
 private:
-    const std::string TEXTURE_DIR = "resources/finger.png";
-    const std::vector<Astral::Vertex> vertices = {
+    std::filesystem::path TEXTURE_DIR = "resources/finger.png";
+    std::vector<Assets::Vertex> vertices = {
         // Front
         { { -0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 0
         { {  0.5f, -0.5f,  0.5f }, { 1, 0 } }, // 1
@@ -41,7 +45,7 @@ private:
         { { -0.5f, -0.5f,  0.5f }, { 0, 1 } }, // 23
     };
 
-    const std::vector<uint32_t> indices = {
+    std::vector<uint32_t> indices = {
         // Front
         0, 1, 2,  2, 3, 0,
 
@@ -60,69 +64,34 @@ private:
         // Bottom
         20, 21, 22, 22, 23, 20
     };
-	const Astral::Mesh MESH = Astral::Mesh(std::move(vertices), std::move(indices));
-
-    Astral::Arc<Astral::Scene> scene;
-	Astral::Arc<Astral::Shader> shader;
-    Astral::Arc<Astral::Texture> texture;
-    Astral::Arc<Astral::Material> material;
 
 public:
 
-	Sandbox(const Astral::StartupConfig& config) : 
-		Astral::Application(config), 
-        scene(std::make_shared<Astral::Scene>(this, "MainScene")),
-		shader(shaderlib.Get("Flat Shader")),
-        texture(std::make_shared<Astral::Texture>(TEXTURE_DIR)),
-        material(nullptr) {
-        material = std::make_shared<Astral::Material>(shader, glm::vec4(1, 1, 1, 0), texture.get());
+	Sandbox(const App::StartupConfig& config) : Application(config) {
 
-		Astral::Box<Astral::Entity> cube = std::make_unique<Astral::Entity>("cube");
-        Astral::Box<Astral::MeshRenderer> cube_mesh = std::make_unique<Astral::MeshRenderer>(&MESH, material.get());
-        cube->AddComponent(std::move(cube_mesh));
-		scene->root.AddChild(std::move(cube));
+        Box<Assets::Scene> scene = std::make_unique<Assets::Scene>("MainScene");
+        Box<Assets::Mesh> cube_mesh = std::make_unique<Assets::Mesh>("Cube mesh", std::move(vertices), std::move(indices));
+        Box<Assets::Texture> texture = std::make_unique<Assets::Texture>(TEXTURE_DIR);
+        Box<Assets::Material> material = std::make_unique<Assets::Material>("fuckyou mat", Assets().Fetch<Assets::Shader>("Flat Shader"), glm::vec4(1, 1, 1, 0), texture.get());
 
-        Astral::Box<Astral::Entity> cam_parent = std::make_unique<Astral::Entity>("cam_dad");
-		Astral::Box<Astral::Entity> maincam = std::make_unique<Astral::Entity>("cam", layers.Find("Main layer"));
-		Astral::Box<Astral::Camera> cam_component = std::make_unique<Astral::Camera>(
-			45,                 // FOV (degrees)
-			0.1,                // near plane
-			100                 // far plane
-		);
-		scene->SetMainCam(cam_component.get());
-		maincam->AddComponent(std::move(cam_component));
-        cam_parent->AddChild(std::move(maincam));
-		scene->root.AddChild(std::move(cam_parent));
+        Assets().Load<Assets::Scene>(std::move(scene));
+        Assets().Load<Assets::Mesh>(std::move(cube_mesh));
+        Assets().Load<Assets::Texture>(std::move(texture));
+        Assets().Load<Assets::Material>(std::move(material));
 
-        Astral::Transform& cube_tr = *scene->root.Child("cube")->GetComponent<Astral::Transform>();
-        Astral::Transform& camdad_tr = *scene->root.Child("cam_dad")->GetComponent<Astral::Transform>();
-        Astral::Camera& cam = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Camera>();
-        Astral::Transform& cam_tr = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Astral::Transform>();
+        Box<MainLayer> main_layer = std::make_unique<MainLayer>();
+        Layers().PushLayer(std::move(main_layer));
 
-        cam_tr.Translate(glm::vec3(0, 2, 2));
-        cam_tr.LookAt(cube_tr.Position());
 	}
 
-	void Update() override {
-		const double cube_rotspeed = 1;
-        const double cam_rotspeed = 0.25;
-        const double cube_oscillationspeed = 1;
-        static double time = 0;
-        double deltatime = GetFrameContext().window_snapshot.deltatime;
-        //AST_CORE_INFO("FPS: {}", 1 / deltatime);
-		scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
-        scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
-        //scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
-		scene->Draw();
-        time += deltatime;
-	}
+	virtual void Update(const App::FrameContext& context) override {}
 
-	virtual bool OnKeyPressedEvent(const Astral::KeyPressedEvent& event) override {
+	virtual bool OnKeyPressedEvent(const App::KeyPressedEvent& event) override {
 		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeat_count);
 		return false;
 	}
 };
 
-Astral::Application* Astral::CreateApplication(Astral::StartupConfig& config) {
+App::Application* App::CreateApplication(App::StartupConfig& config) {
 	return new Sandbox(config);
 }

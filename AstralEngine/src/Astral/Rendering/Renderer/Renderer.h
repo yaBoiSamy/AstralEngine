@@ -2,8 +2,9 @@
 #include "Common.h"
 #include "Astral/Rendering/Buffers/VertexArray.h"
 #include "Astral/Rendering/shader/Shader.h"
+#include "Astral/Rendering/Buffers/Buffers.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	class Renderer {
 	public:
@@ -11,7 +12,7 @@ namespace Astral {
 
 		static void SetupFrame(uint32_t frame_width, uint32_t frame_height);
 
-		static void Submit(const IVertexArray& vertexArray, const Shader& shader);
+		static void Submit(const IVertexArray& vertexArray);
 
 	private:
 		static const glm::vec4 CLEAR_COLOR;

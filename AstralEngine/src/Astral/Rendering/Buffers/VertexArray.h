@@ -3,7 +3,7 @@
 #include "Astral/Rendering/Buffers/Buffers.h"
 #include "Astral/Rendering/Buffers/Attributes.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	class IVertexArray {
 	public:

@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 
-namespace Astral {
+namespace Astral::Render {
 
 	struct AttributeLayout {
 		template <typename FieldT>	

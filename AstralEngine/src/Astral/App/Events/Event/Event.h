@@ -1,0 +1,126 @@
+#pragma once
+#include <Common.h>
+
+namespace Astral::App {
+
+    class EventListener;
+
+    struct Event {
+        virtual operator std::string() const;
+        virtual bool Dispatch(EventListener& l) const = 0;
+    };
+
+    struct WindowEvent : Event {
+        virtual operator std::string() const;
+        virtual bool Dispatch(EventListener& l) const = 0;
+    };
+
+    struct AppEvent : Event {
+        virtual operator std::string() const;
+        virtual bool Dispatch(EventListener& l) const = 0;
+    };
+
+    struct InputEvent : Event {
+        virtual operator std::string() const;
+        virtual bool Dispatch(EventListener& l) const = 0;
+    };
+
+    struct WindowCloseEvent : WindowEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct WindowResizeEvent : WindowEvent {
+        const uint32_t width, height;
+        WindowResizeEvent(uint32_t width, uint32_t height) : width(width), height(height) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct WindowFrameResizeEvent : WindowEvent {
+        const uint32_t frame_width, frame_height;
+        WindowFrameResizeEvent(uint32_t frame_width, uint32_t frame_height) : frame_width(frame_width), frame_height(frame_height) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct WindowFocusEvent : WindowEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct WindowLostFocusEvent : WindowEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct WindowMovedEvent : WindowEvent {
+        const uint32_t x, y;
+        WindowMovedEvent(uint32_t x, uint32_t y) : x(x), y(y) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct AppTickEvent : AppEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct AppUpdateEvent : AppEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct AppRenderEvent : AppEvent {
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct KeyPressedEvent : InputEvent {
+        const uint32_t keycode, repeat_count;
+        KeyPressedEvent(uint32_t keycode, uint32_t repeat_count) : keycode(keycode), repeat_count(repeat_count) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct KeyReleasedEvent : InputEvent {
+        const uint32_t keycode;
+        KeyReleasedEvent(uint32_t keycode) : keycode(keycode) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct MouseButtonPressedEvent : InputEvent {
+		const uint32_t button;
+        const double x, y;
+        MouseButtonPressedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct MouseButtonReleasedEvent : InputEvent {
+        const uint32_t button;
+        const double x, y;
+        MouseButtonReleasedEvent(uint32_t button, double x, double y) : button(button), x(x), y(y) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct MouseMovedEvent : InputEvent {
+        const double x, y;
+        MouseMovedEvent(double x, double y) : x(x), y(y) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+    struct MouseScrolledEvent : InputEvent {
+        const double x_offset, y_offset;
+        MouseScrolledEvent(double x_offset, double y_offset) : x_offset(x_offset), y_offset(y_offset) {}
+        operator std::string() const override;
+        virtual bool Dispatch(EventListener& l) const override;
+    };
+
+
+    template<typename T>
+    concept EventType = std::is_base_of_v<Event, T>;
+}

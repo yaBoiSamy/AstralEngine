@@ -2,8 +2,11 @@
 #include "Renderer.h"
 #include "Astral/Rendering/RenderAPI/RenderAPI.h"
 #include "Astral/Rendering/RenderCommand/RenderCommand.h"
+#include "Astral/Rendering/Shader/Shader.h"
+#include "Astral/Rendering/Buffers/Buffers.h"
+#include "Astral/Rendering/Buffers/VertexArray.h"
 
-namespace Astral {
+namespace Astral::Render {
 
 	const glm::vec4 Renderer::CLEAR_COLOR = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	std::optional<UniformBuffer<Renderer::CameraData>> Renderer::gpu_camera_data = std::nullopt;
@@ -33,8 +36,7 @@ namespace Astral {
 		gpu_model_data->Write(modeldata);
 	}
 
-	void Renderer::Submit(const IVertexArray& vertexArray, const Shader& shader) {
-		shader.Bind();
+	void Renderer::Submit(const IVertexArray& vertexArray) {
 		RenderCommand::Draw(vertexArray);
 	}
 }

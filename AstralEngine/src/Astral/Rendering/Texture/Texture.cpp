@@ -1,21 +1,11 @@
 #include "Common.h"
 #include "Texture.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
-namespace Astral {
 
-	Texture::Texture(std::string path) {
-		int w, h, _;
-		const uint32_t CHANNELS = 4;
-        stbi_set_flip_vertically_on_load(true);
-		uint8_t* image_data = stbi_load(path.c_str(), &w, &h, &_, CHANNELS);
-        width = static_cast<uint32_t>(w);
-        height = static_cast<uint32_t>(h);
-        stbi_set_flip_vertically_on_load(false);
+namespace Astral::Render {
 
-        AST_CORE_ASSERT(image_data, "stb failed to parse image: {0}", stbi_failure_reason());
+	void Texture::Load(uint8_t* img_data, uint32_t width, uint32_t height) {
 
         glGenTextures(1, &handle);
         glBindTexture(GL_TEXTURE_2D, handle);
@@ -34,13 +24,10 @@ namespace Astral {
             0,
             GL_RGBA,
             GL_UNSIGNED_BYTE,
-            image_data
+            img_data
         );
 
         glGenerateMipmap(GL_TEXTURE_2D);
-
-        if (image_data)
-            stbi_image_free(image_data);
 	}
 
     Texture::~Texture() {
@@ -48,6 +35,7 @@ namespace Astral {
     }
 
     void Texture::Bind(uint32_t slot) const {
+        AST_CORE_ASSERT(handle != 0, "Binding texture before loading it's data");
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, handle);
     }

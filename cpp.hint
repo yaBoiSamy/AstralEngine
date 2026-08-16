@@ -1,0 +1,15 @@
+// cpp.hint
+
+#define IMPLEMENT_GL_UNIFORM_WRITING(cpp_type, gl_write_func, ...) \
+    template<> \
+    inline void GLUniformWrite<cpp_type>(GLint handle, std::span<const cpp_type> data) \
+    { \
+        AST_CORE_ASSERT(!data.empty(), "Cannot write empty uniform data"); \
+        gl_write_func(handle, static_cast<GLsizei>(data.size()), __VA_ARGS__); \
+    }
+
+#define IMPLEMENT_GL_TYPE_CONVERSION(cpp_type, gl_type_enum) \
+    template<> \
+    struct GLNumericType<cpp_type> { \
+        static constexpr GLenum value = gl_type_enum; \
+    };

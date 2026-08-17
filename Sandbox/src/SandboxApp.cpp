@@ -69,7 +69,7 @@ public:
 
 	Sandbox(const App::StartupConfig& config) : Application(config) {
 
-        Box<Assets::Scene> scene = std::make_unique<Assets::Scene>("MainScene");
+        Box<Assets::Scene> scene = std::make_unique<Assets::Scene>("MainScene", );
         Box<Assets::Mesh> cube_mesh = std::make_unique<Assets::Mesh>("Cube mesh", std::move(vertices), std::move(indices));
         Box<Assets::Texture> texture = std::make_unique<Assets::Texture>(TEXTURE_DIR);
         Box<Assets::Material> material = std::make_unique<Assets::Material>("fuckyou mat", Assets().Fetch<Assets::Shader>("Flat Shader"), glm::vec4(1, 1, 1, 0), texture.get());

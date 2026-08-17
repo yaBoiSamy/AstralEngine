@@ -15,6 +15,8 @@ namespace Astral::Assets {
 	public:
 		Shader(std::string name, std::filesystem::path vertex_path, std::filesystem::path fragement_path);
 
+		Render::Shader* GetRendererShader();
+
 		void Bind() const;
 
 		template <typename T>
@@ -49,6 +51,10 @@ namespace Astral::Assets {
 		std::string src = buffer.str();
 		AST_CORE_ASSERT(src != "", "Shader path invalid: {0}", ( std::filesystem::current_path() / path ).string());
 		return src;
+	}
+
+	inline Render::Shader* Shader::GetRendererShader() {
+		return &shader;
 	}
 
 	inline void Shader::Bind() const {

@@ -11,6 +11,8 @@ namespace Astral::Assets {
 	public:
 		Texture(std::filesystem::path& path);
 
+		Render::Texture* GetRendererTexture();
+
 		void Bind(uint32_t slot) const;
 
 	private:

@@ -7,19 +7,19 @@
 
 namespace Astral::Assets {
 
-	Material::Material(std::string name, Shader* shader, glm::vec4 albedo, const Texture* albedo_texture) : Asset(name), shader(shader), albedo_texture(albedo_texture) {
-		AST_CORE_ASSERT(shader, "shader cannot be null at material construction");
-		shader->SetUniform<glm::vec4>("ALBEDO", albedo);
+	Material::Material(std::string name, Shader* shader, glm::vec4 albedo, Texture* albedo_texture) : 
+		Asset(name), 
+		material(shader->GetRendererShader(), albedo, albedo_texture->GetRendererTexture()) {}
+
+	Render::Material* Material::GetRendererMaterial() {
+		return &material;
 	}
 
 	void Material::Bind() const {
-		shader->SetUniform<bool>("HAS_ALBEDO_TEXTURE", static_cast<bool>(albedo_texture));
-		shader->Bind();
-		albedo_texture->Bind(0);
+		material.Bind();
 	}
 
-	void Material::SetAlbedo(glm::vec4 albedo, const Texture* albedo_texture) {
-		shader->SetUniform<glm::vec4>("ALBEDO", albedo);
-		this->albedo_texture = albedo_texture;
+	void Material::SetAlbedo(glm::vec4 albedo, Texture* albedo_texture) {
+		material.SetAlbedo(albedo, albedo_texture->GetRendererTexture());
 	}
 }

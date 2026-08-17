@@ -1,17 +1,17 @@
 #include "Common.h"
-#include "RenderAPI.h"
+#include "GraphicsAPI.h"
 #include <glad/glad.h>
 #include "Astral/Rendering/Buffers/VertexArray.h"
 
 namespace Astral::Render {
 
-	static OpenGLRenderAPI api = OpenGLRenderAPI();
+	static OpenGLGraphicsAPI api = OpenGLGraphicsAPI();
 
-	RenderAPI& GfxAPI() {
+	GraphicsAPI& GfxAPI() {
 		return api;
 	}
 
-	OpenGLRenderAPI::OpenGLRenderAPI() {}
+	OpenGLGraphicsAPI::OpenGLGraphicsAPI() {}
 
 	static void OpenGLMessageCallback(
 		GLenum source,
@@ -22,7 +22,7 @@ namespace Astral::Render {
 		const GLchar* message,
 		const void* userParam);
 
-	void OpenGLRenderAPI::Setup() {
+	void OpenGLGraphicsAPI::Setup() {
 		AST_CORE_ASSERT(glDebugMessageCallback != nullptr, "GLAD Extension not included");
 		if (glDebugMessageCallback && AST_DEBUG) {
 			glEnable(GL_DEBUG_OUTPUT);
@@ -42,23 +42,20 @@ namespace Astral::Render {
 			(char*)glGetString(GL_VERSION));
 	}
 
-	void OpenGLRenderAPI::SetActiveFrameBuffer(uint32_t id) {
+	void OpenGLGraphicsAPI::SetActiveFrameBuffer(uint32_t id) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLRenderAPI::SetViewport(uint32_t framebuffer_width, uint32_t frame_height) {
+	void OpenGLGraphicsAPI::SetViewport(uint32_t framebuffer_width, uint32_t frame_height) {
 		glViewport(0, 0, framebuffer_width, frame_height);
 	}
 
-	void OpenGLRenderAPI::SetClearColor(const glm::vec4& color) {
+	void OpenGLGraphicsAPI::Clear(const glm::vec4& color) {
 		glClearColor(color.r, color.g, color.b, color.a);
-	}
-
-	void OpenGLRenderAPI::Clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRenderAPI::Draw(const IVertexArray& vertexArray) {
+	void OpenGLGraphicsAPI::Draw(const IVertexArray& vertexArray) {
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertexArray.Length()), GL_UNSIGNED_INT, nullptr);
 	}
 

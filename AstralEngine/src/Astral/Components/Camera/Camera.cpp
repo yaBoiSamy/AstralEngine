@@ -1,7 +1,6 @@
 #include "Common.h"
 #include "Camera.h"
 #include "Astral/Components/Transform/Transform.h"
-#include "Astral/Rendering/Renderer/Renderer.h"
 #include <glm/gtc/quaternion.hpp>
 #include "Astral/Misc/Entity.h"
 
@@ -35,12 +34,12 @@ namespace Astral::Components {
 		return glm::perspective((float)fov, (float)frame_width / (float)frame_height, (float)near_plane, (float)far_plane);
 	}
 
-	void Camera::UpdateRenderedPOV(uint32_t frame_width, uint32_t frame_height) {
-		Renderer::CameraData camdata = {
+	Render::CameraData Camera::RenderedPOV(uint32_t frame_width, uint32_t frame_height) const {
+		Render::CameraData camdata = {
 			ViewMatrix(),
 			ProjectionMatrix(frame_width, frame_height)
 		};
-		Renderer::UpdateCameraData(camdata);
+		return std::move(camdata);
 	}
 
 }

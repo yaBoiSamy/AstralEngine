@@ -92,8 +92,8 @@ namespace Astral::Render {
 		glDetachShader(shaderHandle, fs);
 
 		// STANDARD UNIFORM CREATION
-		this->CreateUniform<bool>("HAS_ALBEDO_TEXTURE", false);
-		this->CreateUniform<glm::vec4>("ALBEDO", glm::vec4(1, 1, 1, 0));
+		this->CreateUniform<glm::vec4>("AST_ALBEDO", glm::vec4(1, 1, 1, 0));
+		this->CreateUniform<bool>("AST_HAS_ALBEDO_TEXTURE", false);
 	}
 
 	inline Shader::~Shader() {

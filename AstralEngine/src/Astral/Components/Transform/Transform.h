@@ -1,6 +1,7 @@
 #pragma once
-#include "Astral/Components/Component.h"
 #include <glm/gtc/quaternion.hpp>
+#include "Astral/Components/Component.h"
+#include "Astral/Rendering/Command/Command.h"
 
 
 namespace Astral::Components {
@@ -34,7 +35,7 @@ namespace Astral::Components {
 		void Rotate(const dquat& displacement);
 		void Scale(const dvec3& displacement);
 
-		void UpdateRenderedWorldSpace();
+		Render::ModelData RenderedWorldSpace();
 
 		dvec3 local_position;
 		dquat local_rotation;

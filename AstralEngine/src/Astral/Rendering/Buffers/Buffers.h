@@ -83,7 +83,7 @@ namespace Astral::Render {
 		UniformBuffer(UniformBuffer&&) = default;
 		UniformBuffer& operator=(UniformBuffer&& other) = default;
 
-		void Write(UniformT& data);
+		void Write(const UniformT& data);
 	};
 
 
@@ -204,7 +204,7 @@ namespace Astral::Render {
 	}
 
 	template <typename UniformT>
-	void UniformBuffer<UniformT>::Write(UniformT& data) {
+	void UniformBuffer<UniformT>::Write(const UniformT& data) {
 		ABuffer<UniformT>::Write(0, std::span<UniformT>(&data, 1));
 	}
 }

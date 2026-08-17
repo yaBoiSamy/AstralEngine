@@ -6,7 +6,9 @@
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/FrameContext.h"
-#include "Astral/Rendering/Renderer/Renderer.h"
+#include "Astral/Rendering/Invoker/Invoker.h"
+#include "Astral/Rendering/Executor/Executor.h"
+#include "Astral/Rendering/Command/CommandBuffer/CommandBuffer.h"
 #include "Astral/Assets/AssetRegistry.h"
 #include "Astral/Assets/Shader/Shader.h"
 
@@ -14,11 +16,22 @@ namespace Astral::App {
 	using namespace Render;
 	using namespace Assets;
 
-	Application::Application(const StartupConfig& config) : is_running(false), window(WindowStartup(config)), layers(&assets) {
+	Application::Application(const StartupConfig& config) : 
+		is_running(false), 
+		window(WindowStartup(config)), 
+		layers(&assets) ,
+		renderer_command_buffer(std::make_shared<Render::CommandBuffer>()),
+		renderer_invoker(renderer_command_buffer),
+		renderer_executor_thread(
+			[this](std::stop_token stop) {
+				Render::Executor executor(renderer_command_buffer, [this]() { window.SwapBuffers();	});
+				while (!stop.stop_requested()) {
+					executor.ExecuteCommands();
+				}
+			})
+	{
 		SubscribeTo(window);
 		layers.SubscribeTo(*this);
-
-		Renderer::InitRenderer();
 
 		layers.PushOverlay(std::make_unique<DebugLayer>([this] {
 			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
@@ -48,10 +61,8 @@ namespace Astral::App {
 		window.PumpEvents();
 		while (is_running) {
 			FrameContext ctxt = window.GetFrameContext();
-			Renderer::SetupFrame(ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
 			Update(ctxt);
 			layers.Update(ctxt);
-			window.SwapBuffers(); // present frame
 			window.PumpEvents();
 		}
 	}

@@ -1,9 +1,11 @@
 #include "Common.h"
-#include "Transform.h"
-#include "Astral/Misc/Entity.h"
-#include "Astral/Rendering/Renderer/Renderer.h"
 #include <glm/fwd.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+#include "Transform.h"
+#include "Astral/Misc/Entity.h"
+#include "Astral/Rendering/Command/Command.h"
+
 
 namespace Astral::Components {
 
@@ -91,11 +93,11 @@ namespace Astral::Components {
 		local_scale *= displacement;
 	}
 
-	void Transform::UpdateRenderedWorldSpace() {
-		Render::Renderer::ModelData modeldata = {
+	Render::ModelData Transform::RenderedWorldSpace() {
+		Render::ModelData modeldata = {
 			ModelMatrix()
 		};
-		Render::Renderer::UpdateModelData(modeldata);
+		return std::move(modeldata);
 	}
 
 	mat4 Transform::ModelMatrix() {

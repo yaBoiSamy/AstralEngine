@@ -11,16 +11,11 @@
 #include "Astral/App/FrameContext.h"
 #include "Astral/App/Events/KeyCodes.h"
 
-#include "Astral/Rendering/Renderer/Renderer.h"
-#include "Astral/Rendering/Shader/Shader.h"
-#include "Astral/Rendering/Texture/Texture.h"
-
 #include "Astral/Misc/Entity.h"
 #include "Astral/Components/Component.h"
 #include "Astral/Components/Transform/Transform.h"
 #include "Astral/Components/Camera/Camera.h"
 #include "Astral/Components/MeshRenderer/MeshRenderer.h"
-
 
 #include "Astral/Assets/AssetRegistry.h"
 #include "Astral/Assets/Scene/Scene.h"

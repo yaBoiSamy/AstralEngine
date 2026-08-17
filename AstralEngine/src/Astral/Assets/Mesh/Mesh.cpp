@@ -25,8 +25,8 @@ namespace Astral::Assets {
 		gpu_mesh.WriteIndices(0, indices);
 	}
 
-	const IVertexArray& Mesh::GetVertexArray() const {
-		return static_cast<const IVertexArray&>(gpu_mesh);
+	IVertexArray* Mesh::GetRendererVertexArray() {
+		return static_cast<IVertexArray*>(&gpu_mesh);
 	}
 
 }

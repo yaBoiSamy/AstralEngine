@@ -26,6 +26,9 @@ namespace Astral::Assets {
 		stbi_image_free(image_data);
 	}
 
+	Render::Texture* Texture::GetRendererTexture() {
+		return &texture;
+	}
 
 	void Texture::Bind(uint32_t slot) const {
 		texture.Bind(slot);

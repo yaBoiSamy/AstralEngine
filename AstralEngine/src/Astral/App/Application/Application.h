@@ -5,6 +5,8 @@
 #include "Astral/App/BootStrapper/BootStrapper.h"
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
+#include "Astral/Rendering/Invoker/Invoker.h"
+#include "Astral/Rendering/Command/CommandBuffer/CommandBuffer.h"
 #include "Astral/Assets/AssetRegistry.h"
 
 
@@ -29,6 +31,10 @@ namespace Astral::App {
 		Window window;
 		Assets::AssetRegistry assets;
 		LayerStack layers;
+
+		Render::Invoker renderer_invoker;
+		Arc<Render::CommandBuffer> renderer_command_buffer;
+		std::jthread renderer_executor_thread;
 	};
 
 	// To be defined by user

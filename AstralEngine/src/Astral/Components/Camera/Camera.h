@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Astral/Components/Component.h"
+#include "Astral/Rendering/Command/Command.h"
 
 
 namespace Astral::Components {
@@ -10,7 +11,7 @@ namespace Astral::Components {
 		Camera(double fov, double near_plane, double far_plane);
 
 		void SetPerspective(double fov, double near_plane, double far_plane);
-		void UpdateRenderedPOV(uint32_t frame_width, uint32_t frame_height);
+		Render::CameraData RenderedPOV(uint32_t frame_width, uint32_t frame_height) const;
 
 	private:
 		mat4 ViewMatrix() const;

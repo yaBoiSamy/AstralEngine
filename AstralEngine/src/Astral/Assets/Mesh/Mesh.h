@@ -17,7 +17,7 @@ namespace Astral::Assets {
 	class Mesh : public Asset {
 	public:
 		Mesh(std::string name, std::vector<Vertex> verts, std::vector<uint32_t> indices);
-		const Render::IVertexArray& GetVertexArray() const;
+		Render::IVertexArray* GetRendererVertexArray();
 
 	private:
 		std::vector<Vertex> vertices;

@@ -6,13 +6,13 @@
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 text_coord;
 
-layout(std140, binding = 0) uniform Camera
+layout(std140, binding = 1) uniform Camera
 {
     mat4 view;
     mat4 projection;
 };
 
-layout(std140, binding = 1) uniform Model
+layout(std140, binding = 2) uniform Model
 {
     mat4 model;
 };

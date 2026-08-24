@@ -12,35 +12,34 @@ namespace Astral::Assets {
 	template<typename T>
 	concept AssetType = std::derived_from<T, Asset>;
 
-	template<AssetType AssetT>
-	class AssetManager {
-	public:
-		AssetManager() = default;
-
-		void Load(Box<AssetT> asset);
-		AssetT* Fetch(const std::string& name) const;
-
-	private:
-		std::unordered_map<std::string, Box<AssetT>> directory;
-	};
-
 
 	class AssetRegistry {
 	public:
-		AssetRegistry() = default;
+		AssetRegistry(Render::Renderer* renderer) : renderer(renderer) {}
 
-		template<AssetType AssetT>
-		void Load(Box<AssetT> asset);
+		Shader* CreateShader(std::string name, Render::VertexLayout& layout, std::filesystem::path vertex_path, std::filesystem::path fragement_path);
+		Texture* CreateTexture(std::string name, std::filesystem::path texture_path);
+		Material* CreateMaterial(std::string name, Shader* shader, glm::vec4 albedo, Texture* albedo_texture = nullptr);
+		Mesh* CreateMesh(std::string name, std::vector<Vertex> verts, std::vector<uint32_t> indices);
+		Scene* CreateScene(std::string name);
 
-		template<AssetType AssetT>
-		AssetT* Fetch(const std::string& name) const;
+		Shader* FetchShader(const std::string& name) const;
+		Texture* FetchTexture(const std::string& name) const;
+		Material* FetchMaterial(const std::string& name) const;
+		Mesh* FetchMesh(const std::string& name) const;
+		Scene* FetchScene(const std::string& name) const;
 
 	private:
-		AssetManager<Shader> shaders;
-		AssetManager<Texture> textures;
-		AssetManager<Material> materials;
-		AssetManager<Mesh> meshes;
-		AssetManager<Scene> scenes;
+		template<AssetType AssetT>
+		AssetT* Fetch(const std::string& name, const std::unordered_map<std::string, Box<AssetT>>& directory) const;
+
+		std::unordered_map<std::string, Box<Shader>> shader_directory;
+		std::unordered_map<std::string, Box<Texture>> texture_directory;
+		std::unordered_map<std::string, Box<Material>> material_directory;
+		std::unordered_map<std::string, Box<Mesh>> mesh_directory;
+		std::unordered_map<std::string, Box<Scene>> scene_directory;
+
+		Render::Renderer* renderer;
 	};
 
 
@@ -48,46 +47,58 @@ namespace Astral::Assets {
 	// ================================================ IMPLEMENTATIONS ================================================
 	// =================================================================================================================
 
-	// ================================================= ASSET MANAGER =================================================
-
-	template<AssetType AssetT>
-	inline void AssetManager<AssetT>::Load(Box<AssetT> asset) {
-		AST_CORE_ASSERT(asset, "Cannot load null asset");
-		directory.emplace(asset->Name(), std::move(asset));
+	inline Shader* AssetRegistry::CreateShader(std::string name, Render::VertexLayout& layout, std::filesystem::path vertex_path, std::filesystem::path fragement_path) {
+		shader_directory.emplace(name, std::make_unique<Shader>(renderer, name, layout, vertex_path, fragement_path));
+		return FetchShader(name);
 	}
 
+	inline Texture* AssetRegistry::CreateTexture(std::string name, std::filesystem::path texture_path) {
+		texture_directory.emplace(name, std::make_unique<Texture>(renderer, name, texture_path));
+		return FetchTexture(name);
+	}
+
+	inline Material* AssetRegistry::CreateMaterial(std::string name, Shader* shader, glm::vec4 albedo, Texture* albedo_texture) {
+		material_directory.emplace(name, std::make_unique<Material>(name, shader, albedo, albedo_texture));
+		return FetchMaterial(name);
+	}
+
+	inline Mesh* AssetRegistry::CreateMesh(std::string name, std::vector<Vertex> verts, std::vector<uint32_t> indices) {
+		mesh_directory.emplace(name, std::make_unique<Mesh>(renderer, name, std::move(verts), std::move(indices)));
+		return FetchMesh(name);
+	}
+
+	inline Scene* AssetRegistry::CreateScene(std::string name) {
+		scene_directory.emplace(name, std::make_unique<Scene>(name));
+		return FetchScene(name);
+	}
+
+
 	template<AssetType AssetT>
-	inline AssetT* AssetManager<AssetT>::Fetch(const std::string& name) const {
+	inline AssetT* AssetRegistry::Fetch(const std::string& name, const std::unordered_map<std::string, Box<AssetT>>& directory) const {
 		auto it = directory.find(name);
 		AssetT* asset = it != directory.end() ? it->second.get() : nullptr;
 		AST_CORE_ASSERT(asset, "Unable to find asset with name {0}", name);
 		return asset;
 	}
 
-
-	// ================================================= ASSET REGISTRY ================================================
-
-	template<AssetType AssetT>
-	inline void AssetRegistry::Load(Box<AssetT> asset) {
-		AST_CORE_ASSERT(false, "Asset is not a part of the registry");
+	inline Shader* AssetRegistry::FetchShader(const std::string& name) const {
+		return Fetch(name, shader_directory);
 	}
 
-	template<AssetType AssetT>
-	inline AssetT* AssetRegistry::Fetch(const std::string& name) const {
-		AST_CORE_ASSERT(false, "Asset is not a part of the registry");
-		return nullptr;
+	inline Texture* AssetRegistry::FetchTexture(const std::string& name) const {
+		return Fetch(name, texture_directory);
 	}
 
-	template<> inline void AssetRegistry::Load<Shader>(Box<Shader> shader) { return shaders.Load(std::move(shader)); }
-	template<> inline void AssetRegistry::Load<Texture>(Box<Texture> texture) { return textures.Load(std::move(texture)); }
-	template<> inline void AssetRegistry::Load<Material>(Box<Material> material) { return materials.Load(std::move(material)); }
-	template<> inline void AssetRegistry::Load<Mesh>(Box<Mesh> mesh) { return meshes.Load(std::move(mesh)); }
-	template<> inline void AssetRegistry::Load<Scene>(Box<Scene> scene) { return scenes.Load(std::move(scene)); }
+	inline Material* AssetRegistry::FetchMaterial(const std::string& name) const {
+		return Fetch(name, material_directory);
+	}
 
-	template<> inline Shader* AssetRegistry::Fetch<Shader>(const std::string& name) const { return shaders.Fetch(name); }
-	template<> inline Texture* AssetRegistry::Fetch<Texture>(const std::string& name) const { return textures.Fetch(name); }
-	template<> inline Material* AssetRegistry::Fetch<Material>(const std::string& name) const { return materials.Fetch(name); }
-	template<> inline Mesh* AssetRegistry::Fetch<Mesh>(const std::string& name) const { return meshes.Fetch(name); }
-	template<> inline Scene* AssetRegistry::Fetch<Scene>(const std::string& name) const { return scenes.Fetch(name); }
+	inline Mesh* AssetRegistry::FetchMesh(const std::string& name) const {
+		return Fetch(name, mesh_directory);
+	}
+
+	inline Scene* AssetRegistry::FetchScene(const std::string& name) const {
+		return Fetch(name, scene_directory);
+	}
 }
 

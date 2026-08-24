@@ -12,7 +12,6 @@ namespace Astral::App {
 	Window::Window(GLFWwindow* handle, State _state, std::function<void()> imguiSetup) : handle(handle), state(std::make_unique<State>(_state)) {
 		AST_CORE_INFO("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
 		glfwSetWindowUserPointer(handle, this);
-		SetVSync(state->vsync);
 
         glfwSetWindowCloseCallback(handle, [](GLFWwindow* handle) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
@@ -83,9 +82,6 @@ namespace Astral::App {
             });
 
         imguiSetup();
-
-        if (state->vsync)
-            glfwSwapInterval(1);
 	}
 
     FrameContext Window::GetFrameContext() const {
@@ -145,6 +141,10 @@ namespace Astral::App {
 		glfwPollEvents();
     }
 
+    void Window::MakeContextCurrent() const {
+        glfwMakeContextCurrent(handle.get());
+    }
+
     void Window::SwapBuffers() {
         static double last_frametime = 0;
         double curr_frametime = glfwGetTime();
@@ -152,9 +152,4 @@ namespace Astral::App {
         last_frametime = curr_frametime;
         glfwSwapBuffers(handle.get());
     }
-
-	void Window::SetVSync(bool vsync) {
-		glfwSwapInterval(vsync ? 1 : 0);
-		state->vsync = vsync;
-	}
 }

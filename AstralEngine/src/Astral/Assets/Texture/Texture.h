@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Astral/Rendering/Texture/Texture.h"
+#include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Assets/Asset.h"
 #include <filesystem>
 
@@ -9,14 +9,15 @@ namespace Astral::Assets {
 
 	class Texture : public Asset {
 	public:
-		Texture(std::filesystem::path& path);
-
-		Render::Texture* GetRendererTexture();
-
-		void Bind(uint32_t slot) const;
+		Texture(Render::Renderer* renderer, std::string name, std::filesystem::path& path);
+		~Texture();
+		Render::ResourceHandle GetHandle() const;
 
 	private:
-		Render::Texture texture;
+		Render::Renderer* renderer;
+		Render::ResourceHandle texture_handle;
+		uint8_t* texture_data;
+		size_t width, height;
 	};
 }
 

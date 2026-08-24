@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/gtc/quaternion.hpp>
 #include "Astral/Components/Component.h"
-#include "Astral/Rendering/Command/Command.h"
+#include "Astral/Rendering/Renderer/Renderer.h"
 
 
 namespace Astral::Components {

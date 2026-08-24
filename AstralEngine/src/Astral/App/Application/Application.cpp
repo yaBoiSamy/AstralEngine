@@ -6,41 +6,65 @@
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/FrameContext.h"
-#include "Astral/Rendering/Invoker/Invoker.h"
-#include "Astral/Rendering/Executor/Executor.h"
-#include "Astral/Rendering/Command/CommandBuffer/CommandBuffer.h"
+#include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Assets/AssetRegistry.h"
 #include "Astral/Assets/Shader/Shader.h"
 
 namespace Astral::App {
-	using namespace Render;
-	using namespace Assets;
 
 	Application::Application(const StartupConfig& config) : 
 		is_running(false), 
-		window(WindowStartup(config)), 
-		layers(&assets) ,
-		renderer_command_buffer(std::make_shared<Render::CommandBuffer>()),
-		renderer_invoker(renderer_command_buffer),
-		renderer_executor_thread(
-			[this](std::stop_token stop) {
-				Render::Executor executor(renderer_command_buffer, [this]() { window.SwapBuffers();	});
-				while (!stop.stop_requested()) {
-					executor.ExecuteCommands();
-				}
-			})
+		active_scene(nullptr),
+		window(WindowStartup(config)),
+		renderer(&window, Render::API::OpenGL),
+		assets(&renderer),
+		layers(&assets)
 	{
 		SubscribeTo(window);
 		layers.SubscribeTo(*this);
 
-		layers.PushOverlay(std::make_unique<DebugLayer>([this] {
+		layers.PushOverlay(std::make_unique<DebugLayer>(&renderer, [this] {
 			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
 			}));
 
 		// provided shader library
-		Box<Assets::Shader> shader = std::make_unique<Assets::Shader>("Flat Shader", "src/Shaders/Flat/vertex.vert.glsl", "src/Shaders/Flat/fragment.frag.glsl");
-		Assets().Load(std::move(shader));
+
+		// ========================================= FLAT SHADER ========================================
+		Render::VertexAttribute position{
+			.location = 0,
+			.binding = 0,
+			.format = Render::AttributeFormat::Float,
+			.components = 3,
+			.offset = offsetof(Assets::Vertex, position),
+			.normalized = false
+		};
+
+		Render::VertexAttribute text_coord{
+			.location = 1,
+			.binding = 0,
+			.format = Render::AttributeFormat::Float,
+			.components = 2,
+			.offset = offsetof(Assets::Vertex, text_coord),
+			.normalized = false
+		};
+
+		Render::VertexBinding binding{
+			.location = 0,
+			.divisor = 0
+		};
+
+		Render::VertexLayout flat_layout{
+			.attributes = { position, text_coord },
+			.bindings = { binding }
+		};
+
+		Assets().CreateShader("Flat Shader", flat_layout, "src/Shaders/Flat/vertex.vert.glsl", "src/Shaders/Flat/fragment.frag.glsl");
 	}
+
+	void Application::SetActiveScene(Assets::Scene* scene) {
+		active_scene = scene;
+	}
+
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {
 		AST_CORE_INFO("Window close event received, closing application.");
@@ -57,12 +81,16 @@ namespace Astral::App {
 	};
 
 	void Application::Run() {
+		AST_CORE_ASSERT(active_scene, "A Scene must be made active at simulation startup");
 		is_running = true;
 		window.PumpEvents();
 		while (is_running) {
 			FrameContext ctxt = window.GetFrameContext();
 			Update(ctxt);
 			layers.Update(ctxt);
+			renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
+			active_scene->Draw(renderer, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
+			renderer.Command().SubmitFrame();
 			window.PumpEvents();
 		}
 	}
@@ -71,7 +99,7 @@ namespace Astral::App {
 		return layers;
 	}
 
-	AssetRegistry& Application::Assets() {
+	Assets::AssetRegistry& Application::Assets() {
 		return assets;
 	}
 }

@@ -2,7 +2,6 @@
 
 #include <Common.h>
 
-#include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
 #include "Astral/App/FrameContext.h"
 
@@ -31,6 +30,8 @@ namespace Astral::App {
 		void SetVSync(bool vsync);
 
 		void PumpEvents();
+
+		void MakeContextCurrent() const;
 		void SwapBuffers();
 
 		Window(Window&&) noexcept = default; 

@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <algorithm>
+#include <ranges>
 #include <functional>
 #include <format>
 #include <ranges>
@@ -28,6 +29,35 @@ namespace Astral {
 
     template<typename T>
     using Arc = std::shared_ptr<T>;
+
+    using ByteBox = Box<std::byte, void(*)(std::byte*)>;
+
+    template<typename T>
+    ByteBox ToBytes(Box<T> ptr) {
+        return ByteBox{
+            reinterpret_cast<std::byte*>(ptr.release()),
+            [](std::byte* p) {
+                delete reinterpret_cast<T*>(p);
+            }
+        };
+    }
+
+    template<typename ArrayT>
+    ByteBox ToBytesArray(Box<ArrayT> ptr) {
+        return ByteBox{
+            reinterpret_cast<std::byte*>(ptr.release()),
+            [](std::byte* p) {
+                delete[] reinterpret_cast<ArrayT*>(p);
+            }
+        };
+    }
+
+    template<typename ArrayT>
+    ByteBox ToBytesArray(const std::vector<ArrayT>& vec) {
+        auto result = std::make_unique<ArrayT[]>(vec.size());
+        std::copy(vec.begin(), vec.end(), result.get());
+		return ToBytesArray(std::move(result));
+    }
 }
 
 

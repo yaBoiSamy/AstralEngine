@@ -38,6 +38,7 @@ namespace Astral::App {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, config.gl_major);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, config.gl_minor);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
         // Create window with graphics context
         GLFWwindow* window = glfwCreateWindow((int)config.window_width, (int)config.window_height, config.window_name.c_str(), nullptr, nullptr);
@@ -57,7 +58,7 @@ namespace Astral::App {
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable Multi-Viewport / Platform Windows
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable Multi-Viewport / Platform Windows
 
         // Styling
         ImGui::StyleColorsDark();
@@ -71,11 +72,15 @@ namespace Astral::App {
         // Setup Platform/Renderer backends
         ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.gl_major, config.gl_minor));
 
+        glfwSwapInterval(config.vsync ? 1 : 0);
+
         int x, y;
         glfwGetWindowPos(window, &x, &y);
 
         int fbx, fby;
         glfwGetFramebufferSize(window, &fbx, &fby);
+
+        glfwMakeContextCurrent(nullptr);
 
         return Window(
             window, 

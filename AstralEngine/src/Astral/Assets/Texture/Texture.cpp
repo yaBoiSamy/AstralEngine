@@ -2,36 +2,32 @@
 #include "Texture.h"
 #include <filesystem>
 
-#include "Astral/Rendering/Texture/Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 
 namespace Astral::Assets {
-	
+	Texture::Texture(Render::Renderer* renderer, std::string name, std::filesystem::path& path) : Asset(name), renderer(renderer) {
+		AST_CORE_ASSERT(renderer, "Texture cannot be constructed with null renderer");
 
-	Texture::Texture(std::filesystem::path& path) : Asset(path.stem().string()) {
 		int w, h, _;
 		const uint32_t CHANNELS = 4;
 		stbi_set_flip_vertically_on_load(true);
-		uint8_t* image_data = stbi_load(path.string().c_str(), &w, &h, &_, CHANNELS);
-		uint32_t width = static_cast<uint32_t>(w);
-		uint32_t height = static_cast<uint32_t>(h);
+		texture_data = stbi_load(path.string().c_str(), &w, &h, &_, CHANNELS);
+		width = static_cast<size_t>(w);
+		height = static_cast<size_t>(h);
 		stbi_set_flip_vertically_on_load(false);
 
-		AST_CORE_ASSERT(image_data, "stb failed to parse image: {0}", stbi_failure_reason());
-
-		texture.Load(image_data, width, height);
-
-		stbi_image_free(image_data);
+		AST_CORE_ASSERT(texture_data, "stb failed to parse image: {0}", stbi_failure_reason());
+		texture_handle = renderer->Command().CreateTexture(width, height);
+		renderer->Command().WriteTexture(texture_handle, ToBytesArray(Box<uint8_t>(texture_data)), width, height);
 	}
 
-	Render::Texture* Texture::GetRendererTexture() {
-		return &texture;
+	Texture::~Texture() {
+		stbi_image_free(texture_data);
 	}
 
-	void Texture::Bind(uint32_t slot) const {
-		texture.Bind(slot);
+	Render::ResourceHandle Texture::GetHandle() const {
+		return texture_handle;
 	}
-	
 }

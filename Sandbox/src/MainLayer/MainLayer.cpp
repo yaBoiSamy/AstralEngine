@@ -9,10 +9,10 @@ MainLayer::MainLayer() : ALayer("Main layer") {}
 
 
 void MainLayer::OnAttach() {
-	Assets::Scene* scene = Assets().Fetch<Assets::Scene>("MainScene");
+	Assets::Scene* scene = Assets().FetchScene("MainScene");
 
 	Box<Entity> cube = std::make_unique<Entity>("cube");
-	Box<Components::MeshRenderer> cube_mesh_component = std::make_unique<Components::MeshRenderer>(Assets().Fetch<Assets::Mesh>("Cube mesh"), Assets().Fetch<Assets::Material>("fuckyou mat"));
+	Box<Components::MeshRenderer> cube_mesh_component = std::make_unique<Components::MeshRenderer>(Assets().FetchMesh("Cube mesh"), Assets().FetchMaterial("fuckyou mat"));
 	cube->AddComponent(std::move(cube_mesh_component));
 	scene->root.AddChild(std::move(cube));
 
@@ -39,7 +39,7 @@ void MainLayer::OnAttach() {
 
 
 void MainLayer::OnUpdate(const App::FrameContext& context) {
-	Assets::Scene* scene = Assets().Fetch<Assets::Scene>("MainScene");
+	Assets::Scene* scene = Assets().FetchScene("MainScene");
 
 	const double cube_rotspeed = 1;
 	const double cam_rotspeed = 0.25;
@@ -50,7 +50,6 @@ void MainLayer::OnUpdate(const App::FrameContext& context) {
 	scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
 	scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
 	//scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
-	scene->Draw(context.window_snapshot.frame_width, context.window_snapshot.frame_height);
 	time += deltatime;
 }
 

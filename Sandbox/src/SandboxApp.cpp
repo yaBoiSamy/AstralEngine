@@ -6,8 +6,21 @@ using namespace Astral;
 
 class Sandbox : public App::Application {
 private:
-    std::filesystem::path TEXTURE_DIR = "resources/finger.png";
-    std::vector<Assets::Vertex> vertices = {
+    const std::filesystem::path TEXTURE_DIR = "resources/finger.png";
+
+    //const std::vector<Assets::Vertex> vertices = {
+    //    { { -0.5f, -0.5f } },
+    //    { {  0.5f, -0.5f } },
+    //    { {  0.5f,  0.5f } },
+    //    { { -0.5f,  0.5f } }
+    //};
+
+    //const std::vector<uint32_t> indices = {
+    //    // Front
+    //    0, 1, 2,  2, 3, 0
+    //};
+
+    const std::vector<Assets::Vertex> vertices = {
         // Front
         { { -0.5f, -0.5f,  0.5f }, { 0, 0 } }, // 0
         { {  0.5f, -0.5f,  0.5f }, { 1, 0 } }, // 1
@@ -45,7 +58,7 @@ private:
         { { -0.5f, -0.5f,  0.5f }, { 0, 1 } }, // 23
     };
 
-    std::vector<uint32_t> indices = {
+    const std::vector<uint32_t> indices = {
         // Front
         0, 1, 2,  2, 3, 0,
 
@@ -69,15 +82,12 @@ public:
 
 	Sandbox(const App::StartupConfig& config) : Application(config) {
 
-        Box<Assets::Scene> scene = std::make_unique<Assets::Scene>("MainScene", );
-        Box<Assets::Mesh> cube_mesh = std::make_unique<Assets::Mesh>("Cube mesh", std::move(vertices), std::move(indices));
-        Box<Assets::Texture> texture = std::make_unique<Assets::Texture>(TEXTURE_DIR);
-        Box<Assets::Material> material = std::make_unique<Assets::Material>("fuckyou mat", Assets().Fetch<Assets::Shader>("Flat Shader"), glm::vec4(1, 1, 1, 0), texture.get());
+		Assets().CreateScene("MainScene");
+		Assets().CreateMesh("Cube mesh", std::move(vertices), std::move(indices));
+		Assets().CreateTexture("Finger texture", TEXTURE_DIR);
+		Assets().CreateMaterial("fuckyou mat", Assets().FetchShader("Flat Shader"), glm::vec4(1, 1, 1, 0), Assets().FetchTexture("Finger texture"));
 
-        Assets().Load<Assets::Scene>(std::move(scene));
-        Assets().Load<Assets::Mesh>(std::move(cube_mesh));
-        Assets().Load<Assets::Texture>(std::move(texture));
-        Assets().Load<Assets::Material>(std::move(material));
+        SetActiveScene(Assets().FetchScene("MainScene"));
 
         Box<MainLayer> main_layer = std::make_unique<MainLayer>();
         Layers().PushLayer(std::move(main_layer));

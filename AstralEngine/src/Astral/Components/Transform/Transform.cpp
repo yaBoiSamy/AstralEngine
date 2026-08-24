@@ -4,7 +4,6 @@
 
 #include "Transform.h"
 #include "Astral/Misc/Entity.h"
-#include "Astral/Rendering/Command/Command.h"
 
 
 namespace Astral::Components {

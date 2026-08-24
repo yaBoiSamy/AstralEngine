@@ -7,19 +7,22 @@
 
 namespace Astral::Assets {
 
-	Material::Material(std::string name, Shader* shader, glm::vec4 albedo, Texture* albedo_texture) : 
-		Asset(name), 
-		material(shader->GetRendererShader(), albedo, albedo_texture->GetRendererTexture()) {}
+	Material::Material(std::string name, Shader* shader, glm::vec4 albedo, Texture* albedo_texture) :
+		Asset(name),
+		shader_handle(shader->GetHandle()),
+		albedo(albedo),
+		albedo_texture_handle(albedo_texture ? albedo_texture->GetHandle() : 0) {}
 
-	Render::Material* Material::GetRendererMaterial() {
-		return &material;
+	Render::ResourceHandle Material::GetShaderHandle() {
+		return shader_handle;
 	}
 
-	void Material::Bind() const {
-		material.Bind();
+	Render::ResourceHandle Material::GetAlbedoTextureHandle() {
+		return albedo_texture_handle;
 	}
 
 	void Material::SetAlbedo(glm::vec4 albedo, Texture* albedo_texture) {
-		material.SetAlbedo(albedo, albedo_texture->GetRendererTexture());
+		this->albedo = albedo;
+		albedo_texture_handle = albedo_texture ? albedo_texture->GetHandle() : 0;
 	}
 }

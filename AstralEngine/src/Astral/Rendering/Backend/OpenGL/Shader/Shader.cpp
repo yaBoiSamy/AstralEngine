@@ -112,7 +112,7 @@ namespace Astral::Render::OpenGL {
 #ifdef AST_DEBUG
 		int result;
 		glGetShaderiv(shaderStageHandle, GL_COMPILE_STATUS, &result);
-		if (result == GL_FALSE) {
+		if (result == 0) {
 			int length;
 			glGetShaderiv(shaderStageHandle, GL_INFO_LOG_LENGTH, &length);
 			std::string message = std::string(length, '\0');

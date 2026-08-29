@@ -17,7 +17,7 @@
 #include "Astral/Components/Camera/Camera.h"
 #include "Astral/Components/MeshRenderer/MeshRenderer.h"
 
-#include "Astral/Assets/AssetRegistry.h"
+#include "Astral/Assets/AssetRegistry/AssetRegistry.h"
 #include "Astral/Assets/Scene/Scene.h"
 #include "Astral/Assets/Mesh/Mesh.h"
 #include "Astral/Assets/Material/Material.h"

@@ -17,6 +17,8 @@ namespace Astral::Components {
 
 		std::vector<Render::ResourceBinding> bindings = renderer.GetBindings();
 		bindings.push_back(Render::VertexBufferBinding{ 0, mesh->GetVertexBufferHandle() });
+		bindings.push_back(Render::TextureBinding{ 0, material->GetAlbedoTextureHandle() });
+		bindings.push_back(Render::UniformBufferBinding{ 3, material->GetMaterialDataHandle() });
 
 		renderer.Command().DrawIndexed(material->GetShaderHandle(), mesh->GetIndexBufferHandle(), std::move(bindings));
 	}

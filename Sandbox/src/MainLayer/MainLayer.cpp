@@ -12,7 +12,7 @@ void MainLayer::OnAttach() {
 	Assets::Scene* scene = Assets().FetchScene("MainScene");
 
 	Box<Entity> cube = std::make_unique<Entity>("cube");
-	Box<Components::MeshRenderer> cube_mesh_component = std::make_unique<Components::MeshRenderer>(Assets().FetchMesh("Cube mesh"), Assets().FetchMaterial("fuckyou mat"));
+	Box<Components::MeshRenderer> cube_mesh_component = std::make_unique<Components::MeshRenderer>(Assets().FetchMesh("Cube mesh"), Assets().FetchMaterial("Finger mat"));
 	cube->AddComponent(std::move(cube_mesh_component));
 	scene->root.AddChild(std::move(cube));
 

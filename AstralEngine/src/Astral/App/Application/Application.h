@@ -6,7 +6,7 @@
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
-#include "Astral/Assets/AssetRegistry.h"
+#include "Astral/Assets/AssetRegistry/AssetRegistry.h"
 
 
 namespace Astral::App {

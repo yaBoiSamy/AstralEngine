@@ -7,8 +7,7 @@
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/FrameContext.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
-#include "Astral/Assets/AssetRegistry.h"
-#include "Astral/Assets/Shader/Shader.h"
+#include "Astral/Assets/AssetRegistry/AssetRegistry.h"
 
 namespace Astral::App {
 

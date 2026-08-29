@@ -6,7 +6,6 @@ using namespace Astral;
 
 class Sandbox : public App::Application {
 private:
-    const std::filesystem::path TEXTURE_DIR = "resources/finger.png";
 
     //const std::vector<Assets::Vertex> vertices = {
     //    { { -0.5f, -0.5f } },
@@ -82,12 +81,13 @@ public:
 
 	Sandbox(const App::StartupConfig& config) : Application(config) {
 
-		Assets().CreateScene("MainScene");
 		Assets().CreateMesh("Cube mesh", std::move(vertices), std::move(indices));
-		Assets().CreateTexture("Finger texture", TEXTURE_DIR);
-		Assets().CreateMaterial("fuckyou mat", Assets().FetchShader("Flat Shader"), glm::vec4(1, 1, 1, 0), Assets().FetchTexture("Finger texture"));
+		Assets::Texture* finger_texture = Assets().CreateTexture("Finger texture", "resources/finger.png");
+        Assets::Shader* flat_shader = Assets().FetchShader("Flat Shader");
+		Assets().CreateMaterial("Finger mat", flat_shader, glm::vec4(1, 1, 1, 1), finger_texture);
 
-        SetActiveScene(Assets().FetchScene("MainScene"));
+        Assets::Scene* main_scene = Assets().CreateScene("MainScene");
+        SetActiveScene(main_scene);
 
         Box<MainLayer> main_layer = std::make_unique<MainLayer>();
         Layers().PushLayer(std::move(main_layer));

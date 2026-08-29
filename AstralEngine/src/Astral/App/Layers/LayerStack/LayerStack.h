@@ -2,7 +2,7 @@
 #include <Common.h>
 #include "Astral/App/Layers/Layer/Layer.h"
 #include "Astral/App/FrameContext.h"
-#include "Astral/Assets/AssetRegistry.h"
+#include "Astral/Assets/AssetRegistry/AssetRegistry.h"
 
 
 namespace Astral::App {

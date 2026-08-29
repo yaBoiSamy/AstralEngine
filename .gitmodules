@@ -13,3 +13,6 @@
 [submodule "AstralEngine/vendors/stb"]
 	path = AstralEngine/vendors/stb
 	url = https://github.com/nothings/stb.git
+[submodule "AstralEngine/vendors/tracy"]
+	path = AstralEngine/vendors/tracy
+	url = git@github.com:wolfpld/tracy.git

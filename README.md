@@ -1,2 +1,2 @@
 # AstralEngine
-My attempt at making a C++ game engine
+My attempt at making a C++ physics engine

@@ -1,4 +1,8 @@
 #include "Common.h"
+
+#define TRACY_ENABLE
+#include <tracy/Tracy.hpp>
+
 #include "Executor.h"
 #include "Astral/Rendering/Backend/API.h"
 #include "Astral/Rendering/Backend/OpenGL/GraphicsAPI/GraphicsAPI.h"
@@ -30,60 +34,80 @@ namespace Astral::Render {
 	}
 
 	void Executor::OptimizeCommands() {
-
+		ZoneScoped;
 	}
 
 	void Executor::ExecuteCommands() {
+		ZoneScoped;
 		OptimizeCommands();
 		for (Command& command : command_buffer->ProcessedCommands()) {
 			std::visit(overloaded{
 				[&](const CreateVertexBufferCommand& command) {
+					ZoneScopedN("CreateVertexBuffer");
 					CreateVertexBuffer(command);
 				},
 				[&](const WriteVertexBufferCommand& command) {
+					ZoneScopedN("WriteVertexBuffer");
 					WriteVertexBuffer(command);
 				},
 				[&](const CreateUniformBufferCommand& command) {
+					ZoneScopedN("CreateUniformBuffer");
 					CreateUniformBuffer(command);
 				},
 				[&](const WriteUniformBufferCommand& command) {
+					ZoneScopedN("WriteUniformBuffer");
 					WriteUniformBuffer(command);
 				},
 				[&](const CreateTextureCommand& command) {
+					ZoneScopedN("CreateTexture");
 					CreateTexture(command);
 				},
 				[&](const WriteTextureCommand& command) {
+					ZoneScopedN("WriteTexture");
 					WriteTexture(command);
 				},
 				[&](const CreateIndexBufferCommand& command) {
+					ZoneScopedN("CreateIndexBuffer");
 					CreateIndexBuffer(command);
 				},
 				[&](const WriteIndexBufferCommand& command) {
+					ZoneScopedN("WriteIndexBuffer");
 					WriteIndexBuffer(command);
 				},
 				[&](const CreateShaderCommand& command) {
+					ZoneScopedN("CreateShader");
 					CreateShader(command);
 				},
 				[&](const DeleteResourceCommand& command) {
+					ZoneScopedN("DeleteResource");
 					DeleteResource(command);
 				},
 				[&](const NewFrameCommand& command) {
+					ZoneScopedN("NewFrame");
 					NewFrame(command);
 				},
 				[&](const DrawCommand& command) {
+					ZoneScopedN("Draw");
 					Draw(command);
 				},
 				[&](const DrawIndexedCommand& command) {
+					ZoneScopedN("DrawIndexed");
 					DrawIndexed(command);
 				},
 				[&](const DrawImGuiCommand& command) {
+					ZoneScopedN("DrawImGui");
 					DrawImGui(command);
 				}
 			}, command);
+		} {
+			ZoneScopedN("VSync rate limiting");
+			window->SwapBuffers();
 		}
-		window->SwapBuffers();
 		command_buffer->ProcessedCommands().clear();
-		command_buffer->SwapBuffer(Role::Executor);
+		{
+			ZoneScopedN("CPU bottlenecking");
+			command_buffer->SwapBuffer(Role::Executor);
+		}
 	}
 
 	// ======================================== VERTEX BUFFER ========================================

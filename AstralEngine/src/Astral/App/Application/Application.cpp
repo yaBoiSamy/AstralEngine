@@ -1,4 +1,6 @@
 #include <Common.h>
+#define TRACY_ENABLE
+#include <tracy/Tracy.hpp>
 
 #include "Application.h"
 #include "Astral/App/BootStrapper/BootStrapper.h"
@@ -84,12 +86,22 @@ namespace Astral::App {
 		is_running = true;
 		window.PumpEvents();
 		while (is_running) {
-			FrameContext ctxt = window.GetFrameContext();
-			Update(ctxt);
-			layers.Update(ctxt);
-			renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
-			active_scene->Draw(renderer, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
-			renderer.Command().SubmitFrame();
+			ZoneScoped;
+			FrameContext ctxt = window.GetFrameContext(); 
+			{
+				ZoneScopedN("Application Update");
+				Update(ctxt);
+			} {
+				ZoneScopedN("LayerStack Update");
+				layers.Update(ctxt);
+			} {
+				ZoneScopedN("Render pass");
+				renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
+				active_scene->Draw(renderer, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
+			} {
+				ZoneScopedN("GPU bottlenecking");
+				renderer.Command().SubmitFrame();
+			}
 			window.PumpEvents();
 		}
 	}

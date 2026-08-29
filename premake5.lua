@@ -25,10 +25,13 @@ project "Sandbox"
 
     files { 
         "Sandbox/src/**.h", 
-        "Sandbox/src/**.cpp",
+        "Sandbox/src/**.cpp"
     }
 
-    externalincludedirs {
+    includedirs {
+        "AstralEngine/src",
+        "AstralEngine/src/Astral/Misc/PCH",
+        
         "AstralEngine/vendors/spdlog/include",
         "AstralEngine/vendors/glfw/include",
         "AstralEngine/vendors/glad/include",
@@ -36,11 +39,7 @@ project "Sandbox"
         "AstralEngine/vendors/imgui/backends",
         "AstralEngine/vendors/glm",
         "AstralEngine/vendors/stb",
-    }
-
-    includedirs {
-        "AstralEngine/src",
-        "AstralEngine/src/Astral/Misc/PCH"
+        "AstralEngine/vendors/tracy/public"
     }
 
     links {
@@ -58,6 +57,7 @@ project "Sandbox"
     filter { "configurations:Debug" }
         defines { "AST_DEBUG" }
         symbols "On"
+        editandcontinue "Off"
 
     filter { "configurations:Release" }
         defines { "AST_RELEASE" }
@@ -98,7 +98,10 @@ project "AstralEngine"
         "AstralEngine/src/**.cpp"
     }
 
-    externalincludedirs {
+    includedirs {
+        "AstralEngine/src",
+        "AstralEngine/src/Astral/Misc/PCH",
+
         "AstralEngine/vendors/spdlog/include",
         "AstralEngine/vendors/glfw/include",
         "AstralEngine/vendors/glad/include",
@@ -106,11 +109,7 @@ project "AstralEngine"
         "AstralEngine/vendors/imgui/backends",
         "AstralEngine/vendors/glm",
         "AstralEngine/vendors/stb",
-    }
-
-    includedirs {
-        "AstralEngine/src",
-        "AstralEngine/src/Astral/Misc/PCH"
+        "AstralEngine/vendors/tracy/public"
     }
 
     links{
@@ -135,6 +134,7 @@ project "AstralEngine"
     filter { "configurations:Debug" }
         defines { "AST_DEBUG" }
         symbols "On"
+        editandcontinue "Off"
         runtime "Debug"
 
     filter { "configurations:Release" }

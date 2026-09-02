@@ -1,5 +1,7 @@
 #pragma once
 #include "Common.h"
+#include "Astral/App/Window/Window.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 
 namespace Astral::Render {
@@ -164,7 +166,7 @@ namespace Astral::Render {
     class IGraphicsAPI {
     public:
         // Setup
-        virtual void Setup() = 0;
+        virtual void Setup(const App::StartupConfig& config, App::Window* window) = 0;
         virtual void SetActiveFrameBuffer(uint32_t id) = 0;
         virtual void SetViewport(size_t frame_width, size_t frame_height) = 0;
         virtual void Clear(const glm::vec4& color) = 0;

@@ -4,49 +4,87 @@
 #include "Window.h"
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
+#include  "Astral/App/Application/StartupConfig.h"
+
 
 namespace Astral::App {
 
 	static bool s_glfwInitialized = false;
 
-	Window::Window(GLFWwindow* handle, State _state, std::function<void()> imguiSetup) : handle(handle), state(std::make_unique<State>(_state)) {
-		AST_CORE_INFO("Window \"{0}\" being created with dimensions {1}x{2}", state->title, state->width, state->height);
-		glfwSetWindowUserPointer(handle, this);
+	Window::Window(const App::StartupConfig& config) : state(State{
+		config.window_name,
+		0, 0, // Derived from glfwGetWindowPos and window pos callback
+		config.window_width,
+		config.window_height,
+		0, 0, // Derived from glfwGetFramebufferSize and frameBuffer size callback
+		false, // Derived from glfwGetWindowAttrib and window focused callback
+		config.vsync,
+		0.0 // Derived from glfwGetTime in SwapBuffers
+	}) {
 
-        glfwSetWindowCloseCallback(handle, [](GLFWwindow* handle) {
+        int success = glfwInit();
+        AST_CORE_ASSERT(success, "glfw init unsuccessful");
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, config.version_major);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, config.version_minor);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
+
+        handle = Box<GLFWwindow, GLFWDeleter>(glfwCreateWindow((int)config.window_width, (int)config.window_height, config.window_name.c_str(), nullptr, nullptr));
+        AST_CORE_ASSERT(handle.get(), "Failed to create GLFW window");
+        glfwSetErrorCallback([](int error, const char* description) {
+            AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
+            });
+
+
+        int x, y;
+        glfwGetWindowPos(handle.get(), &x, &y);
+        state.x = x;
+        state.y = y;
+
+        int fbx, fby;
+        glfwGetFramebufferSize(handle.get(), &fbx, &fby);
+        state.frame_width = fbx;
+        state.frame_height = fby;
+
+        state.focused = (bool)glfwGetWindowAttrib(handle.get(), GLFW_FOCUSED);
+
+		AST_CORE_INFO("Window \"{0}\" being created with dimensions {1}x{2}", state.title, state.width, state.height);
+        glfwSetWindowUserPointer(handle.get(), this);
+
+        glfwSetWindowCloseCallback(handle.get(), [](GLFWwindow* handle) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
 			window.Broadcast(WindowCloseEvent());
             });
 
-        glfwSetWindowSizeCallback(handle, [](GLFWwindow* handle, int width, int height) {
+        glfwSetWindowSizeCallback(handle.get(), [](GLFWwindow* handle, int width, int height) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowResizeEvent(width, height));
-            window.state->width = width;
-            window.state->height = height;
+            window.state.width = width;
+            window.state.height = height;
             });
 
-        glfwSetFramebufferSizeCallback(handle, [](GLFWwindow* handle, int frame_width, int frame_height) {
+        glfwSetFramebufferSizeCallback(handle.get(), [](GLFWwindow* handle, int frame_width, int frame_height) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowFrameResizeEvent(frame_width, frame_height));
-            window.state->frame_width = frame_width;
-            window.state->frame_height = frame_height;
+            window.state.frame_width = frame_width;
+            window.state.frame_height = frame_height;
             });
 
-        glfwSetWindowFocusCallback(handle, [](GLFWwindow* handle, int focus) {
+        glfwSetWindowFocusCallback(handle.get(), [](GLFWwindow* handle, int focus) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-			window.state->focused = (focus != 0);
+			window.state.focused = (focus != 0);
             if (focus)
                 window.Broadcast(WindowFocusEvent());
             else
                 window.Broadcast(WindowLostFocusEvent());
             });
 
-        glfwSetWindowPosCallback(handle, [](GLFWwindow* handle, int x, int y) {
+        glfwSetWindowPosCallback(handle.get(), [](GLFWwindow* handle, int x, int y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowMovedEvent(x, y));
             });
 
-        glfwSetKeyCallback(handle, [](GLFWwindow* handle, int key, int scancode, int action, int mods) {
+        glfwSetKeyCallback(handle.get(), [](GLFWwindow* handle, int key, int scancode, int action, int mods) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             switch (action) {
             case GLFW_PRESS:
@@ -61,7 +99,7 @@ namespace Astral::App {
             }
             });
 
-        glfwSetMouseButtonCallback(handle, [](GLFWwindow* handle, int button, int action, int mods) {
+        glfwSetMouseButtonCallback(handle.get(), [](GLFWwindow* handle, int button, int action, int mods) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             double x, y;
             glfwGetCursorPos(handle, &x, &y);
@@ -71,17 +109,15 @@ namespace Astral::App {
                 window.Broadcast(MouseButtonReleasedEvent(button, x, y));
             });
 
-        glfwSetCursorPosCallback(handle, [](GLFWwindow* handle, double x, double y) {
+        glfwSetCursorPosCallback(handle.get(), [](GLFWwindow* handle, double x, double y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(MouseMovedEvent(x, y));
             });
 
-        glfwSetScrollCallback(handle, [](GLFWwindow* handle, double x_offset, double y_offset) {
+        glfwSetScrollCallback(handle.get(), [](GLFWwindow* handle, double x_offset, double y_offset) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(MouseScrolledEvent(x_offset, y_offset));
             });
-
-        imguiSetup();
 	}
 
     FrameContext Window::GetFrameContext() const {
@@ -93,16 +129,16 @@ namespace Astral::App {
 
     FrameContext::WindowSnapshot Window::GetWindowState() const {
         return FrameContext::WindowSnapshot{
-            state->title,
-            state->x,
-            state->y,
-            state->width,
-            state->height,
-            state->frame_width,
-            state->frame_height,
-            state->focused,
-            state->vsync,
-            state->deltatime
+            state.title,
+            state.x,
+            state.y,
+            state.width,
+            state.height,
+            state.frame_width,
+            state.frame_height,
+            state.focused,
+            state.vsync,
+            state.deltatime
         };
     }
 
@@ -145,10 +181,15 @@ namespace Astral::App {
         glfwMakeContextCurrent(handle.get());
     }
 
+	void Window::SetVSync(bool vsync) {
+		glfwSwapInterval(vsync ? 1 : 0);
+		state.vsync = vsync;
+	}
+
     void Window::SwapBuffers() {
         static double last_frametime = 0;
         double curr_frametime = glfwGetTime();
-        state->deltatime = curr_frametime - last_frametime;
+        state.deltatime = curr_frametime - last_frametime;
         last_frametime = curr_frametime;
         glfwSwapBuffers(handle.get());
     }

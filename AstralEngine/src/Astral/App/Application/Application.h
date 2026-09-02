@@ -2,20 +2,18 @@
 
 #include "Astral/App/Window/Window.h"
 #include "Astral/App/FrameContext.h"
-#include "Astral/App/BootStrapper/BootStrapper.h"
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
+#include "Astral/App/Application/StartupConfig.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Assets/AssetRegistry/AssetRegistry.h"
 
 
 namespace Astral::App {
-
 	class Application : public EventListener, public EventBroadcaster {
 	public:
-		Application(const StartupConfig& config);
+		Application(const App::StartupConfig& config);
 
-		void SetActiveScene(Assets::Scene* scene);
 		virtual void Update(const FrameContext& context) {};
 
 		void Close();

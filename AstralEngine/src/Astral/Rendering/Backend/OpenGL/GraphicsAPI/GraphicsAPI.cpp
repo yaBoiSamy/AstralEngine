@@ -7,7 +7,14 @@
 #include "Astral/Rendering/Backend/OpenGL/IndexBuffer/IndexBuffer.h"
 #include "Astral/Rendering/Backend/OpenGL/Binding/Binding.h"
 #include "Astral/Rendering/Backend/OpenGL/Shader/Shader.h"
+
+#include "Astral/App/Window/Window.h"
+#include "Astral/App/Application/StartupConfig.h"
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "imgui.h"
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 namespace Astral::Render::OpenGL {
 
@@ -22,8 +29,51 @@ namespace Astral::Render::OpenGL {
 		const GLchar* message,
 		const void* userParam);
 
-	void GraphicsAPI::Setup() {
-		AST_CORE_ASSERT(glDebugMessageCallback != nullptr, "GLAD Extension not included");
+	static const char* ToGLSLVersion(int major, int minor) {
+		if (major == 3 && minor == 0) return "#version 130";
+		if (major == 3 && minor == 1) return "#version 140";
+		if (major == 3 && minor == 2) return "#version 150";
+		if (major == 3 && minor == 3) return "#version 330";
+		if (major == 4 && minor == 0) return "#version 400";
+		if (major == 4 && minor == 1) return "#version 410";
+		if (major == 4 && minor == 2) return "#version 420";
+		if (major == 4 && minor == 3) return "#version 430";
+		if (major == 4 && minor == 4) return "#version 440";
+		if (major == 4 && minor == 5) return "#version 450";
+		if (major == 4 && minor == 6) return "#version 460";
+
+		AST_CORE_ASSERT(false, "Unsupported OpenGL version");
+		return "";
+	}
+
+	void GraphicsAPI::Setup(const App::StartupConfig& config, App::Window* window) {
+		window->MakeContextCurrent();
+		window->SetVSync(config.vsync);
+		
+		// Load OpenGL functions using glad
+		int success = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+		AST_CORE_ASSERT(success, "Failed to populate graphics programming functions");
+
+		// Setup Dear ImGui context
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable Docking
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable Multi-Viewport / Platform Windows        
+		
+		// Styling
+		ImGui::StyleColorsDark();
+
+		float scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.ScaleAllSizes(scale);
+		style.FontScaleDpi = scale;
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
+		ImGui_ImplOpenGL3_Init(ToGLSLVersion(config.version_major, config.version_minor));
+
 		if (glDebugMessageCallback && AST_DEBUG) {
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

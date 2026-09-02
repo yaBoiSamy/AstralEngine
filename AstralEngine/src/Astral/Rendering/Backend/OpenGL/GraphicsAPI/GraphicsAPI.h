@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "Astral/Rendering/Backend/API.h"
+#include "Astral/App/Window/Window.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 namespace Astral::Render::OpenGL {
 
@@ -8,7 +10,7 @@ namespace Astral::Render::OpenGL {
 	public:
 		GraphicsAPI();
 
-		virtual void Setup() override;
+		virtual void Setup(const App::StartupConfig& config, App::Window* window) override;
 		virtual void SetActiveFrameBuffer(uint32_t id) override;
 		virtual void SetViewport(size_t frame_width, size_t frame_height) override;
 		virtual void Clear(const glm::vec4& color) override;

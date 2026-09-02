@@ -29,7 +29,7 @@ namespace Astral::Assets {
 	}
 
 	Scene* AssetRegistry::CreateScene(std::string name) {
-		scene_directory.emplace(name, std::make_unique<Scene>(name));
+		scene_directory.emplace(name, std::make_unique<Scene>(renderer, name));
 		return FetchScene(name);
 	}
 

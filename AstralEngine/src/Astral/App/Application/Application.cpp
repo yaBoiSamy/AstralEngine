@@ -3,21 +3,21 @@
 #include <tracy/Tracy.hpp>
 
 #include "Application.h"
-#include "Astral/App/BootStrapper/BootStrapper.h"
 #include "Astral/App/Layers/DebugLayer/DebugLayer.h"
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/FrameContext.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Assets/AssetRegistry/AssetRegistry.h"
+#include <imgui_impl_glfw.h>
 
 namespace Astral::App {
 
-	Application::Application(const StartupConfig& config) : 
+	Application::Application(const App::StartupConfig& config) : 
 		is_running(false), 
 		active_scene(nullptr),
-		window(WindowStartup(config)),
-		renderer(&window, Render::API::OpenGL),
+		window(config),
+		renderer(&window, Render::API::OpenGL, config),
 		assets(&renderer),
 		layers(&assets)
 	{
@@ -62,10 +62,6 @@ namespace Astral::App {
 		Assets().CreateShader("Flat Shader", flat_layout, "src/Shaders/Flat/vertex.vert.glsl", "src/Shaders/Flat/fragment.frag.glsl");
 	}
 
-	void Application::SetActiveScene(Assets::Scene* scene) {
-		active_scene = scene;
-	}
-
 
 	bool Application::OnWindowCloseEvent(const WindowCloseEvent& event) {
 		AST_CORE_INFO("Window close event received, closing application.");
@@ -82,22 +78,18 @@ namespace Astral::App {
 	};
 
 	void Application::Run() {
-		AST_CORE_ASSERT(active_scene, "A Scene must be made active at simulation startup");
 		is_running = true;
 		window.PumpEvents();
 		while (is_running) {
 			ZoneScoped;
-			FrameContext ctxt = window.GetFrameContext(); 
+			FrameContext ctxt = window.GetFrameContext();
+			renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
 			{
 				ZoneScopedN("Application Update");
 				Update(ctxt);
 			} {
 				ZoneScopedN("LayerStack Update");
 				layers.Update(ctxt);
-			} {
-				ZoneScopedN("Render pass");
-				renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
-				active_scene->Draw(renderer, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
 			} {
 				ZoneScopedN("GPU bottlenecking");
 				renderer.Command().SubmitFrame();

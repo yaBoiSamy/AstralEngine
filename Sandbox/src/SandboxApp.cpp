@@ -87,14 +87,11 @@ public:
 		Assets().CreateMaterial("Finger mat", flat_shader, glm::vec4(1, 1, 1, 1), finger_texture);
 
         Assets::Scene* main_scene = Assets().CreateScene("MainScene");
-        SetActiveScene(main_scene);
 
         Box<MainLayer> main_layer = std::make_unique<MainLayer>();
         Layers().PushLayer(std::move(main_layer));
 
 	}
-
-	virtual void Update(const App::FrameContext& context) override {}
 
 	virtual bool OnKeyPressedEvent(const App::KeyPressedEvent& event) override {
 		AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeat_count);

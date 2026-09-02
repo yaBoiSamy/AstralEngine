@@ -4,6 +4,7 @@
 
 #include "Astral/App/Events/EventHandlers/EventHandlers.h"
 #include "Astral/App/FrameContext.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 struct GLFWwindow;
 
@@ -21,7 +22,7 @@ namespace Astral::App {
 			double deltatime;
 		};
 
-		explicit Window(GLFWwindow* handle, State state, std::function<void()> imguiSetup);
+		explicit Window(const App::StartupConfig& config);
 
 		FrameContext GetFrameContext() const;
 		FrameContext::WindowSnapshot GetWindowState() const;
@@ -46,7 +47,7 @@ namespace Astral::App {
 			void operator()(GLFWwindow* w) const noexcept;
 		};
 
-		Box<State> state;
+		State state;
 		Box<GLFWwindow, GLFWDeleter> handle;
 	};
 }

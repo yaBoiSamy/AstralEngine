@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "Astral/Misc/Log/Log.h"
 #include "Astral/App/Application/Application.h"
-#include "Astral/App/BootStrapper/BootStrapper.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 #ifdef AST_PLATFORM_WINDOWS
 

@@ -4,6 +4,7 @@
 #include "Astral/Rendering/Pipe/Command/CommandBuffer/CommandBuffer.h"
 #include "Astral/Rendering/Pipe/ResourceRegistry/ResourceRegistry.h"
 #include "Astral/App/Window/Window.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 
 namespace Astral::Render {
@@ -14,7 +15,7 @@ namespace Astral::Render {
 
 	class Executor {
 	public:
-		Executor(ResourceRegistry* registry, CommandBuffer* command_buffer, App::Window* window, API graphics_api);
+		Executor(ResourceRegistry* registry, CommandBuffer* command_buffer, App::Window* window, API graphics_api, const App::StartupConfig& config);
 		void ExecuteCommands();
 
 	private:

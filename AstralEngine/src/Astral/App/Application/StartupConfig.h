@@ -1,8 +1,7 @@
 #pragma once
-#include "Astral/App/Window/Window.h"
+#include "Common.h"
 
 namespace Astral::App {
-
 	struct StartupConfig {
 		// Window Parameters
 		std::string window_name = "AstralEngine";
@@ -11,9 +10,7 @@ namespace Astral::App {
 		bool vsync = true;
 
 		// Graphics API	parameters
-		int gl_major = 4;
-		int gl_minor = 6;
+		int version_major = 4;
+		int version_minor = 6;
 	};
-
-	Window WindowStartup(const StartupConfig& startupConfig);
 }

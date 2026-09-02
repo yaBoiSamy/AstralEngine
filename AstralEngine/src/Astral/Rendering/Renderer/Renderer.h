@@ -3,8 +3,8 @@
 #include "Astral/Rendering/Pipe/Pipe.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Rendering/Pipe/Executor/Executor.h"
-#include "Astral/Rendering/Backend/API.h"
 #include "Astral/Rendering/Pipe/Command/Command.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 
 namespace Astral::Render {
@@ -21,7 +21,7 @@ namespace Astral::Render {
 
 	class Renderer {
 	public:
-		Renderer(App::Window* window, API graphics_api);
+		Renderer(App::Window* window, API graphics_api, const App::StartupConfig& config);
 		const Invoker& Command() const;
 
 		void UpdateLightingData(LightingData lighting_data) const;

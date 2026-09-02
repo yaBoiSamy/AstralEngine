@@ -27,7 +27,7 @@ namespace Astral::Render {
 		void NewFrame(uint32_t viewport_id, size_t frame_width, size_t frame_height) const;
 		void Draw(ResourceHandle shader, std::vector<ResourceBinding> bindings) const;
 		void DrawIndexed(ResourceHandle shader, ResourceHandle index_buffer, std::vector<ResourceBinding> bindings) const;
-		void DrawImGui() const;
+		void DrawImGui(std::function<void()> render_ui) const;
 		void SubmitFrame() const;
 
 	private:

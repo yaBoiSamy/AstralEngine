@@ -1,5 +1,6 @@
 #pragma once
 #include <Astral.h>
+#include <imgui.h>
 #include "MainLayer.h"
 
 using namespace Astral;
@@ -51,6 +52,13 @@ void MainLayer::OnUpdate(const App::FrameContext& context) {
 	scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
 	//scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
 	time += deltatime;
+	scene->Draw(context.window_snapshot.frame_width, context.window_snapshot.frame_height);
+}
+
+void MainLayer::OnRenderUI() {
+	ImGui::Begin("Main Layer");
+	ImGui::Text("Hello from the main layer!");
+	ImGui::End();
 }
 
 

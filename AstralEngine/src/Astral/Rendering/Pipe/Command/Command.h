@@ -126,7 +126,9 @@ namespace Astral::Render {
 		const std::vector<ResourceBinding> bindings;
 	};
 
-	struct DrawImGuiCommand {};
+	struct DrawImGuiCommand {
+		std::function<void()> render_ui;
+	};
 
 
 	// ============================================ VARIANT ============================================

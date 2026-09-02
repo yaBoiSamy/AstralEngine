@@ -9,9 +9,8 @@
 #include "Astral/Rendering/Pipe/Command/Command.h"
 #include "Astral/Rendering/Pipe/Command/CommandBuffer/CommandBuffer.h"
 #include "Astral/App/Window/Window.h"
+#include "Astral/App/Application/StartupConfig.h"
 
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_glfw.h>
 
 
 namespace Astral::Render {
@@ -22,15 +21,14 @@ namespace Astral::Render {
 		}
 	}
 
-	Executor::Executor(ResourceRegistry* registry, CommandBuffer* command_buffer, App::Window* window, API graphics_api) :
+	Executor::Executor(ResourceRegistry* registry, CommandBuffer* command_buffer, App::Window* window, API graphics_api, const App::StartupConfig& config) :
 		api(ConstructAPI(graphics_api)),
 		registry(registry),
 		command_buffer(command_buffer),
 		window(window)
 	{
 		AST_CORE_ASSERT(window, "Window cannot be null at Executor construction");
-		window->MakeContextCurrent();
-		api->Setup();
+		api->Setup(config, window);
 	}
 
 	void Executor::OptimizeCommands() {
@@ -180,9 +178,6 @@ namespace Astral::Render {
 		api->SetActiveFrameBuffer(command.viewport_id);
 		api->SetViewport(command.frame_width, command.frame_height);
 		api->Clear(glm::vec4(0.1, 0.1, 0.1, 1.0));
-
-		//ImGui_ImplOpenGL3_NewFrame();
-		//ImGui_ImplGlfw_NewFrame();
 	}
 
 	void Executor::GenerateBindings(const std::vector<ResourceBinding>& handle_bindings, std::vector<Box<IBinding>>& bindings, std::vector<IBinding*>& raw_bindings) {
@@ -234,6 +229,6 @@ namespace Astral::Render {
 	}
 
 	void Executor::DrawImGui(const DrawImGuiCommand& command) {
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		command.render_ui();
 	}
 }

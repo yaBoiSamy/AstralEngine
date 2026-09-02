@@ -9,12 +9,13 @@ namespace Astral::Assets {
 
 	class Scene : public Asset {
 	public:
-		Scene(std::string name);
+		Scene(Render::Renderer* renderer, std::string name);
 		void SetMainCam(Components::Camera* cam);
-		void Draw(Render::Renderer& renderer, uint32_t frame_width, uint32_t frame_height);
+		void Draw(uint32_t frame_width, uint32_t frame_height);
 
 		Astral::Entity root;
 	private:
+		Render::Renderer* renderer;
 		Components::Camera* main_camera;
 	};
 }

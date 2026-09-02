@@ -166,8 +166,10 @@ namespace Astral::Render {
 		command_buffer->InvokeCommand(std::move(command));
 	}
 
-	void Invoker::DrawImGui() const {
-		Command command = DrawImGuiCommand{};
+	void Invoker::DrawImGui(std::function<void()> render_ui) const {
+		Command command = DrawImGuiCommand{
+			.render_ui = render_ui
+		};
 
 		command_buffer->InvokeCommand(std::move(command));
 	}

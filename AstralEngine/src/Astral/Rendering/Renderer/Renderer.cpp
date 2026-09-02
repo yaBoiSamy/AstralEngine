@@ -1,14 +1,15 @@
 #include "Common.h"
 #include "Renderer.h"
+#include "Astral/App/Application/StartupConfig.h"
 
 
 namespace Astral::Render {
-	Renderer::Renderer(App::Window* window, API graphics_api) :
+	Renderer::Renderer(App::Window* window, API graphics_api, const App::StartupConfig& config) :
 		pipe(std::make_shared<Render::Pipe>()),
 		invoker(pipe->CreateInvoker()),
 		executor_thread(
-			[this, window, graphics_api](std::stop_token stop) {
-				Render::Executor executor = pipe->CreateExecutor(window, graphics_api);
+			[this, window, graphics_api, config](std::stop_token stop) {
+				Render::Executor executor = pipe->CreateExecutor(window, graphics_api, config);
 				while (!stop.stop_requested()) {
 					executor.ExecuteCommands();
 				}

@@ -9,4 +9,7 @@ public:
 	virtual void OnUpdate(const Astral::App::FrameContext& context) override;
 	virtual void OnRenderUI() override;
 	virtual bool OnKeyPressedEvent(const Astral::App::KeyPressedEvent& event) override;
+
+private:
+	double frametime = 0;
 };

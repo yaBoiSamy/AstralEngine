@@ -47,17 +47,19 @@ void MainLayer::OnUpdate(const App::FrameContext& context) {
 	const double cube_oscillationspeed = 1;
 	static double time = 0;
 	double deltatime = context.window_snapshot.deltatime;
-	//AST_CORE_INFO("FPS: {}", 1 / deltatime);
+	frametime = deltatime;
 	scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
 	scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
-	//scene.root.Child("cube")->transform().local_scale = glm::dvec3(1.0f) * glm::sin(time * cube_oscillationspeed);
 	time += deltatime;
 	scene->Draw(context.window_snapshot.frame_width, context.window_snapshot.frame_height);
 }
 
 void MainLayer::OnRenderUI() {
-	ImGui::Begin("Main Layer");
-	ImGui::Text("Hello from the main layer!");
+	ImGui::Begin("Frame data");
+	if (frametime != 0) {
+		ImGui::Text("FPS: %.0f", 1 / frametime);
+		ImGui::Text("Frametime: %.3f", frametime);
+	}
 	ImGui::End();
 }
 

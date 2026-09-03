@@ -4,7 +4,7 @@ in vec2 ftext_coord;
 
 layout(binding = 0) uniform sampler2D albedoTexture;
 
-layout(std140, binding = 3) uniform Material
+layout(std140, binding = 4) uniform Material
 {
     vec4 albedo;
 };

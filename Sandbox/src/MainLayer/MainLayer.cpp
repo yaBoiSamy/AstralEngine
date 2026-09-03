@@ -4,54 +4,46 @@
 #include "MainLayer.h"
 
 using namespace Astral;
+using namespace Astral::Components;
+using namespace Astral::Assets;
 
-
-MainLayer::MainLayer() : ALayer("Main layer") {}
+MainLayer::MainLayer(App::Application* app) : ALayer(app, "Main layer") {}
 
 
 void MainLayer::OnAttach() {
-	Assets::Scene* scene = Assets().FetchScene("MainScene");
+	Scene* scene = Assets().FetchScene("MainScene");
 
-	Box<Entity> cube = std::make_unique<Entity>("cube");
-	Box<Components::MeshRenderer> cube_mesh_component = std::make_unique<Components::MeshRenderer>(Assets().FetchMesh("Cube mesh"), Assets().FetchMaterial("Finger mat"));
-	cube->AddComponent(std::move(cube_mesh_component));
-	scene->root.AddChild(std::move(cube));
+	Box<Entity> circle = std::make_unique<Entity>("circle");
+	Box<MeshRenderer> circle_mesh_component = std::make_unique<MeshRenderer>(Assets().FetchMesh("Billboard"), Assets().FetchMaterial("white circle"));
+	circle->AddComponent(std::move(circle_mesh_component));
+	scene->root.AddChild(std::move(circle));
 
-	Box<Entity> cam_parent = std::make_unique<Entity>("cam_dad");
 	Box<Entity> maincam = std::make_unique<Entity>("cam");
-	Box<Components::Camera> cam_component = std::make_unique<Components::Camera>(
+	Box<Camera> cam_component = std::make_unique<Camera>(
 		45,                 // FOV (degrees)
 		0.1,                // near plane
 		100                 // far plane
 	);
 	scene->SetMainCam(cam_component.get());
 	maincam->AddComponent(std::move(cam_component));
-	cam_parent->AddChild(std::move(maincam));
-	scene->root.AddChild(std::move(cam_parent));
+	scene->root.AddChild(std::move(maincam));
 
-	Components::Transform& cube_tr = *scene->root.Child("cube")->GetComponent<Components::Transform>();
-	Components::Transform& camdad_tr = *scene->root.Child("cam_dad")->GetComponent<Components::Transform>();
-	Components::Camera& cam = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Components::Camera>();
-	Components::Transform& cam_tr = *scene->root.Child("cam_dad")->Child("cam")->GetComponent<Components::Transform>();
+	Transform& circle_tr = *scene->root.Child("circle")->GetComponent<Transform>();
+	Transform& cam_tr = *scene->root.Child("cam")->GetComponent<Transform>();
 
-	cam_tr.Translate(glm::vec3(0, 2, 2));
-	cam_tr.LookAt(cube_tr.Position());
+	cam_tr.Translate(glm::vec3(0, 0, 2));
 }
 
 
 void MainLayer::OnUpdate(const App::FrameContext& context) {
-	Assets::Scene* scene = Assets().FetchScene("MainScene");
+	Scene& scene = *Assets().FetchScene("MainScene");
+	Entity& root = scene.root;
+	Entity& circle = *root.Child("circle");
+	Transform& circle_tr = *circle.GetComponent<Transform>();
 
-	const double cube_rotspeed = 1;
-	const double cam_rotspeed = 0.25;
-	const double cube_oscillationspeed = 1;
-	static double time = 0;
-	double deltatime = context.window_snapshot.deltatime;
-	frametime = deltatime;
-	scene->root.Child("cube")->transform().Rotate(glm::quat(glm::vec3(0, deltatime * cube_rotspeed, 0)));
-	scene->root.Child("cam_dad")->transform().Rotate(glm::quat(glm::vec3(deltatime * cam_rotspeed, 0, 0)));
-	time += deltatime;
-	scene->Draw(context.window_snapshot.frame_width, context.window_snapshot.frame_height);
+	frametime = context.window_snapshot.deltatime;
+	circle_tr.local_scale = glm::vec3(circle_radius, circle_radius, 1.0f);
+	scene.Draw(context.window_snapshot.frame_width, context.window_snapshot.frame_height);
 }
 
 void MainLayer::OnRenderUI() {
@@ -61,10 +53,47 @@ void MainLayer::OnRenderUI() {
 		ImGui::Text("Frametime: %.3f", frametime);
 	}
 	ImGui::End();
+	ImGui::Begin("circle radius");
+	ImGui::SliderFloat("circle radius", &circle_radius, 0.1f, 1.0f);
+	ImGui::End();
 }
 
+bool MainLayer::OnMouseMovedEvent(const Astral::App::MouseMovedEvent& event) {
+	if (!is_roaming)
+		return false;
+	const double rotation_speed = 0.001;
+	Entity& root = Assets().FetchScene("MainScene")->root;
+	Transform& cam_tr = *root.Child("cam")->GetComponent<Transform>();
+	glm::dquat yaw = glm::angleAxis(-event.dx * rotation_speed, dvec3(0, 1, 0));
+	glm::dquat pitch = glm::angleAxis(-event.dy * rotation_speed, dvec3(1, 0, 0));
+	cam_tr.LocalRotate(pitch);
+	cam_tr.GlobalRotate(yaw);
+	return false;
+}
+
+bool MainLayer::OnMouseScrolledEvent(const Astral::App::MouseScrolledEvent& event) {
+	if (!is_roaming)
+		return false;
+	const double translation_speed = 0.1;
+	Entity& root = Assets().FetchScene("MainScene")->root;
+	Transform& cam_tr = *root.Child("cam")->GetComponent<Transform>();
+	cam_tr.Translate(event.y_offset * translation_speed * cam_tr.Forward());
+	return false;
+}
+
+bool MainLayer::OnMouseButtonPressedEvent(const App::MouseButtonPressedEvent& event) {
+	if (event.button == AST_MOUSE_BUTTON_LEFT && !is_roaming) {
+		App().SetCursorEnabled(false);
+		is_roaming = true;
+		return true;
+	}
+	return false;
+}
 
 bool MainLayer::OnKeyPressedEvent(const App::KeyPressedEvent& event) {
-	AST_USER_INFO("Key Pressed: {0} (repeats: {1})", event.keycode, event.repeat_count);
+	if (event.keycode == AST_KEY_ESCAPE && is_roaming) {
+		App().SetCursorEnabled(true);
+		is_roaming = false;
+	}
 	return false;
 }

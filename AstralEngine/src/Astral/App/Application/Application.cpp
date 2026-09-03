@@ -3,13 +3,13 @@
 #include <tracy/Tracy.hpp>
 
 #include "Application.h"
+#include "Astral/App/Layers/UILayer/UILayer.h"
 #include "Astral/App/Layers/DebugLayer/DebugLayer.h"
 #include "Astral/App/Layers/LayerStack/LayerStack.h"
 #include "Astral/App/Events/Event/Event.h"
 #include "Astral/App/FrameContext.h"
 #include "Astral/Rendering/Renderer/Renderer.h"
 #include "Astral/Assets/AssetRegistry/AssetRegistry.h"
-#include <imgui_impl_glfw.h>
 
 namespace Astral::App {
 
@@ -24,13 +24,15 @@ namespace Astral::App {
 		SubscribeTo(window);
 		layers.SubscribeTo(*this);
 
-		layers.PushOverlay(std::make_unique<DebugLayer>(&renderer, [this] {
-			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
-			}));
+		layers.PushLayer(std::make_unique<DebugLayer>(this, &renderer));
 
-		// provided shader library
+		layers.PushOverlay(std::make_unique<UILayer>(this, &renderer, [this] {
+			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
+		}));
+
 
 		// ========================================= FLAT SHADER ========================================
+
 		Render::VertexAttribute position{
 			.location = 0,
 			.binding = 0,
@@ -59,7 +61,21 @@ namespace Astral::App {
 			.bindings = { binding }
 		};
 
-		Assets().CreateShader("Flat Shader", flat_layout, "src/Shaders/Flat/vertex.vert.glsl", "src/Shaders/Flat/fragment.frag.glsl");
+		Assets().CreateShader("Flat", flat_layout, "src/Shaders/Flat/vertex.vert.glsl", "src/Shaders/Flat/fragment.frag.glsl");
+
+
+		// ========================================= BILLBOARD =========================================
+
+		Assets().CreateMesh("Billboard", {
+			{ { -0.5f, -0.5f, 0.0f }, { 0, 0 } },
+			{ {  0.5f, -0.5f, 0.0f }, { 1, 0 } },
+			{ {  0.5f,  0.5f, 0.0f }, { 1, 1 } },
+			{ { -0.5f,  0.5f, 0.0f }, { 0, 1 } }
+			}, {
+				0, 1, 2,
+				2, 3, 0
+			}
+		);
 	}
 
 
@@ -73,6 +89,10 @@ namespace Astral::App {
 		return Broadcast(event);
 	}
 
+	void Application::SetCursorEnabled(bool is_enabled) {
+		window.SetCursorEnabled(is_enabled);
+	}
+
 	void Application::Close() {
 		AST_CORE_INFO("App closed"); is_running = false;
 	};
@@ -83,6 +103,7 @@ namespace Astral::App {
 		while (is_running) {
 			ZoneScoped;
 			FrameContext ctxt = window.GetFrameContext();
+			renderer.UpdateViewportData(ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
 			renderer.Command().NewFrame(0, ctxt.window_snapshot.frame_width, ctxt.window_snapshot.frame_height);
 			{
 				ZoneScopedN("Application Update");

@@ -14,6 +14,8 @@ namespace Astral::Assets {
 	class Mesh : public Asset {
 	public:
 		Mesh(Render::Renderer* renderer, std::string name, std::vector<Vertex> verts, std::vector<uint32_t> indices);
+		size_t  GetVertexCount() const;
+		size_t  GetIndexCount() const;
 		Render::ResourceHandle GetVertexBufferHandle();
 		Render::ResourceHandle GetIndexBufferHandle();
 

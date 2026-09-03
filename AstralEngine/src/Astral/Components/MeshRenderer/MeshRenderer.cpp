@@ -13,13 +13,13 @@ namespace Astral::Components {
 		AST_CORE_ASSERT(mesh, "Tried to render using MeshRenderer but no mesh was attached");
 		AST_CORE_ASSERT(material, "Tried to render using MeshRenderer but no was material attached");
 
-		renderer.UpdateModelData(Owner()->transform().RenderedWorldSpace());
+		renderer.UpdateModelData(Owner()->transform().ModelMatrix());
 
 		std::vector<Render::ResourceBinding> bindings = renderer.GetBindings();
-		bindings.push_back(Render::VertexBufferBinding{ 0, mesh->GetVertexBufferHandle() });
-		bindings.push_back(Render::TextureBinding{ 0, material->GetAlbedoTextureHandle() });
-		bindings.push_back(Render::UniformBufferBinding{ 3, material->GetMaterialDataHandle() });
+		bindings.push_back(Render::VertexBufferBinding{ VERTEX_BUFFER_BINDING_SLOT, mesh->GetVertexBufferHandle() });
+		bindings.push_back(Render::TextureBinding{ ALBEDO_TEXTURE_BINDING_SLOT, material->GetAlbedoTextureHandle() });
+		bindings.push_back(Render::UniformBufferBinding{ MATERIAL_DATA_BINDING_SLOT, material->GetMaterialDataHandle() });
 
-		renderer.Command().DrawIndexed(material->GetShaderHandle(), mesh->GetIndexBufferHandle(), std::move(bindings));
+		renderer.Command().DrawIndexed(material->GetShaderHandle(), mesh->GetIndexBufferHandle(), std::move(bindings), 0, mesh->GetIndexCount());
 	}
 }

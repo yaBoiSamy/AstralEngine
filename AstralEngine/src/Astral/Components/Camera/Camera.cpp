@@ -33,13 +33,4 @@ namespace Astral::Components {
 	mat4 Camera::ProjectionMatrix(uint32_t frame_width, uint32_t frame_height) const {
 		return glm::perspective((float)fov, (float)frame_width / (float)frame_height, (float)near_plane, (float)far_plane);
 	}
-
-	Render::CameraData Camera::RenderedPOV(uint32_t frame_width, uint32_t frame_height) const {
-		Render::CameraData camdata = {
-			ViewMatrix(),
-			ProjectionMatrix(frame_width, frame_height)
-		};
-		return std::move(camdata);
-	}
-
 }

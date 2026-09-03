@@ -213,19 +213,20 @@ namespace Astral::Render {
 		bindings.reserve(binding_count);
 		raw_bindings.reserve(binding_count);
 		GenerateBindings(command.bindings, bindings, raw_bindings);
-		api->Draw(shader, raw_bindings, 0, 0);
+		api->Draw(shader, raw_bindings, command.first_drawn_vertex, command.drawn_vertex_count);
 	}
 
 	void Executor::DrawIndexed(const DrawIndexedCommand& command) {
 		IShader* shader = dynamic_cast<IShader*>(registry->ResolveHandle(command.shader));
 		IIndexBuffer* index_buffer = dynamic_cast<IIndexBuffer*>(registry->ResolveHandle(command.index_buffer));
+		AST_CORE_ASSERT(index_buffer->Length() >= command.first_drawn_index + command.drawn_index_count, "Drawing past index buffer bounds");
 		const size_t binding_count = command.bindings.size();
 		std::vector<Box<IBinding>> bindings;
 		std::vector<IBinding*> raw_bindings;
 		bindings.reserve(binding_count);
 		raw_bindings.reserve(binding_count);
 		GenerateBindings(command.bindings, bindings, raw_bindings);
-		api->DrawIndexed(shader, raw_bindings, index_buffer, 0, index_buffer->Length());
+		api->DrawIndexed(shader, raw_bindings, index_buffer, command.first_drawn_index, command.drawn_index_count);
 	}
 
 	void Executor::DrawImGui(const DrawImGuiCommand& command) {

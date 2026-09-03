@@ -35,6 +35,8 @@ namespace Astral::App {
 		void MakeContextCurrent() const;
 		void SwapBuffers();
 
+		void SetCursorEnabled(bool is_enabled);
+
 		Window(Window&&) noexcept = default; 
 		Window& operator=(Window&&) noexcept = default; 
 
@@ -49,5 +51,7 @@ namespace Astral::App {
 
 		State state;
 		Box<GLFWwindow, GLFWDeleter> handle;
+		double last_mouse_x = 0;
+		double last_mouse_y = 0;
 	};
 }

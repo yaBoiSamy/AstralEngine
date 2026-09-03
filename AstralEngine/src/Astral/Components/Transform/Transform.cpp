@@ -77,26 +77,23 @@ namespace Astral::Components {
 
 	void Transform::LookAt(const dvec3& target) {
 		dvec3 direction = glm::normalize(target - local_position);
-		Rotate(glm::rotation(Forward(), direction));
+		LocalRotate(glm::rotation(Forward(), direction));
 	}
 
 	void Transform::Translate(const dvec3& displacement) {
 		local_position += displacement;
 	}
 
-	void Transform::Rotate(const dquat& displacement) {
-		local_rotation *= displacement;
+	void Transform::LocalRotate(const dquat& displacement) {
+		local_rotation = local_rotation * displacement;
+	}
+
+	void Transform::GlobalRotate(const dquat& displacement) {
+		local_rotation = displacement * local_rotation;
 	}
 
 	void Transform::Scale(const dvec3& displacement) {
 		local_scale *= displacement;
-	}
-
-	Render::ModelData Transform::RenderedWorldSpace() {
-		Render::ModelData modeldata = {
-			ModelMatrix()
-		};
-		return std::move(modeldata);
 	}
 
 	mat4 Transform::ModelMatrix() {

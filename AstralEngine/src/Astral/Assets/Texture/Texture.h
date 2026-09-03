@@ -10,13 +10,12 @@ namespace Astral::Assets {
 	class Texture : public Asset {
 	public:
 		Texture(Render::Renderer* renderer, std::string name, std::filesystem::path& path);
-		~Texture();
 		Render::ResourceHandle GetHandle() const;
 
 	private:
 		Render::Renderer* renderer;
 		Render::ResourceHandle texture_handle;
-		uint8_t* texture_data;
+		std::vector<uint8_t> texture_data;
 		size_t width, height;
 	};
 }

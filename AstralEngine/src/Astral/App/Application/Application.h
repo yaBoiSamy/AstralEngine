@@ -15,6 +15,7 @@ namespace Astral::App {
 		Application(const App::StartupConfig& config);
 
 		virtual void Update(const FrameContext& context) {};
+		void SetCursorEnabled(bool is_enabled);
 
 		void Close();
 		void Run();

@@ -1,10 +1,11 @@
 #include "Common.h"
 #include "Layer.h"
+#include "Astral/App/Application/Application.h"
 
 
 namespace Astral::App {
 
-	ALayer::ALayer(const std::string name) : name(name) {}
+	ALayer::ALayer(Application* app, const std::string name) : app(app), name(name) {}
 
 	void ALayer::Attach(Assets::AssetRegistry* assets) {
 		this->assets = assets;
@@ -27,6 +28,10 @@ namespace Astral::App {
 	Assets::AssetRegistry& ALayer::Assets() {
 		AST_CORE_ASSERT(assets, "Accessing assets of a detached layer");
 		return *assets;
+	}
+
+	Application& ALayer::App() {
+		return *app;
 	}
 
 

@@ -13,6 +13,10 @@ namespace Astral::Components {
 
 		Assets::Mesh* mesh;
 		Assets::Material* material;
+
+		const uint32_t VERTEX_BUFFER_BINDING_SLOT = 0;
+		const uint32_t ALBEDO_TEXTURE_BINDING_SLOT = 0;
+		const uint32_t MATERIAL_DATA_BINDING_SLOT = 4;
 	};
 }
 

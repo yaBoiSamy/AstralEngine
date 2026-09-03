@@ -8,25 +8,15 @@
 
 
 namespace Astral::Render {
-	struct LightingData {};
-
-	struct CameraData {
-		glm::mat4 view;
-		glm::mat4 projection;
-	};
-
-	struct ModelData {
-		glm::mat4 model;
-	};
-
 	class Renderer {
 	public:
 		Renderer(App::Window* window, API graphics_api, const App::StartupConfig& config);
 		const Invoker& Command() const;
 
-		void UpdateLightingData(LightingData lighting_data) const;
-		void UpdateCameraData(CameraData camera_data) const;
-		void UpdateModelData(ModelData model_data) const ;
+		void UpdateViewportData(uint32_t width, uint32_t height) const;
+		void UpdateLightingData() const;
+		void UpdateCameraData(const glm::mat4& view, const glm::mat4& projection) const;
+		void UpdateModelData(const glm::mat4& model) const ;
 
 		std::vector<ResourceBinding> GetBindings() const;
 
@@ -35,13 +25,15 @@ namespace Astral::Render {
 		Invoker invoker;
 		std::jthread executor_thread;
 
+		ResourceHandle viewport_handle;
 		ResourceHandle lighting_handle;
 		ResourceHandle camera_handle;
 		ResourceHandle model_handle;
 
-		const uint32_t LIGHTING_BINDING_SLOT = 0;
-		const uint32_t CAMERA_BINDING_SLOT = 1;
-		const uint32_t MODEL_BINDING_SLOT = 2;
+		const uint32_t VIEWPORT_BINDING_SLOT = 0;
+		const uint32_t LIGHTING_BINDING_SLOT = 1;
+		const uint32_t CAMERA_BINDING_SLOT = 2;
+		const uint32_t MODEL_BINDING_SLOT = 3;
 	};
 }
 

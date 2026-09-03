@@ -1,6 +1,9 @@
 #include "Common.h"
 #include "CommandBuffer.h"
 
+
+extern thread_local std::stop_token cancellation_token;
+
 namespace Astral::Render {
 
 	CommandBuffer::CommandBuffer() :
@@ -27,7 +30,7 @@ namespace Astral::Render {
 			if (!frame_rendered) {
 				// gpu bottlenecking
 				uint32_t generation = frame_generation;
-				buffer_swap_signal.wait(lock, [this, &generation] { return frame_generation != generation; });
+				buffer_swap_signal.wait(lock, cancellation_token, [this, &generation] { return frame_generation != generation; });
 				return;
 			}
 			break;
@@ -36,7 +39,7 @@ namespace Astral::Render {
 			if (!frame_ready) {
 				// cpu bottlenecking
 				uint32_t generation = frame_generation;
-				buffer_swap_signal.wait(lock, [this, &generation] { return frame_generation != generation; });
+				buffer_swap_signal.wait(lock, cancellation_token, [this, &generation] { return frame_generation != generation; });
 				return;
 			}
 			break;

@@ -25,8 +25,16 @@ namespace Astral::Assets {
 		vertex_buffer_handle(renderer->Command().CreateVertexBuffer(vertices.size(), sizeof(Vertex))),
 		index_buffer_handle(renderer->Command().CreateIndexBuffer(indices.size())) 
 	{
-		renderer->Command().WriteVertexBuffer(vertex_buffer_handle, ToBytesArray(vertices), vertices.size());
-		renderer->Command().WriteIndexBuffer(index_buffer_handle, ToBytesArray(indices), indices.size());
+		renderer->Command().WriteVertexBuffer(vertex_buffer_handle, ToBytesArray<Vertex>(vertices), vertices.size());
+		renderer->Command().WriteIndexBuffer(index_buffer_handle, ToBytesArray<uint32_t>(indices), indices.size());
+	}
+
+	size_t Mesh::GetVertexCount() const {
+		return vertices.size();
+	}
+
+	size_t Mesh::GetIndexCount() const {
+		return indices.size();
 	}
 
 	Render::ResourceHandle Mesh::GetVertexBufferHandle() {

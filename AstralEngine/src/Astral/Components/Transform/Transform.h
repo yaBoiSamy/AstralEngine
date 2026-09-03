@@ -32,17 +32,15 @@ namespace Astral::Components {
 		void LookAt(const dvec3& target);
 
 		void Translate(const dvec3& displacement);
-		void Rotate(const dquat& displacement);
+		void LocalRotate(const dquat& displacement);
+		void GlobalRotate(const dquat& displacement);
 		void Scale(const dvec3& displacement);
 
-		Render::ModelData RenderedWorldSpace();
+		mat4 ModelMatrix();
 
 		dvec3 local_position;
 		dquat local_rotation;
 		dvec3 local_scale;
-
-	private:
-		mat4 ModelMatrix();
 	};
 	
 }

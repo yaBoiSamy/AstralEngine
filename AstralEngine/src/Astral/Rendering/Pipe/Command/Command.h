@@ -118,12 +118,16 @@ namespace Astral::Render {
 	struct DrawCommand {
 		const ResourceHandle shader;
 		const std::vector<ResourceBinding> bindings;
+		const size_t first_drawn_vertex;
+		const size_t drawn_vertex_count;
 	};
 
 	struct DrawIndexedCommand {
 		const ResourceHandle shader;
 		const ResourceHandle index_buffer;
 		const std::vector<ResourceBinding> bindings;
+		const size_t first_drawn_index;
+		const size_t drawn_index_count;
 	};
 
 	struct DrawImGuiCommand {

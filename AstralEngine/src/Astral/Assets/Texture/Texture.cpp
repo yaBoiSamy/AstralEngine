@@ -13,18 +13,19 @@ namespace Astral::Assets {
 		int w, h, _;
 		const uint32_t CHANNELS = 4;
 		stbi_set_flip_vertically_on_load(true);
-		texture_data = stbi_load(path.string().c_str(), &w, &h, &_, CHANNELS);
+		uint8_t* pixels = stbi_load(path.string().c_str(), &w, &h, &_, CHANNELS);
 		width = static_cast<size_t>(w);
 		height = static_cast<size_t>(h);
 		stbi_set_flip_vertically_on_load(false);
+		AST_CORE_ASSERT(pixels, "stb failed to parse image: {0}", stbi_failure_reason());
 
-		AST_CORE_ASSERT(texture_data, "stb failed to parse image: {0}", stbi_failure_reason());
+		size_t size = width * height * 4;
+		texture_data.resize(size);
+		std::memcpy(texture_data.data(), pixels, size);
+		stbi_image_free(pixels);
+
 		texture_handle = renderer->Command().CreateTexture(width, height);
-		renderer->Command().WriteTexture(texture_handle, ToBytesArray(Box<uint8_t>(texture_data)), width, height);
-	}
-
-	Texture::~Texture() {
-		stbi_image_free(texture_data);
+		renderer->Command().WriteTexture(texture_handle, ToBytesArray<uint8_t>(texture_data), width, height);
 	}
 
 	Render::ResourceHandle Texture::GetHandle() const {

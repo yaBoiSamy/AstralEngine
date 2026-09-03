@@ -33,7 +33,7 @@ namespace Astral::App {
         AST_CORE_ASSERT(handle.get(), "Failed to create GLFW window");
         glfwSetErrorCallback([](int error, const char* description) {
             AST_CORE_ERROR("GLFW error ({0}): {1}", error, description);
-            });
+        });
 
 
         int x, y;
@@ -54,21 +54,21 @@ namespace Astral::App {
         glfwSetWindowCloseCallback(handle.get(), [](GLFWwindow* handle) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
 			window.Broadcast(WindowCloseEvent());
-            });
+        });
 
         glfwSetWindowSizeCallback(handle.get(), [](GLFWwindow* handle, int width, int height) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowResizeEvent(width, height));
             window.state.width = width;
             window.state.height = height;
-            });
+        });
 
         glfwSetFramebufferSizeCallback(handle.get(), [](GLFWwindow* handle, int frame_width, int frame_height) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowFrameResizeEvent(frame_width, frame_height));
             window.state.frame_width = frame_width;
             window.state.frame_height = frame_height;
-            });
+        });
 
         glfwSetWindowFocusCallback(handle.get(), [](GLFWwindow* handle, int focus) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
@@ -77,12 +77,12 @@ namespace Astral::App {
                 window.Broadcast(WindowFocusEvent());
             else
                 window.Broadcast(WindowLostFocusEvent());
-            });
+        });
 
         glfwSetWindowPosCallback(handle.get(), [](GLFWwindow* handle, int x, int y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(WindowMovedEvent(x, y));
-            });
+        });
 
         glfwSetKeyCallback(handle.get(), [](GLFWwindow* handle, int key, int scancode, int action, int mods) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
@@ -97,7 +97,7 @@ namespace Astral::App {
                 window.Broadcast(KeyReleasedEvent(key));
                 break;
             }
-            });
+        });
 
         glfwSetMouseButtonCallback(handle.get(), [](GLFWwindow* handle, int button, int action, int mods) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
@@ -107,17 +107,21 @@ namespace Astral::App {
                 window.Broadcast(MouseButtonPressedEvent(button, x, y));
             else if (action == GLFW_RELEASE)
                 window.Broadcast(MouseButtonReleasedEvent(button, x, y));
-            });
+        });
 
         glfwSetCursorPosCallback(handle.get(), [](GLFWwindow* handle, double x, double y) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
-            window.Broadcast(MouseMovedEvent(x, y));
-            });
+            window.Broadcast(MouseMovedEvent(x, y, x - window.last_mouse_x, y - window.last_mouse_y));
+            window.last_mouse_x = x;
+            window.last_mouse_y = y;
+        });
 
         glfwSetScrollCallback(handle.get(), [](GLFWwindow* handle, double x_offset, double y_offset) {
             Window& window = *(Window*)glfwGetWindowUserPointer(handle);
             window.Broadcast(MouseScrolledEvent(x_offset, y_offset));
-            });
+        });
+
+        glfwGetCursorPos(handle.get(), &last_mouse_x, &last_mouse_y);
 	}
 
     FrameContext Window::GetFrameContext() const {
@@ -192,5 +196,14 @@ namespace Astral::App {
         state.deltatime = curr_frametime - last_frametime;
         last_frametime = curr_frametime;
         glfwSwapBuffers(handle.get());
+    }
+
+    void Window::SetCursorEnabled(bool is_enabled) {
+        int width, height;
+        glfwGetWindowSize(handle.get(), &width, &height);
+        glfwSetCursorPos(handle.get(), width / 2, height / 2);
+        last_mouse_x = width / 2;
+        last_mouse_y = height / 2;
+        glfwSetInputMode(handle.get(), GLFW_CURSOR, is_enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
     }
 }

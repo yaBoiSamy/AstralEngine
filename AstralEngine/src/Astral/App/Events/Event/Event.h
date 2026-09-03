@@ -108,7 +108,8 @@ namespace Astral::App {
 
     struct MouseMovedEvent : InputEvent {
         const double x, y;
-        MouseMovedEvent(double x, double y) : x(x), y(y) {}
+        const double dx, dy;
+        MouseMovedEvent(double x, double y, double dx, double dy) : x(x), y(y), dx(dx), dy(dy) {}
         operator std::string() const override;
         virtual bool Dispatch(EventListener& l) const override;
     };

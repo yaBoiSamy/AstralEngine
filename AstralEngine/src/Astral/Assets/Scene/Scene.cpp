@@ -23,10 +23,11 @@ namespace Astral::Assets {
 		if (frame_width == 0 || frame_height == 0)
 			return;
 
-		const glm::vec4 CLEAR_COLOR = glm::vec4();
-
-		renderer->UpdateLightingData(Render::LightingData{});
-		renderer->UpdateCameraData(main_camera->RenderedPOV(frame_width, frame_height));
+		renderer->UpdateLightingData();
+		renderer->UpdateCameraData(
+			main_camera->ViewMatrix(),
+			main_camera->ProjectionMatrix(frame_width, frame_height)
+		);
 
 		for (auto& desc : root.Descendants()) {
 			for (auto& mesh_component : desc.Components<MeshRenderer>()) {

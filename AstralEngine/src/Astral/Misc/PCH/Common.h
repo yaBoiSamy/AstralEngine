@@ -53,9 +53,9 @@ namespace Astral {
     }
 
     template<typename ArrayT>
-    ByteBox ToBytesArray(const std::vector<ArrayT>& vec) {
-        auto result = std::make_unique<ArrayT[]>(vec.size());
-        std::copy(vec.begin(), vec.end(), result.get());
+    ByteBox ToBytesArray(std::span<const ArrayT> data) {
+        auto result = std::make_unique<ArrayT[]>(data.size());
+        std::copy(data.begin(), data.end(), result.get());
 		return ToBytesArray(std::move(result));
     }
 }

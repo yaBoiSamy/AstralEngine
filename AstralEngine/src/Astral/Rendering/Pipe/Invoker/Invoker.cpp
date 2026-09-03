@@ -147,20 +147,24 @@ namespace Astral::Render {
 		command_buffer->InvokeCommand(std::move(command));
 	}
 
-	void Invoker::Draw(ResourceHandle shader, std::vector<ResourceBinding> bindings) const {
+	void Invoker::Draw(ResourceHandle shader, std::vector<ResourceBinding> bindings, size_t first_drawn_vertex, size_t drawn_vertex_count) const {
 		Command command = DrawCommand{
 			.shader = shader,
-			.bindings = std::move(bindings)
+			.bindings = std::move(bindings),
+			.first_drawn_vertex = first_drawn_vertex,
+			.drawn_vertex_count = drawn_vertex_count
 		};
 
 		command_buffer->InvokeCommand(std::move(command));
 	}
 
-	void Invoker::DrawIndexed(ResourceHandle shader, ResourceHandle index_buffer, std::vector<ResourceBinding> bindings) const {
+	void Invoker::DrawIndexed(ResourceHandle shader, ResourceHandle index_buffer, std::vector<ResourceBinding> bindings, size_t first_drawn_index, size_t drawn_index_count) const {
 		Command command = DrawIndexedCommand{
 			.shader = shader,
 			.index_buffer = index_buffer,
-			.bindings = std::move(bindings)
+			.bindings = std::move(bindings),
+			.first_drawn_index = first_drawn_index,
+			.drawn_index_count = drawn_index_count
 		};
 
 		command_buffer->InvokeCommand(std::move(command));

@@ -7,16 +7,19 @@
 
 namespace Astral::App {
 
+	class Application;
+
 	class ALayer : public EventListener, public EventBroadcaster
 	{
 	public:
-		ALayer(const std::string name);
+		ALayer(Application* app, const std::string name);
 
 		void Attach(Assets::AssetRegistry* assets);
 		void Detach();
 		void Update(const FrameContext& context);
 		void RenderUI();
 		Assets::AssetRegistry& Assets();
+		Application& App();
 
 		const std::string name;
 
@@ -28,6 +31,7 @@ namespace Astral::App {
 		virtual void OnUpdate(const FrameContext& context);
 
 	private:
+		Application* app;
 		Assets::AssetRegistry* assets;
 	};
 }

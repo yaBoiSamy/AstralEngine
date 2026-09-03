@@ -15,7 +15,7 @@ namespace Astral::Render {
 
 	private:
 		std::mutex mutex;
-		std::condition_variable buffer_swap_signal;
+		std::condition_variable_any buffer_swap_signal;
 		uint32_t frame_generation;
 		bool frame_ready;
 		bool frame_rendered;

@@ -97,6 +97,13 @@ namespace Astral::App {
 		AST_CORE_INFO("App closed"); is_running = false;
 	};
 
+
+
+
+
+
+
+
 	void Application::Run() {
 		is_running = true;
 		window.PumpEvents();

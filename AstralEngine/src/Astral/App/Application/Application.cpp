@@ -24,7 +24,7 @@ namespace Astral::App {
 		SubscribeTo(window);
 		layers.SubscribeTo(*this);
 
-		layers.PushLayer(std::make_unique<DebugLayer>(this, &renderer));
+		layers.PushOverlay(std::make_unique<DebugLayer>(this, &renderer));
 
 		layers.PushOverlay(std::make_unique<UILayer>(this, &renderer, [this] {
 			layers.RenderImGuiWidgets();  // Inject ability to render debug widgets into debug layer
@@ -96,12 +96,6 @@ namespace Astral::App {
 	void Application::Close() {
 		AST_CORE_INFO("App closed"); is_running = false;
 	};
-
-
-
-
-
-
 
 
 	void Application::Run() {

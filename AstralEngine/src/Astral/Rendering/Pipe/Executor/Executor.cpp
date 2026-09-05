@@ -33,6 +33,7 @@ namespace Astral::Render {
 
 	void Executor::OptimizeCommands() {
 		ZoneScoped;
+
 	}
 
 	void Executor::ExecuteCommands() {

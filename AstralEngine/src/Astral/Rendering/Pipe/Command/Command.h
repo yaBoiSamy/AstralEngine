@@ -115,6 +115,11 @@ namespace Astral::Render {
 		const size_t frame_width, frame_height;
 	};
 
+	struct RenderOrder {
+		uint32_t priority;
+		float depth;
+	};
+
 	struct DrawCommand {
 		const ResourceHandle shader;
 		const std::vector<ResourceBinding> bindings;
